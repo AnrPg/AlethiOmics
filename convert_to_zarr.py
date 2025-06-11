@@ -1,7 +1,14 @@
 #!/usr/bin/env python3
 
 import os
+temp_dir = os.path.expanduser("~/joblib_temp")
+os.makedirs(temp_dir, exist_ok=True)
+os.environ["JOBLIB_TEMP_FOLDER"] = temp_dir
+print("JOBLIB_TEMP_FOLDER =", os.environ["JOBLIB_TEMP_FOLDER"])
+
 import scanpy as sc
+
+os.environ["JOBLIB_TEMP_FOLDER"] = os.path.expanduser("~/joblib_temp")
 
 def convert_h5ad_to_zarr(root_dir):
     for dirpath, _, filenames in os.walk(root_dir):
