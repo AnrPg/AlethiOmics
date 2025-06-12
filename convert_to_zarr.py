@@ -18,6 +18,15 @@ def convert_h5ad_to_zarr(root_dir):
                 zarr_filename = filename.replace(".h5ad", ".zarr")
                 zarr_path = os.path.join(dirpath, zarr_filename)
 
+                if os.path.exists(zarr_path) and os.path.isdir(zarr_path):
+                    try:
+                        if os.path.exists(os.path.join(zarr_path, ".zattrs")):
+                            print(f"⏩ Skipping (zarr exists): {filename}")
+                            continue
+                    except Exception as e:
+                        print(f"⚠️ Error checking existing zarr for {filename}: {e}")
+
+
                 try:
                     print(f"Reading: {h5ad_path}")
                     adata = sc.read_h5ad(h5ad_path)
