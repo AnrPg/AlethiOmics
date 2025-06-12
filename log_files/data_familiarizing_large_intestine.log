@@ -1,0 +1,390 @@
+/
+ ├── X
+ │   ├── data (76357608,) float32
+ │   ├── indices (76357608,) int64
+ │   └── indptr (30085,) int64
+ ├── layers
+ │   ├── decontXcounts
+ │   │   ├── data (76357608,) int32
+ │   │   ├── indices (76357608,) int64
+ │   │   └── indptr (30085,) int64
+ │   └── scale_data
+ │       ├── data (76357608,) float32
+ │       ├── indices (76357608,) int64
+ │       └── indptr (30085,) int64
+ ├── obs
+ │   ├── 10X_run
+ │   │   ├── categories (11,) object
+ │   │   └── codes (30084,) int8
+ │   ├── _index (30084,) object
+ │   ├── _scvi_batch
+ │   │   ├── categories (7,) object
+ │   │   └── codes (30084,) int8
+ │   ├── _scvi_labels (30084,) int8
+ │   ├── ambient_removal
+ │   │   ├── categories (2,) object
+ │   │   └── codes (30084,) int8
+ │   ├── anatomical_position
+ │   │   ├── categories (6,) object
+ │   │   └── codes (30084,) int8
+ │   ├── assay
+ │   │   ├── categories (2,) object
+ │   │   └── codes (30084,) int8
+ │   ├── assay_ontology_term_id
+ │   │   ├── categories (2,) object
+ │   │   └── codes (30084,) int8
+ │   ├── broad_cell_class
+ │   │   ├── categories (13,) object
+ │   │   └── codes (30084,) int8
+ │   ├── cdna_plate
+ │   │   ├── categories (12,) object
+ │   │   └── codes (30084,) int8
+ │   ├── cdna_well
+ │   │   ├── categories (366,) object
+ │   │   └── codes (30084,) int16
+ │   ├── cell_type
+ │   │   ├── categories (29,) object
+ │   │   └── codes (30084,) int8
+ │   ├── cell_type_ontology_term_id
+ │   │   ├── categories (29,) object
+ │   │   └── codes (30084,) int8
+ │   ├── compartment
+ │   │   ├── categories (5,) object
+ │   │   └── codes (30084,) int8
+ │   ├── development_stage
+ │   │   ├── categories (5,) object
+ │   │   └── codes (30084,) int8
+ │   ├── development_stage_ontology_term_id
+ │   │   ├── categories (5,) object
+ │   │   └── codes (30084,) int8
+ │   ├── disease
+ │   │   ├── categories (1,) object
+ │   │   └── codes (30084,) int8
+ │   ├── disease_ontology_term_id
+ │   │   ├── categories (1,) object
+ │   │   └── codes (30084,) int8
+ │   ├── donor_assay
+ │   │   ├── categories (7,) object
+ │   │   └── codes (30084,) int8
+ │   ├── donor_id
+ │   │   ├── categories (5,) object
+ │   │   └── codes (30084,) int8
+ │   ├── donor_method
+ │   │   ├── categories (7,) object
+ │   │   └── codes (30084,) int8
+ │   ├── donor_tissue
+ │   │   ├── categories (5,) object
+ │   │   └── codes (30084,) int8
+ │   ├── donor_tissue_assay
+ │   │   ├── categories (7,) object
+ │   │   └── codes (30084,) int8
+ │   ├── ethnicity_original
+ │   │   ├── categories (4,) object
+ │   │   └── codes (30084,) int8
+ │   ├── free_annotation
+ │   │   ├── categories (29,) object
+ │   │   └── codes (30084,) int8
+ │   ├── is_primary_data (30084,) bool
+ │   ├── library_plate
+ │   │   ├── categories (12,) object
+ │   │   └── codes (30084,) int8
+ │   ├── manually_annotated
+ │   │   ├── categories (1,) object
+ │   │   └── codes (30084,) int8
+ │   ├── method
+ │   │   ├── categories (2,) object
+ │   │   └── codes (30084,) int8
+ │   ├── n_genes_by_counts (30084,) int64
+ │   ├── notes
+ │   │   ├── categories (5,) object
+ │   │   └── codes (30084,) int8
+ │   ├── observation_joinid (30084,) object
+ │   ├── organism
+ │   │   ├── categories (1,) object
+ │   │   └── codes (30084,) int8
+ │   ├── organism_ontology_term_id
+ │   │   ├── categories (1,) object
+ │   │   └── codes (30084,) int8
+ │   ├── pct_counts_ercc (30084,) float64
+ │   ├── pct_counts_mt (30084,) float64
+ │   ├── published_2022
+ │   │   ├── categories (2,) object
+ │   │   └── codes (30084,) int8
+ │   ├── replicate (30084,) int32
+ │   ├── sample_id
+ │   │   ├── categories (25,) object
+ │   │   └── codes (30084,) int8
+ │   ├── sample_number (30084,) int32
+ │   ├── scvi_leiden_donorassay_full
+ │   │   ├── categories (31,) object
+ │   │   └── codes (30084,) int8
+ │   ├── scvi_leiden_res05_tissue
+ │   │   ├── categories (27,) object
+ │   │   └── codes (30084,) int8
+ │   ├── self_reported_ethnicity
+ │   │   ├── categories (4,) object
+ │   │   └── codes (30084,) int8
+ │   ├── self_reported_ethnicity_ontology_term_id
+ │   │   ├── categories (4,) object
+ │   │   └── codes (30084,) int8
+ │   ├── sex
+ │   │   ├── categories (2,) object
+ │   │   └── codes (30084,) int8
+ │   ├── sex_ontology_term_id
+ │   │   ├── categories (2,) object
+ │   │   └── codes (30084,) int8
+ │   ├── suspension_type
+ │   │   ├── categories (1,) object
+ │   │   └── codes (30084,) int8
+ │   ├── tissue
+ │   │   ├── categories (3,) object
+ │   │   └── codes (30084,) int8
+ │   ├── tissue_in_publication
+ │   │   ├── categories (1,) object
+ │   │   └── codes (30084,) int8
+ │   ├── tissue_ontology_term_id
+ │   │   ├── categories (3,) object
+ │   │   └── codes (30084,) int8
+ │   ├── tissue_type
+ │   │   ├── categories (1,) object
+ │   │   └── codes (30084,) int8
+ │   ├── total_counts (30084,) float64
+ │   ├── total_counts_ercc (30084,) float64
+ │   └── total_counts_mt (30084,) float64
+ ├── obsm
+ │   ├── X_pca (30084, 50) float32
+ │   ├── X_scvi (30084, 50) float32
+ │   ├── X_tissue_uncorrected_umap (30084, 2) float32
+ │   ├── X_umap (30084, 2) float32
+ │   ├── X_umap_scvi_full_donorassay (30084, 2) float32
+ │   ├── X_umap_tissue_scvi_donorassay (30084, 2) float32
+ │   └── X_uncorrected_umap (30084, 2) float32
+ ├── obsp
+ │   ├── connectivities
+ │   │   ├── data (527676,) float32
+ │   │   ├── indices (527676,) int32
+ │   │   └── indptr (30085,) int32
+ │   └── distances
+ │       ├── data (421133,) float64
+ │       ├── indices (421133,) int32
+ │       └── indptr (30085,) int32
+ ├── raw
+ │   ├── X
+ │   │   ├── data (79741061,) float32
+ │   │   ├── indices (79741061,) int64
+ │   │   └── indptr (30085,) int64
+ │   ├── var
+ │   │   ├── ensembl_id (61759,) object
+ │   │   ├── ensg (61759,) object
+ │   │   ├── ercc (61759,) bool
+ │   │   ├── feature_biotype
+ │   │   │   ├── categories (1,) object
+ │   │   │   └── codes (61759,) int8
+ │   │   ├── feature_length
+ │   │   │   ├── categories (5354,) int64
+ │   │   │   └── codes (61759,) int16
+ │   │   ├── feature_name
+ │   │   │   ├── categories (61759,) object
+ │   │   │   └── codes (61759,) int32
+ │   │   ├── feature_reference
+ │   │   │   ├── categories (1,) object
+ │   │   │   └── codes (61759,) int8
+ │   │   ├── feature_type
+ │   │   │   ├── categories (39,) object
+ │   │   │   └── codes (61759,) int8
+ │   │   ├── genome
+ │   │   │   ├── categories (1,) object
+ │   │   │   └── codes (61759,) int8
+ │   │   ├── mean (61759,) float64
+ │   │   ├── mean_counts (61759,) float64
+ │   │   ├── mt (61759,) bool
+ │   │   ├── n_cells_by_counts (61759,) int64
+ │   │   ├── pct_dropout_by_counts (61759,) float64
+ │   │   ├── std (61759,) float64
+ │   │   └── total_counts (61759,) float64
+ │   └── varm
+ ├── uns
+ │   ├── _scvi_manager_uuid () <U36
+ │   ├── _scvi_uuid () <U36
+ │   ├── _training_mode () <U7
+ │   ├── assay_ontology_term_id_colors (2,) object
+ │   ├── citation () <U299
+ │   ├── compartment_colors (5,) object
+ │   ├── donor_id_colors (5,) object
+ │   ├── leiden
+ │   │   └── params
+ │   │       ├── n_iterations () int64
+ │   │       ├── random_state () int64
+ │   │       └── resolution () float64
+ │   ├── method_colors (2,) object
+ │   ├── neighbors
+ │   │   ├── connectivities_key () <U14
+ │   │   ├── distances_key () <U9
+ │   │   └── params
+ │   │       ├── method () <U4
+ │   │       ├── metric () <U9
+ │   │       ├── n_neighbors () int64
+ │   │       ├── random_state () int64
+ │   │       └── use_rep () <U6
+ │   ├── pca
+ │   │   ├── params
+ │   │   │   ├── use_highly_variable () bool
+ │   │   │   └── zero_center () bool
+ │   │   ├── variance (50,) float64
+ │   │   └── variance_ratio (50,) float64
+ │   ├── schema_reference () <U87
+ │   ├── schema_version () <U5
+ │   ├── sex_ontology_term_id_colors (2,) object
+ │   ├── tissue_in_publication_colors (1,) object
+ │   ├── title () <U32
+ │   └── umap
+ │       └── params
+ │           ├── a () float64
+ │           └── b () float64
+ ├── var
+ │   ├── ensembl_id (61759,) object
+ │   ├── ensg (61759,) object
+ │   ├── ercc (61759,) bool
+ │   ├── feature_biotype
+ │   │   ├── categories (1,) object
+ │   │   └── codes (61759,) int8
+ │   ├── feature_is_filtered (61759,) bool
+ │   ├── feature_length
+ │   │   ├── categories (5354,) int64
+ │   │   └── codes (61759,) int16
+ │   ├── feature_name
+ │   │   ├── categories (61759,) object
+ │   │   └── codes (61759,) int32
+ │   ├── feature_reference
+ │   │   ├── categories (1,) object
+ │   │   └── codes (61759,) int8
+ │   ├── feature_type
+ │   │   ├── categories (39,) object
+ │   │   └── codes (61759,) int8
+ │   ├── genome
+ │   │   ├── categories (1,) object
+ │   │   └── codes (61759,) int8
+ │   ├── mean (61759,) float64
+ │   ├── mean_counts (61759,) float64
+ │   ├── mt (61759,) bool
+ │   ├── n_cells_by_counts (61759,) int64
+ │   ├── pct_dropout_by_counts (61759,) float64
+ │   ├── std (61759,) float64
+ │   └── total_counts (61759,) float64
+ ├── varm
+ │   └── PCs (61759, 50) float64
+ └── varp
+
+[obs] categorical fields:
+
+obs.10X_run: ['TSP14_LI_Distal_10X_1_1', 'TSP14_LI_Proximal_10X_1_1', 'TSP25_LI_ColonAscending_10X_1_1', 'TSP25_LI_ColonSigmoid_10X_1_1', 'TSP26_LI_ColonAscending_10X3primev31_1_1', 'TSP26_LI_ColonSigmoid_10X3primev31_1_1', 'TSP27_LI_ColonAscending_10X3primev31_1_1', 'TSP27_LI_ColonSigmoid_10X3primev31_1_1', 'TSP2_LI_AscendingProximal_10X_1_1', 'TSP2_LI_SigmoidDistal_10X_1_1', 'nan']
+obs._index: (30084,) (not categorical)
+
+obs._scvi_batch: ['0', '1', '2', '3', '4', '5', '6']
+obs._scvi_labels: (30084,) (not categorical)
+
+obs.ambient_removal: ['None', 'decontx']
+
+obs.anatomical_position: ['AscendingProximal', 'ColonAscending', 'ColonSigmoid', 'Distal', 'Proximal', 'SigmoidDistal']
+
+obs.assay: ["10x 3' v3", 'Smart-seq2']
+
+obs.assay_ontology_term_id: ['EFO:0008931', 'EFO:0009922']
+
+obs.broad_cell_class: ['contractile cell', 'dendritic cell', 'endothelial cell', 'fibroblast', 'glandular epithelial cell', 'glial cell', 'granulocyte', 'innate lymphoid cell', 'intestinal epithelial cell', 'lymphocyte of b lineage', 'myeloid leukocyte', 'stem cell', 't cell']
+
+obs.cdna_plate: ['B107308', 'B113713', 'B113715', 'B114586', 'B114618', 'B134540', 'B134545', 'B134546', 'B134547', 'B134548', 'B134608', 'nan']
+
+obs.cdna_well: too many unique values (366) to display
+
+Printing the first 10 unique values for obs.cdna_well: ['A1', 'A10', 'A11', 'A12', 'A13', 'A14', 'A15', 'A16', 'A17', 'A18']
+
+obs.cell_type: ['B cell', 'BEST4+ enterocyte', 'CD4-positive, alpha-beta T cell', 'CD8-positive, alpha-beta T cell', 'colon endothelial cell', 'colon macrophage', 'enterochromaffin-like cell', 'enterocyte of epithelium of large intestine', 'enteroglial cell', 'fibroblast', 'gamma-delta T cell', 'innate lymphoid cell', 'intestinal crypt stem cell of colon', 'large intestine goblet cell', 'mast cell', 'mature NK T cell', 'monocyte', 'myeloid dendritic cell', 'myeloid leukocyte', 'myofibroblast cell', 'naive thymus-derived CD4-positive, alpha-beta T cell', 'natural killer cell', 'neutrophil', 'paneth cell of colon', 'plasma cell', 'regulatory T cell', 'transit amplifying cell of colon', 'tuft cell of colon', 'type L enteroendocrine cell']
+
+obs.cell_type_ontology_term_id: ['CL:0000057', 'CL:0000097', 'CL:0000186', 'CL:0000236', 'CL:0000504', 'CL:0000576', 'CL:0000623', 'CL:0000624', 'CL:0000625', 'CL:0000766', 'CL:0000775', 'CL:0000782', 'CL:0000786', 'CL:0000798', 'CL:0000814', 'CL:0000815', 'CL:0000895', 'CL:0001065', 'CL:0002071', 'CL:0002279', 'CL:0009009', 'CL:0009011', 'CL:0009038', 'CL:0009041', 'CL:0009043', 'CL:1000320', 'CL:1001572', 'CL:4030026', 'CL:4040002']
+
+obs.compartment: ['Endothelium', 'Epithelium', 'Immune', 'Neural', 'Stromal']
+
+obs.development_stage: ['37-year-old stage', '56-year-old stage', '59-year-old stage', '60-year-old stage', '61-year-old stage']
+
+obs.development_stage_ontology_term_id: ['HsapDv:0000131', 'HsapDv:0000150', 'HsapDv:0000153', 'HsapDv:0000154', 'HsapDv:0000155']
+
+obs.disease: ['normal']
+
+obs.disease_ontology_term_id: ['PATO:0000461']
+
+obs.donor_assay: ['TSP14_10X_3Prime_v3.1', 'TSP14_SS2', 'TSP25_10X_3Prime_v3.1', 'TSP26_10X_3Prime_v3.1', 'TSP27_10X_3Prime_v3.1', 'TSP2_10X_3Prime_v3.1', 'TSP2_SS2']
+
+obs.donor_id: ['TSP14', 'TSP2', 'TSP25', 'TSP26', 'TSP27']
+
+obs.donor_method: ['TSP14_10X', 'TSP14_smartseq', 'TSP25_10X', 'TSP26_10X', 'TSP27_10X', 'TSP2_10X', 'TSP2_smartseq']
+
+obs.donor_tissue: ['TSP14_Large_Intestine', 'TSP25_Large_Intestine', 'TSP26_Large_Intestine', 'TSP27_Large_Intestine', 'TSP2_Large_Intestine']
+
+obs.donor_tissue_assay: ['TSP14_Large_Intestine_10X_3Prime_v3.1', 'TSP14_Large_Intestine_SS2', 'TSP25_Large_Intestine_10X_3Prime_v3.1', 'TSP26_Large_Intestine_10X_3Prime_v3.1', 'TSP27_Large_Intestine_10X_3Prime_v3.1', 'TSP2_Large_Intestine_10X_3Prime_v3.1', 'TSP2_Large_Intestine_SS2']
+
+obs.ethnicity_original: ['Asian', 'Black', 'Hispanic', 'White']
+
+obs.free_annotation: ['b cell', 'best4+ intestinal epithelial cell', 'cd4-positive, alpha-beta t cell', 'cd8-positive, alpha-beta t cell', 'colon endothelial cell', 'colon macrophage', 'crypt top colonocyte', 'dendritic cell', 'enterochromaffin-like cell', 'enterocyte of epithelium of large intestine', 'enteroglial cell', 'fibroblast', 'gamma-delta t cell', 'innate lymphoid cell', 'intestinal crypt stem cell of large intestine', 'large intestine goblet cell', 'mast cell', 'monocyte', 'myeloid leukocyte', 'myofibroblast cell and pericyte', 'naive thymus-derived cd4-positive, alpha-beta t cell', 'natural killer cell', 'neutrophil', 'paneth cell of colon', 'plasma cell', 'regulatory t cell', 'transit amplifying cell of colon', 'tuft cell of colon', 'type l enteroendocrine cell']
+obs.is_primary_data: (30084,) (not categorical)
+
+obs.library_plate: ['B002622', 'B002625', 'B133047', 'B134450', 'B134451', 'B134454', 'B134455', 'D101531', 'D101532', 'D101533', 'D101534', 'nan']
+
+obs.manually_annotated: ['True']
+
+obs.method: ['10X', 'smartseq']
+obs.n_genes_by_counts: (30084,) (not categorical)
+
+obs.notes: ['Endothelial', 'Epithelial', 'Immune', 'None', 'Stromal']
+obs.observation_joinid: (30084,) (not categorical)
+
+obs.organism: ['Homo sapiens']
+
+obs.organism_ontology_term_id: ['NCBITaxon:9606']
+obs.pct_counts_ercc: (30084,) (not categorical)
+obs.pct_counts_mt: (30084,) (not categorical)
+
+obs.published_2022: ['False', 'True']
+obs.replicate: (30084,) (not categorical)
+
+obs.sample_id: ['TSP14_LI_Distal_10X_1_1', 'TSP14_LI_Proximal_10X_1_1', 'TSP14_Large_Intestine_Distal_SS2_B134545_B002622_Epithelial', 'TSP14_Large_Intestine_Distal_SS2_B134546_D101531_Immune', 'TSP14_Large_Intestine_Distal_SS2_B134608_D101534_Endothelial', 'TSP14_Large_Intestine_Distal_SS2_B134608_D101534_Stromal', 'TSP14_Large_Intestine_Proximal_SS2_B134540_B002625_Immune', 'TSP14_Large_Intestine_Proximal_SS2_B134547_D101532_Epithelial', 'TSP14_Large_Intestine_Proximal_SS2_B134548_D101533_Endothelial', 'TSP14_Large_Intestine_Proximal_SS2_B134548_D101533_Stromal', 'TSP25_LI_ColonAscending_10X_1_1', 'TSP25_LI_ColonSigmoid_10X_1_1', 'TSP26_LI_ColonAscending_10X3primev31_1_1', 'TSP26_LI_ColonSigmoid_10X3primev31_1_1', 'TSP27_LI_ColonAscending_10X3primev31_1_1', 'TSP27_LI_ColonSigmoid_10X3primev31_1_1', 'TSP2_LI_AscendingProximal_10X_1_1', 'TSP2_LI_SigmoidDistal_10X_1_1', 'TSP2_Large_Intestine_Distal_SS2_B113713_B133047_Immune', 'TSP2_Large_Intestine_Distal_SS2_B113715_B134455_Endothelial', 'TSP2_Large_Intestine_Distal_SS2_B113715_B134455_Stromal', 'TSP2_Large_Intestine_Proximal_SS2_B107308_B134451_Immune', 'TSP2_Large_Intestine_Proximal_SS2_B114586_B134454_Epithelial', 'TSP2_Large_Intestine_Proximal_SS2_B114618_B134450_Endothelial', 'TSP2_Large_Intestine_Proximal_SS2_B114618_B134450_Stromal']
+obs.sample_number: (30084,) (not categorical)
+
+obs.scvi_leiden_donorassay_full: too many unique values (31) to display
+
+Printing the first 10 unique values for obs.scvi_leiden_donorassay_full: ['0', '1', '10', '11', '12', '13', '14', '15', '16', '2']
+
+obs.scvi_leiden_res05_tissue: ['0', '1', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '2', '20', '21', '22', '23', '24', '25', '26', '3', '4', '5', '6', '7', '8', '9']
+
+obs.self_reported_ethnicity: ['African American or Afro-Caribbean', 'Asian', 'European', 'Hispanic or Latin American']
+
+obs.self_reported_ethnicity_ontology_term_id: ['HANCESTRO:0005', 'HANCESTRO:0008', 'HANCESTRO:0014', 'HANCESTRO:0016']
+
+obs.sex: ['female', 'male']
+
+obs.sex_ontology_term_id: ['PATO:0000383', 'PATO:0000384']
+
+obs.suspension_type: ['cell']
+
+obs.tissue: ['ascending colon', 'large intestine', 'sigmoid colon']
+
+obs.tissue_in_publication: ['Large_Intestine']
+
+obs.tissue_ontology_term_id: ['UBERON:0000059', 'UBERON:0001156', 'UBERON:0001159']
+
+obs.tissue_type: ['tissue']
+obs.total_counts: (30084,) (not categorical)
+obs.total_counts_ercc: (30084,) (not categorical)
+obs.total_counts_mt: (30084,) (not categorical)
+
+[var] categorical fields:
+var.ensembl_id: (61759,) (not categorical)
+var.ensg: (61759,) (not categorical)
+var.ercc: (61759,) (not categorical)
+
+var.feature_biotype: ['gene']
+var.feature_is_filtered: (61759,) (not categorical)
+
+var.feature_length: too many unique values (5354) to display
+
+Printing the first 10 unique values for var.feature_length: [np.int64(8), np.int64(9), np.int64(11), np.int64(12), np.int64(13), np.int64(16), np.int64(17), np.int64(18), np.int64(19), np.int64(20)]

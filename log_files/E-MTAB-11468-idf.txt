@@ -1,0 +1,70 @@
+MAGE-TAB Version	1.1
+Investigation Title	Reactive astrocytes transduce blood-brain barrier inflammation through a TNFα-STAT3 signaling axis and secretion of alpha 1-antichymotrypsin
+
+Experimental Design	disease state design	compound treatment design
+Experimental Design Term Source REF	EFO	EFO
+Experimental Design Term Accession Number	EFO:0001756	EFO:0001755
+
+Experimental Factor Name	cell type	growth condition	stimulus
+Experimental Factor Type	cell type	growth condition	stimulus
+Experimental Factor Term Source REF	EFO	EFO
+Experimental Factor Term Accession Number
+
+Person Last Name	Kim
+Person First Name	Hyosung
+Person Mid Initials
+Person Email	hskim0612@gmail.com
+Person Phone
+Person Fax
+Person Affiliation	Vanderbilt
+Person Address	Olin Hall Nashville, Tennessee 118
+Person Roles	submitter
+Person Roles Term Source REF
+Person Roles Term Accession Number
+
+Quality Control Type
+Quality Control Term Source REF
+Quality Control Term Accession Number
+
+Replicate Type
+Replicate Term Source REF
+Replicate Term Accession Number
+
+Normalization Type
+Normalization Term Source REF
+Normalization Term Accession Number
+
+Date of Experiment	2020-03-19
+Public Release Date	2022-03-05
+
+PubMed ID
+Publication DOI
+Publication Author List
+Publication Title
+Publication Status
+Publication Status Term Source REF
+Publication Status Term Accession Number
+
+Experiment Description	Total RNAs extracted from iPSC-astrocytes or iPSC-BMEC like cells grown together or separately in transwells were collected and analyzed using RNA sequencing. In addition, total RNAs extracted from conditions with or without TNF-a were analyzed.
+
+Protocol Name	P-MTAB-119061	P-MTAB-119060	P-MTAB-119059	P-MTAB-119057	P-MTAB-119058	P-MTAB-119055	P-MTAB-119056
+Protocol Type	high throughput sequence alignment protocol	treatment protocol	growth protocol	nucleic acid library construction protocol	nucleic acid sequencing protocol	sample collection protocol	nucleic acid extraction protocol
+Protocol Term Source REF	EFO	EFO	EFO	EFO	EFO	EFO	EFO
+Protocol Term Accession Number	EFO_0004917	EFO_0003969	EFO_0003789	EFO_0004184	EFO_0004170	EFO_0005518	EFO_0002944
+Protocol Description	Raw sequencing reads were obtained for the paired-end samples. FASTQ reads were mapped to the human genome (hg19) by HISAT2 (2.2.0).	For TNFα conditions, cells were treated with 10 ng/ml of TNFα for 4 days before extraction of RNA.	For astrocyte, to reduce variability in astrocyte generation, manually isolated neural progenitors were used as the starting population. iPSCs were dissociated with Versene and seeded into 6-well low-attachment plates to form embryoid bodies (EBs) at a density of 4x105 cells/well in E6 medium supplemented with 100x N2 (Invitrogen; E6N2) and 10 μM Y27632 (Tocris). Neural differentiation in the EBs was achieved by dual inhibition of SMAD signaling for 7 days. EBs were then seeded onto growth factor reduced Matrigel-coated plates in E6N2 containing 1 μg/ml laminin (Sigma Aldrich). After another 7 days (Day 0), neural progenitor cells were manually isolated from rosettes and expanded as neurospheres in a suspension culture for 7 days in E6N2 supplemented with 50x B27 lacking retinoic acid (Invitrogen) and 20 ng/ml FGF2 (Peprotech). Then, the neurospheres were dissociated into single cells with TrypLETM (Thermo Fisher Scientific) and seeded onto growth factor reduced Matrigel-coated 6-well plates in E6N2 supplemented with 50x B27 lacking retinoic acid, 10 ng/ml BMP4 (Peprotech) and 20 ng/ml FGF2 for directed astroglial differentiation. Medium changes were performed every 48 hours, and cells were passaged upon reaching approximately 80% confluency. Astrocytes were seeded for coculture at a ratio of 1 well of a 6-well plate to 6 wells of a 12-well plate and maintained in E6 medium containing 10 ng/ml CNTF (Peprotech) and 10 ng/ml EGF (Peprotech) until initiation of coculture. For BMEC-like cells, iPSCs were dissociated with Accutase and seeded onto growth factor reduced Matrigel-coated plates in E8 medium containing 10 μM Y27632 at a density of 15,000 cells/cm2. Differentiation was initiated 24 hours after seeding by changing to E6 medium, with daily medium changes for 4 days. Next, cells were expanded with serum-free basal endothelial cell medium (EC medium) supplemented with 50x B27 (Thermo Fisher Scientific), GlutaMAXTM (Thermo Fisher Scientific), 10 μM retinoic acid (Sigma Aldrich), and 20 μg/ml FGF2 for 2 days without media change. Following this treatment, cells were collected by a 20-minute incubation in Accutase and seeded onto Transwell filters (1.1 cm2 polyethylene terephthalate membranes with 0.4 μm pores; Fisher Scientific) coated with a mixture of 400 μg/ml collagen IV (Sigma Aldrich) and 100 μg/ml fibronectin (Sigma Aldrich). The following day, cells were switched to EC medium lacking FGF2 and RA. If coculture was being initiated, filters were transferred to 12-well plates containing astrocytes and the same medium was utilized.	RNA was further purified with a Qiagen RNeasy Plus mini kit (Qiagen)	Extracted RNAs were submitted to the Vanderbilt Technologies for Advanced Genomics (VANTAGE) core for sequencing using an Illumina NovaSeq6000. Samples were prepared for sequencing using the TruSeq RNA sample prep kit (Illumina) to prepare cDNA libraries after ribosome depletion. Raw sequencing reads were obtained for the paired-end samples.	All samples were collected at the day 5 time point, regardless of monoculture or coculture.	Total RNA was isolated using TRIzol (Sigma Aldrich).
+Protocol Parameters
+Protocol Hardware					Illumina NovaSeq 6000
+Protocol Software
+Protocol Contact
+
+Term Source Name	EFO	ArrayExpress
+Term Source File	http://www.ebi.ac.uk/efo/	http://www.ebi.ac.uk/arrayexpress/
+Term Source Version	http://www.ebi.ac.uk/efo/
+
+SDRF File	E-MTAB-11468.sdrf.txt
+Comment [TemplateType]	High-throughput sequencing
+Comment [Submitted Name]	Reactive astrocytes transduce blood-brain barrier inflammation through a TNFα-STAT3 signaling axis and secretion of alpha 1-antichymotrypsin
+Comment [SecondaryAccession]	ERP135715
+Comment [SequenceDataURI]	http://www.ebi.ac.uk/ena/data/view/ERR8764967-ERR8764990
+Comment [AEExperimentType]	RNA-seq of coding RNA
+Comment[ArrayExpressAccession]	E-MTAB-11468

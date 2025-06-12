@@ -1,0 +1,315 @@
+/
+ ├── X
+ │   ├── data (408524309,) float32
+ │   ├── indices (408524309,) int64
+ │   └── indptr (145996,) int64
+ ├── layers
+ ├── obs
+ │   ├── ADNC
+ │   │   ├── categories (5,) object
+ │   │   └── codes (145995,) int8
+ │   ├── APOE4 status
+ │   │   ├── categories (3,) object
+ │   │   └── codes (145995,) int8
+ │   ├── Age at death
+ │   │   ├── categories (4,) object
+ │   │   └── codes (145995,) int8
+ │   ├── Braak stage
+ │   │   ├── categories (7,) object
+ │   │   └── codes (145995,) int8
+ │   ├── CERAD score
+ │   │   ├── categories (5,) object
+ │   │   └── codes (145995,) int8
+ │   ├── Class
+ │   │   ├── categories (1,) object
+ │   │   └── codes (145995,) int8
+ │   ├── Cognitive status
+ │   │   ├── categories (3,) object
+ │   │   └── codes (145995,) int8
+ │   ├── Fraction mitochrondrial UMIs (145995,) float32
+ │   ├── Genes detected (145995,) int64
+ │   ├── LATE-NC stage
+ │   │   ├── categories (6,) object
+ │   │   └── codes (145995,) int8
+ │   ├── Lewy body disease pathology
+ │   │   ├── categories (8,) object
+ │   │   └── codes (145995,) int8
+ │   ├── Microinfarct pathology
+ │   │   ├── categories (4,) object
+ │   │   └── codes (145995,) int8
+ │   ├── Neurotypical reference
+ │   │   ├── categories (2,) object
+ │   │   └── codes (145995,) int8
+ │   ├── Number of UMIs (145995,) float64
+ │   ├── PMI
+ │   │   ├── categories (4,) object
+ │   │   └── codes (145995,) int8
+ │   ├── Specimen ID
+ │   │   ├── categories (201,) object
+ │   │   └── codes (145995,) int16
+ │   ├── Subclass
+ │   │   ├── categories (1,) object
+ │   │   └── codes (145995,) int8
+ │   ├── Supertype
+ │   │   ├── categories (4,) object
+ │   │   └── codes (145995,) int8
+ │   ├── Thal phase
+ │   │   ├── categories (7,) object
+ │   │   └── codes (145995,) int8
+ │   ├── Years of education
+ │   │   ├── categories (4,) object
+ │   │   └── codes (145995,) int8
+ │   ├── assay
+ │   │   ├── categories (2,) object
+ │   │   └── codes (145995,) int8
+ │   ├── assay_ontology_term_id
+ │   │   ├── categories (2,) object
+ │   │   └── codes (145995,) int8
+ │   ├── cell_type
+ │   │   ├── categories (1,) object
+ │   │   └── codes (145995,) int8
+ │   ├── cell_type_ontology_term_id
+ │   │   ├── categories (1,) object
+ │   │   └── codes (145995,) int8
+ │   ├── development_stage
+ │   │   ├── categories (21,) object
+ │   │   └── codes (145995,) int8
+ │   ├── development_stage_ontology_term_id
+ │   │   ├── categories (21,) object
+ │   │   └── codes (145995,) int8
+ │   ├── disease
+ │   │   ├── categories (2,) object
+ │   │   └── codes (145995,) int8
+ │   ├── disease_ontology_term_id
+ │   │   ├── categories (2,) object
+ │   │   └── codes (145995,) int8
+ │   ├── donor_id
+ │   │   ├── categories (83,) object
+ │   │   └── codes (145995,) int8
+ │   ├── exp_component_name (145995,) object
+ │   ├── is_primary_data (145995,) bool
+ │   ├── observation_joinid (145995,) object
+ │   ├── organism
+ │   │   ├── categories (1,) object
+ │   │   └── codes (145995,) int8
+ │   ├── organism_ontology_term_id
+ │   │   ├── categories (1,) object
+ │   │   └── codes (145995,) int8
+ │   ├── self_reported_ethnicity
+ │   │   ├── categories (3,) object
+ │   │   └── codes (145995,) int8
+ │   ├── self_reported_ethnicity_ontology_term_id
+ │   │   ├── categories (3,) object
+ │   │   └── codes (145995,) int8
+ │   ├── sex
+ │   │   ├── categories (2,) object
+ │   │   └── codes (145995,) int8
+ │   ├── sex_ontology_term_id
+ │   │   ├── categories (2,) object
+ │   │   └── codes (145995,) int8
+ │   ├── suspension_type
+ │   │   ├── categories (1,) object
+ │   │   └── codes (145995,) int8
+ │   ├── tissue
+ │   │   ├── categories (1,) object
+ │   │   └── codes (145995,) int8
+ │   ├── tissue_ontology_term_id
+ │   │   ├── categories (1,) object
+ │   │   └── codes (145995,) int8
+ │   └── tissue_type
+ │       ├── categories (1,) object
+ │       └── codes (145995,) int8
+ ├── obsm
+ │   ├── X_scVI (145995, 10) float32
+ │   └── X_umap (145995, 2) float32
+ ├── obsp
+ │   ├── connectivities
+ │   │   ├── data (2922016,) float32
+ │   │   ├── indices (2922016,) int32
+ │   │   └── indptr (145996,) int32
+ │   └── distances
+ │       ├── data (2043930,) float64
+ │       ├── indices (2043930,) int32
+ │       └── indptr (145996,) int32
+ ├── raw
+ │   ├── X
+ │   │   ├── data (408524309,) float32
+ │   │   ├── indices (408524309,) int64
+ │   │   └── indptr (145996,) int64
+ │   ├── var
+ │   │   ├── _index (36412,) object
+ │   │   ├── feature_biotype
+ │   │   │   ├── categories (1,) object
+ │   │   │   └── codes (36412,) int8
+ │   │   ├── feature_length
+ │   │   │   ├── categories (5137,) int64
+ │   │   │   └── codes (36412,) int16
+ │   │   ├── feature_name
+ │   │   │   ├── categories (36412,) object
+ │   │   │   └── codes (36412,) int32
+ │   │   ├── feature_reference
+ │   │   │   ├── categories (1,) object
+ │   │   │   └── codes (36412,) int8
+ │   │   └── feature_type
+ │   │       ├── categories (23,) object
+ │   │       └── codes (36412,) int8
+ │   └── varm
+ ├── uns
+ │   ├── ADNC_colors (5,) object
+ │   ├── APOE4 status_colors (3,) object
+ │   ├── Age at death_colors (4,) object
+ │   ├── Braak stage_colors (7,) object
+ │   ├── CERAD score_colors (5,) object
+ │   ├── Cognitive status_colors (3,) object
+ │   ├── Great Apes Metadata () <U119
+ │   ├── LATE-NC stage_colors (6,) object
+ │   ├── Lewy body disease pathology_colors (8,) object
+ │   ├── Microinfarct pathology_colors (4,) object
+ │   ├── PMI_colors (4,) object
+ │   ├── Subclass_colors (1,) object
+ │   ├── Supertype_colors (4,) object
+ │   ├── Thal phase_colors (7,) object
+ │   ├── UW Clinical Metadata () <U121
+ │   ├── Years of education_colors (4,) object
+ │   ├── batch_condition (1,) object
+ │   ├── citation () <U302
+ │   ├── default_embedding () <U6
+ │   ├── neighbors
+ │   │   ├── connectivities_key () <U14
+ │   │   ├── distances_key () <U9
+ │   │   └── params
+ │   │       ├── method () <U4
+ │   │       ├── metric () <U9
+ │   │       ├── n_neighbors () int64
+ │   │       ├── random_state () int64
+ │   │       └── use_rep () <U6
+ │   ├── schema_reference () <U87
+ │   ├── schema_version () <U5
+ │   ├── sex_ontology_term_id_colors (2,) object
+ │   ├── title () <U67
+ │   └── umap
+ │       └── params
+ │           ├── a () float64
+ │           └── b () float64
+ ├── var
+ │   ├── _index (36412,) object
+ │   ├── feature_biotype
+ │   │   ├── categories (1,) object
+ │   │   └── codes (36412,) int8
+ │   ├── feature_is_filtered (36412,) bool
+ │   ├── feature_length
+ │   │   ├── categories (5137,) int64
+ │   │   └── codes (36412,) int16
+ │   ├── feature_name
+ │   │   ├── categories (36412,) object
+ │   │   └── codes (36412,) int32
+ │   ├── feature_reference
+ │   │   ├── categories (1,) object
+ │   │   └── codes (36412,) int8
+ │   └── feature_type
+ │       ├── categories (23,) object
+ │       └── codes (36412,) int8
+ ├── varm
+ └── varp
+
+[obs] categorical fields:
+
+obs.ADNC: ['High', 'Intermediate', 'Low', 'Not AD', 'Reference']
+
+obs.APOE4 status: ['N', 'Reference', 'Y']
+
+obs.Age at death: ['65 to 77 years old', '78 to 89 years old', '90+ years old', 'Less than 65 years old']
+
+obs.Braak stage: ['Braak 0', 'Braak II', 'Braak III', 'Braak IV', 'Braak V', 'Braak VI', 'Reference']
+
+obs.CERAD score: ['Absent', 'Frequent', 'Moderate', 'Reference', 'Sparse']
+
+obs.Class: ['Non-neuronal and Non-neural']
+
+obs.Cognitive status: ['Dementia', 'No dementia', 'Reference']
+obs.Fraction mitochrondrial UMIs: (145995,) (not categorical)
+obs.Genes detected: (145995,) (not categorical)
+
+obs.LATE-NC stage: ['LATE Stage 1', 'LATE Stage 2', 'LATE Stage 3', 'Not Identified', 'Reference', 'Staging Precluded by FTLD with TDP43 or ALS/MND or TDP-43 pathology is unclassifiable']
+
+obs.Lewy body disease pathology: ['Amygdala-predominant', 'Brainstem-predominant', 'Limbic (Transitional)', 'Neocortical (Diffuse)', 'Not Identified (olfactory bulb assessed)', 'Not Identified (olfactory bulb not assessed)', 'Olfactory bulb only', 'Reference']
+
+obs.Microinfarct pathology: ['0 to 3 microinfarcts', '4 to 6 microinfarcts', '7 to 10 microinfarcts', 'Reference']
+
+obs.Neurotypical reference: ['False', 'True']
+obs.Number of UMIs: (145995,) (not categorical)
+
+obs.PMI: ['3.2 to 5.9 hours', '5.9 to 8.7 hours', '8.7 to 11.4 hours', 'Reference']
+
+obs.Specimen ID: too many unique values (201) to display
+
+Printing the first 10 unique values for obs.Specimen ID: ['M1TX_191118_104_F01', 'M1TX_191118_104_G01', 'M1TX_191118_104_H01', 'M1TX_191118_105_A01', 'M1TX_200113_101_A01', 'M1TX_200113_102_F01', 'M1TX_200113_103_A01', 'M1TX_200113_103_B01', 'M1TX_200113_105_G01', 'M1TX_200113_105_H01']
+
+obs.Subclass: ['Oligodendrocyte']
+
+obs.Supertype: ['Oligo_1', 'Oligo_2', 'Oligo_3', 'Oligo_4']
+
+obs.Thal phase: ['Reference', 'Thal 0', 'Thal 1', 'Thal 2', 'Thal 3', 'Thal 4', 'Thal 5']
+
+obs.Years of education: ['12 to 15 years', '16 to 18 years', '19 to 21 years', 'Reference']
+
+obs.assay: ["10x 3' v3", '10x multiome']
+
+obs.assay_ontology_term_id: ['EFO:0009922', 'EFO:0030059']
+
+obs.cell_type: ['oligodendrocyte']
+
+obs.cell_type_ontology_term_id: ['CL:0000128']
+
+obs.development_stage: ['29-year-old stage', '42-year-old stage', '50-year-old stage', '68-year-old stage', '69-year-old stage', '70-year-old stage', '72-year-old stage', '75-year-old stage', '77-year-old stage', '78-year-old stage', '80 year-old and over stage', '80-year-old stage', '81-year-old stage', '82-year-old stage', '83-year-old stage', '84-year-old stage', '85-year-old stage', '86-year-old stage', '87-year-old stage', '88-year-old stage', '89-year-old stage']
+
+obs.development_stage_ontology_term_id: ['HsapDv:0000095', 'HsapDv:0000123', 'HsapDv:0000136', 'HsapDv:0000144', 'HsapDv:0000162', 'HsapDv:0000163', 'HsapDv:0000164', 'HsapDv:0000166', 'HsapDv:0000169', 'HsapDv:0000171', 'HsapDv:0000172', 'HsapDv:0000206', 'HsapDv:0000207', 'HsapDv:0000208', 'HsapDv:0000209', 'HsapDv:0000210', 'HsapDv:0000211', 'HsapDv:0000212', 'HsapDv:0000213', 'HsapDv:0000214', 'HsapDv:0000215']
+
+obs.disease: ['dementia', 'normal']
+
+obs.disease_ontology_term_id: ['MONDO:0001627', 'PATO:0000461']
+
+obs.donor_id: too many unique values (83) to display
+
+Printing the first 10 unique values for obs.donor_id: ['H18.30.002', 'H19.30.001', 'H19.30.002', 'H19.33.004', 'H20.33.001', 'H20.33.002', 'H20.33.004', 'H20.33.005', 'H20.33.008', 'H20.33.011']
+obs.exp_component_name: (145995,) (not categorical)
+obs.is_primary_data: (145995,) (not categorical)
+obs.observation_joinid: (145995,) (not categorical)
+
+obs.organism: ['Homo sapiens']
+
+obs.organism_ontology_term_id: ['NCBITaxon:9606']
+
+obs.self_reported_ethnicity: ['Asian', 'European', 'Native American,Hispanic or Latin American']
+
+obs.self_reported_ethnicity_ontology_term_id: ['HANCESTRO:0005', 'HANCESTRO:0008', 'HANCESTRO:0013,HANCESTRO:0014']
+
+obs.sex: ['female', 'male']
+
+obs.sex_ontology_term_id: ['PATO:0000383', 'PATO:0000384']
+
+obs.suspension_type: ['nucleus']
+
+obs.tissue: ['dorsolateral prefrontal cortex']
+
+obs.tissue_ontology_term_id: ['UBERON:0009834']
+
+obs.tissue_type: ['tissue']
+
+[var] categorical fields:
+var._index: (36412,) (not categorical)
+
+var.feature_biotype: ['gene']
+var.feature_is_filtered: (36412,) (not categorical)
+
+var.feature_length: too many unique values (5137) to display
+
+Printing the first 10 unique values for var.feature_length: [np.int64(8), np.int64(9), np.int64(11), np.int64(12), np.int64(13), np.int64(16), np.int64(17), np.int64(18), np.int64(19), np.int64(20)]
+
+var.feature_name: too many unique values (36412) to display
+
+Printing the first 10 unique values for var.feature_name: ['A1BG-AS1', 'A1BG_ENSG00000121410', 'A1CF_ENSG00000148584', 'A2M-AS1', 'A2ML1-AS1', 'A2ML1-AS2', 'A2ML1_ENSG00000166535', 'A2M_ENSG00000175899', 'A3GALT2_ENSG00000184389', 'A4GALT_ENSG00000128274']
+
+var.feature_reference: ['NCBITaxon:9606']
+
+var.feature_type: ['IG_C_gene', 'IG_C_pseudogene', 'IG_D_gene', 'IG_J_gene', 'IG_J_pseudogene', 'IG_V_gene', 'IG_V_pseudogene', 'TEC', 'TR_C_gene', 'TR_D_gene', 'TR_J_gene', 'TR_J_pseudogene', 'TR_V_gene', 'TR_V_pseudogene', 'artifact', 'lncRNA', 'processed_pseudogene', 'protein_coding', 'transcribed_processed_pseudogene', 'transcribed_unitary_pseudogene', 'transcribed_unprocessed_pseudogene', 'unitary_pseudogene', 'unprocessed_pseudogene']

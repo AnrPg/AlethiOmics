@@ -1,0 +1,192 @@
+E-MTAB-11468		ERR8764967	characteristic	cell type	brain microvascular endothelial cell	http://purl.obolibrary.org/obo/CL_2000044
+E-MTAB-11468		ERR8764967	characteristic	growth condition	monoculture
+E-MTAB-11468		ERR8764967	characteristic	organism	Homo sapiens	http://purl.obolibrary.org/obo/NCBITaxon_9606
+E-MTAB-11468		ERR8764967	characteristic	progenitor cell type	induced pluripotent stem cell	http://www.ebi.ac.uk/efo/EFO_0004905
+E-MTAB-11468		ERR8764967	characteristic	stimulus	none	http://www.ebi.ac.uk/efo/EFO_0001461
+E-MTAB-11468		ERR8764967	factor	cell type	brain microvascular endothelial cell	http://purl.obolibrary.org/obo/CL_2000044
+E-MTAB-11468		ERR8764967	factor	growth condition	monoculture
+E-MTAB-11468		ERR8764967	factor	stimulus	none	http://www.ebi.ac.uk/efo/EFO_0001461
+E-MTAB-11468		ERR8764968	characteristic	cell type	brain microvascular endothelial cell	http://purl.obolibrary.org/obo/CL_2000044
+E-MTAB-11468		ERR8764968	characteristic	growth condition	monoculture
+E-MTAB-11468		ERR8764968	characteristic	organism	Homo sapiens	http://purl.obolibrary.org/obo/NCBITaxon_9606
+E-MTAB-11468		ERR8764968	characteristic	progenitor cell type	induced pluripotent stem cell	http://www.ebi.ac.uk/efo/EFO_0004905
+E-MTAB-11468		ERR8764968	characteristic	stimulus	none	http://www.ebi.ac.uk/efo/EFO_0001461
+E-MTAB-11468		ERR8764968	factor	cell type	brain microvascular endothelial cell	http://purl.obolibrary.org/obo/CL_2000044
+E-MTAB-11468		ERR8764968	factor	growth condition	monoculture
+E-MTAB-11468		ERR8764968	factor	stimulus	none	http://www.ebi.ac.uk/efo/EFO_0001461
+E-MTAB-11468		ERR8764969	characteristic	cell type	brain microvascular endothelial cell	http://purl.obolibrary.org/obo/CL_2000044
+E-MTAB-11468		ERR8764969	characteristic	growth condition	monoculture
+E-MTAB-11468		ERR8764969	characteristic	organism	Homo sapiens	http://purl.obolibrary.org/obo/NCBITaxon_9606
+E-MTAB-11468		ERR8764969	characteristic	progenitor cell type	induced pluripotent stem cell	http://www.ebi.ac.uk/efo/EFO_0004905
+E-MTAB-11468		ERR8764969	characteristic	stimulus	none	http://www.ebi.ac.uk/efo/EFO_0001461
+E-MTAB-11468		ERR8764969	factor	cell type	brain microvascular endothelial cell	http://purl.obolibrary.org/obo/CL_2000044
+E-MTAB-11468		ERR8764969	factor	growth condition	monoculture
+E-MTAB-11468		ERR8764969	factor	stimulus	none	http://www.ebi.ac.uk/efo/EFO_0001461
+E-MTAB-11468		ERR8764970	characteristic	cell type	brain microvascular endothelial cell	http://purl.obolibrary.org/obo/CL_2000044
+E-MTAB-11468		ERR8764970	characteristic	growth condition	co-culture
+E-MTAB-11468		ERR8764970	characteristic	organism	Homo sapiens	http://purl.obolibrary.org/obo/NCBITaxon_9606
+E-MTAB-11468		ERR8764970	characteristic	progenitor cell type	induced pluripotent stem cell	http://www.ebi.ac.uk/efo/EFO_0004905
+E-MTAB-11468		ERR8764970	characteristic	stimulus	none	http://www.ebi.ac.uk/efo/EFO_0001461
+E-MTAB-11468		ERR8764970	factor	cell type	brain microvascular endothelial cell	http://purl.obolibrary.org/obo/CL_2000044
+E-MTAB-11468		ERR8764970	factor	growth condition	co-culture
+E-MTAB-11468		ERR8764970	factor	stimulus	none	http://www.ebi.ac.uk/efo/EFO_0001461
+E-MTAB-11468		ERR8764971	characteristic	cell type	brain microvascular endothelial cell	http://purl.obolibrary.org/obo/CL_2000044
+E-MTAB-11468		ERR8764971	characteristic	growth condition	co-culture
+E-MTAB-11468		ERR8764971	characteristic	organism	Homo sapiens	http://purl.obolibrary.org/obo/NCBITaxon_9606
+E-MTAB-11468		ERR8764971	characteristic	progenitor cell type	induced pluripotent stem cell	http://www.ebi.ac.uk/efo/EFO_0004905
+E-MTAB-11468		ERR8764971	characteristic	stimulus	none	http://www.ebi.ac.uk/efo/EFO_0001461
+E-MTAB-11468		ERR8764971	factor	cell type	brain microvascular endothelial cell	http://purl.obolibrary.org/obo/CL_2000044
+E-MTAB-11468		ERR8764971	factor	growth condition	co-culture
+E-MTAB-11468		ERR8764971	factor	stimulus	none	http://www.ebi.ac.uk/efo/EFO_0001461
+E-MTAB-11468		ERR8764972	characteristic	cell type	brain microvascular endothelial cell	http://purl.obolibrary.org/obo/CL_2000044
+E-MTAB-11468		ERR8764972	characteristic	growth condition	co-culture
+E-MTAB-11468		ERR8764972	characteristic	organism	Homo sapiens	http://purl.obolibrary.org/obo/NCBITaxon_9606
+E-MTAB-11468		ERR8764972	characteristic	progenitor cell type	induced pluripotent stem cell	http://www.ebi.ac.uk/efo/EFO_0004905
+E-MTAB-11468		ERR8764972	characteristic	stimulus	none	http://www.ebi.ac.uk/efo/EFO_0001461
+E-MTAB-11468		ERR8764972	factor	cell type	brain microvascular endothelial cell	http://purl.obolibrary.org/obo/CL_2000044
+E-MTAB-11468		ERR8764972	factor	growth condition	co-culture
+E-MTAB-11468		ERR8764972	factor	stimulus	none	http://www.ebi.ac.uk/efo/EFO_0001461
+E-MTAB-11468		ERR8764973	characteristic	cell type	astrocyte	http://purl.obolibrary.org/obo/CL_0000127
+E-MTAB-11468		ERR8764973	characteristic	growth condition	co-culture
+E-MTAB-11468		ERR8764973	characteristic	organism	Homo sapiens	http://purl.obolibrary.org/obo/NCBITaxon_9606
+E-MTAB-11468		ERR8764973	characteristic	progenitor cell type	induced pluripotent stem cell	http://www.ebi.ac.uk/efo/EFO_0004905
+E-MTAB-11468		ERR8764973	characteristic	stimulus	none	http://www.ebi.ac.uk/efo/EFO_0001461
+E-MTAB-11468		ERR8764973	factor	cell type	astrocyte	http://purl.obolibrary.org/obo/CL_0000127
+E-MTAB-11468		ERR8764973	factor	growth condition	co-culture
+E-MTAB-11468		ERR8764973	factor	stimulus	none	http://www.ebi.ac.uk/efo/EFO_0001461
+E-MTAB-11468		ERR8764974	characteristic	cell type	astrocyte	http://purl.obolibrary.org/obo/CL_0000127
+E-MTAB-11468		ERR8764974	characteristic	growth condition	co-culture
+E-MTAB-11468		ERR8764974	characteristic	organism	Homo sapiens	http://purl.obolibrary.org/obo/NCBITaxon_9606
+E-MTAB-11468		ERR8764974	characteristic	progenitor cell type	induced pluripotent stem cell	http://www.ebi.ac.uk/efo/EFO_0004905
+E-MTAB-11468		ERR8764974	characteristic	stimulus	none	http://www.ebi.ac.uk/efo/EFO_0001461
+E-MTAB-11468		ERR8764974	factor	cell type	astrocyte	http://purl.obolibrary.org/obo/CL_0000127
+E-MTAB-11468		ERR8764974	factor	growth condition	co-culture
+E-MTAB-11468		ERR8764974	factor	stimulus	none	http://www.ebi.ac.uk/efo/EFO_0001461
+E-MTAB-11468		ERR8764975	characteristic	cell type	astrocyte	http://purl.obolibrary.org/obo/CL_0000127
+E-MTAB-11468		ERR8764975	characteristic	growth condition	co-culture
+E-MTAB-11468		ERR8764975	characteristic	organism	Homo sapiens	http://purl.obolibrary.org/obo/NCBITaxon_9606
+E-MTAB-11468		ERR8764975	characteristic	progenitor cell type	induced pluripotent stem cell	http://www.ebi.ac.uk/efo/EFO_0004905
+E-MTAB-11468		ERR8764975	characteristic	stimulus	none	http://www.ebi.ac.uk/efo/EFO_0001461
+E-MTAB-11468		ERR8764975	factor	cell type	astrocyte	http://purl.obolibrary.org/obo/CL_0000127
+E-MTAB-11468		ERR8764975	factor	growth condition	co-culture
+E-MTAB-11468		ERR8764975	factor	stimulus	none	http://www.ebi.ac.uk/efo/EFO_0001461
+E-MTAB-11468		ERR8764976	characteristic	cell type	astrocyte	http://purl.obolibrary.org/obo/CL_0000127
+E-MTAB-11468		ERR8764976	characteristic	growth condition	monoculture
+E-MTAB-11468		ERR8764976	characteristic	organism	Homo sapiens	http://purl.obolibrary.org/obo/NCBITaxon_9606
+E-MTAB-11468		ERR8764976	characteristic	progenitor cell type	induced pluripotent stem cell	http://www.ebi.ac.uk/efo/EFO_0004905
+E-MTAB-11468		ERR8764976	characteristic	stimulus	none	http://www.ebi.ac.uk/efo/EFO_0001461
+E-MTAB-11468		ERR8764976	factor	cell type	astrocyte	http://purl.obolibrary.org/obo/CL_0000127
+E-MTAB-11468		ERR8764976	factor	growth condition	monoculture
+E-MTAB-11468		ERR8764976	factor	stimulus	none	http://www.ebi.ac.uk/efo/EFO_0001461
+E-MTAB-11468		ERR8764977	characteristic	cell type	astrocyte	http://purl.obolibrary.org/obo/CL_0000127
+E-MTAB-11468		ERR8764977	characteristic	growth condition	monoculture
+E-MTAB-11468		ERR8764977	characteristic	organism	Homo sapiens	http://purl.obolibrary.org/obo/NCBITaxon_9606
+E-MTAB-11468		ERR8764977	characteristic	progenitor cell type	induced pluripotent stem cell	http://www.ebi.ac.uk/efo/EFO_0004905
+E-MTAB-11468		ERR8764977	characteristic	stimulus	none	http://www.ebi.ac.uk/efo/EFO_0001461
+E-MTAB-11468		ERR8764977	factor	cell type	astrocyte	http://purl.obolibrary.org/obo/CL_0000127
+E-MTAB-11468		ERR8764977	factor	growth condition	monoculture
+E-MTAB-11468		ERR8764977	factor	stimulus	none	http://www.ebi.ac.uk/efo/EFO_0001461
+E-MTAB-11468		ERR8764978	characteristic	cell type	astrocyte	http://purl.obolibrary.org/obo/CL_0000127
+E-MTAB-11468		ERR8764978	characteristic	growth condition	monoculture
+E-MTAB-11468		ERR8764978	characteristic	organism	Homo sapiens	http://purl.obolibrary.org/obo/NCBITaxon_9606
+E-MTAB-11468		ERR8764978	characteristic	progenitor cell type	induced pluripotent stem cell	http://www.ebi.ac.uk/efo/EFO_0004905
+E-MTAB-11468		ERR8764978	characteristic	stimulus	none	http://www.ebi.ac.uk/efo/EFO_0001461
+E-MTAB-11468		ERR8764978	factor	cell type	astrocyte	http://purl.obolibrary.org/obo/CL_0000127
+E-MTAB-11468		ERR8764978	factor	growth condition	monoculture
+E-MTAB-11468		ERR8764978	factor	stimulus	none	http://www.ebi.ac.uk/efo/EFO_0001461
+E-MTAB-11468		ERR8764979	characteristic	cell type	astrocyte	http://purl.obolibrary.org/obo/CL_0000127
+E-MTAB-11468		ERR8764979	characteristic	growth condition	co-culture
+E-MTAB-11468		ERR8764979	characteristic	organism	Homo sapiens	http://purl.obolibrary.org/obo/NCBITaxon_9606
+E-MTAB-11468		ERR8764979	characteristic	progenitor cell type	induced pluripotent stem cell	http://www.ebi.ac.uk/efo/EFO_0004905
+E-MTAB-11468		ERR8764979	characteristic	stimulus	tumor necrosis factor alpha	http://www.ebi.ac.uk/efo/EFO_0003271
+E-MTAB-11468		ERR8764979	factor	cell type	astrocyte	http://purl.obolibrary.org/obo/CL_0000127
+E-MTAB-11468		ERR8764979	factor	growth condition	co-culture
+E-MTAB-11468		ERR8764979	factor	stimulus	tumor necrosis factor alpha	http://www.ebi.ac.uk/efo/EFO_0003271
+E-MTAB-11468		ERR8764980	characteristic	cell type	astrocyte	http://purl.obolibrary.org/obo/CL_0000127
+E-MTAB-11468		ERR8764980	characteristic	growth condition	monoculture
+E-MTAB-11468		ERR8764980	characteristic	organism	Homo sapiens	http://purl.obolibrary.org/obo/NCBITaxon_9606
+E-MTAB-11468		ERR8764980	characteristic	progenitor cell type	induced pluripotent stem cell	http://www.ebi.ac.uk/efo/EFO_0004905
+E-MTAB-11468		ERR8764980	characteristic	stimulus	tumor necrosis factor alpha	http://www.ebi.ac.uk/efo/EFO_0003271
+E-MTAB-11468		ERR8764980	factor	cell type	astrocyte	http://purl.obolibrary.org/obo/CL_0000127
+E-MTAB-11468		ERR8764980	factor	growth condition	monoculture
+E-MTAB-11468		ERR8764980	factor	stimulus	tumor necrosis factor alpha	http://www.ebi.ac.uk/efo/EFO_0003271
+E-MTAB-11468		ERR8764981	characteristic	cell type	astrocyte	http://purl.obolibrary.org/obo/CL_0000127
+E-MTAB-11468		ERR8764981	characteristic	growth condition	monoculture
+E-MTAB-11468		ERR8764981	characteristic	organism	Homo sapiens	http://purl.obolibrary.org/obo/NCBITaxon_9606
+E-MTAB-11468		ERR8764981	characteristic	progenitor cell type	induced pluripotent stem cell	http://www.ebi.ac.uk/efo/EFO_0004905
+E-MTAB-11468		ERR8764981	characteristic	stimulus	tumor necrosis factor alpha	http://www.ebi.ac.uk/efo/EFO_0003271
+E-MTAB-11468		ERR8764981	factor	cell type	astrocyte	http://purl.obolibrary.org/obo/CL_0000127
+E-MTAB-11468		ERR8764981	factor	growth condition	monoculture
+E-MTAB-11468		ERR8764981	factor	stimulus	tumor necrosis factor alpha	http://www.ebi.ac.uk/efo/EFO_0003271
+E-MTAB-11468		ERR8764982	characteristic	cell type	astrocyte	http://purl.obolibrary.org/obo/CL_0000127
+E-MTAB-11468		ERR8764982	characteristic	growth condition	monoculture
+E-MTAB-11468		ERR8764982	characteristic	organism	Homo sapiens	http://purl.obolibrary.org/obo/NCBITaxon_9606
+E-MTAB-11468		ERR8764982	characteristic	progenitor cell type	induced pluripotent stem cell	http://www.ebi.ac.uk/efo/EFO_0004905
+E-MTAB-11468		ERR8764982	characteristic	stimulus	tumor necrosis factor alpha	http://www.ebi.ac.uk/efo/EFO_0003271
+E-MTAB-11468		ERR8764982	factor	cell type	astrocyte	http://purl.obolibrary.org/obo/CL_0000127
+E-MTAB-11468		ERR8764982	factor	growth condition	monoculture
+E-MTAB-11468		ERR8764982	factor	stimulus	tumor necrosis factor alpha	http://www.ebi.ac.uk/efo/EFO_0003271
+E-MTAB-11468		ERR8764983	characteristic	cell type	astrocyte	http://purl.obolibrary.org/obo/CL_0000127
+E-MTAB-11468		ERR8764983	characteristic	growth condition	co-culture
+E-MTAB-11468		ERR8764983	characteristic	organism	Homo sapiens	http://purl.obolibrary.org/obo/NCBITaxon_9606
+E-MTAB-11468		ERR8764983	characteristic	progenitor cell type	induced pluripotent stem cell	http://www.ebi.ac.uk/efo/EFO_0004905
+E-MTAB-11468		ERR8764983	characteristic	stimulus	tumor necrosis factor alpha	http://www.ebi.ac.uk/efo/EFO_0003271
+E-MTAB-11468		ERR8764983	factor	cell type	astrocyte	http://purl.obolibrary.org/obo/CL_0000127
+E-MTAB-11468		ERR8764983	factor	growth condition	co-culture
+E-MTAB-11468		ERR8764983	factor	stimulus	tumor necrosis factor alpha	http://www.ebi.ac.uk/efo/EFO_0003271
+E-MTAB-11468		ERR8764984	characteristic	cell type	astrocyte	http://purl.obolibrary.org/obo/CL_0000127
+E-MTAB-11468		ERR8764984	characteristic	growth condition	co-culture
+E-MTAB-11468		ERR8764984	characteristic	organism	Homo sapiens	http://purl.obolibrary.org/obo/NCBITaxon_9606
+E-MTAB-11468		ERR8764984	characteristic	progenitor cell type	induced pluripotent stem cell	http://www.ebi.ac.uk/efo/EFO_0004905
+E-MTAB-11468		ERR8764984	characteristic	stimulus	tumor necrosis factor alpha	http://www.ebi.ac.uk/efo/EFO_0003271
+E-MTAB-11468		ERR8764984	factor	cell type	astrocyte	http://purl.obolibrary.org/obo/CL_0000127
+E-MTAB-11468		ERR8764984	factor	growth condition	co-culture
+E-MTAB-11468		ERR8764984	factor	stimulus	tumor necrosis factor alpha	http://www.ebi.ac.uk/efo/EFO_0003271
+E-MTAB-11468		ERR8764985	characteristic	cell type	brain microvascular endothelial cell	http://purl.obolibrary.org/obo/CL_2000044
+E-MTAB-11468		ERR8764985	characteristic	growth condition	monoculture
+E-MTAB-11468		ERR8764985	characteristic	organism	Homo sapiens	http://purl.obolibrary.org/obo/NCBITaxon_9606
+E-MTAB-11468		ERR8764985	characteristic	progenitor cell type	induced pluripotent stem cell	http://www.ebi.ac.uk/efo/EFO_0004905
+E-MTAB-11468		ERR8764985	characteristic	stimulus	tumor necrosis factor alpha	http://www.ebi.ac.uk/efo/EFO_0003271
+E-MTAB-11468		ERR8764985	factor	cell type	brain microvascular endothelial cell	http://purl.obolibrary.org/obo/CL_2000044
+E-MTAB-11468		ERR8764985	factor	growth condition	monoculture
+E-MTAB-11468		ERR8764985	factor	stimulus	tumor necrosis factor alpha	http://www.ebi.ac.uk/efo/EFO_0003271
+E-MTAB-11468		ERR8764986	characteristic	cell type	brain microvascular endothelial cell	http://purl.obolibrary.org/obo/CL_2000044
+E-MTAB-11468		ERR8764986	characteristic	growth condition	co-culture
+E-MTAB-11468		ERR8764986	characteristic	organism	Homo sapiens	http://purl.obolibrary.org/obo/NCBITaxon_9606
+E-MTAB-11468		ERR8764986	characteristic	progenitor cell type	induced pluripotent stem cell	http://www.ebi.ac.uk/efo/EFO_0004905
+E-MTAB-11468		ERR8764986	characteristic	stimulus	tumor necrosis factor alpha	http://www.ebi.ac.uk/efo/EFO_0003271
+E-MTAB-11468		ERR8764986	factor	cell type	brain microvascular endothelial cell	http://purl.obolibrary.org/obo/CL_2000044
+E-MTAB-11468		ERR8764986	factor	growth condition	co-culture
+E-MTAB-11468		ERR8764986	factor	stimulus	tumor necrosis factor alpha	http://www.ebi.ac.uk/efo/EFO_0003271
+E-MTAB-11468		ERR8764987	characteristic	cell type	brain microvascular endothelial cell	http://purl.obolibrary.org/obo/CL_2000044
+E-MTAB-11468		ERR8764987	characteristic	growth condition	monoculture
+E-MTAB-11468		ERR8764987	characteristic	organism	Homo sapiens	http://purl.obolibrary.org/obo/NCBITaxon_9606
+E-MTAB-11468		ERR8764987	characteristic	progenitor cell type	induced pluripotent stem cell	http://www.ebi.ac.uk/efo/EFO_0004905
+E-MTAB-11468		ERR8764987	characteristic	stimulus	tumor necrosis factor alpha	http://www.ebi.ac.uk/efo/EFO_0003271
+E-MTAB-11468		ERR8764987	factor	cell type	brain microvascular endothelial cell	http://purl.obolibrary.org/obo/CL_2000044
+E-MTAB-11468		ERR8764987	factor	growth condition	monoculture
+E-MTAB-11468		ERR8764987	factor	stimulus	tumor necrosis factor alpha	http://www.ebi.ac.uk/efo/EFO_0003271
+E-MTAB-11468		ERR8764988	characteristic	cell type	brain microvascular endothelial cell	http://purl.obolibrary.org/obo/CL_2000044
+E-MTAB-11468		ERR8764988	characteristic	growth condition	monoculture
+E-MTAB-11468		ERR8764988	characteristic	organism	Homo sapiens	http://purl.obolibrary.org/obo/NCBITaxon_9606
+E-MTAB-11468		ERR8764988	characteristic	progenitor cell type	induced pluripotent stem cell	http://www.ebi.ac.uk/efo/EFO_0004905
+E-MTAB-11468		ERR8764988	characteristic	stimulus	tumor necrosis factor alpha	http://www.ebi.ac.uk/efo/EFO_0003271
+E-MTAB-11468		ERR8764988	factor	cell type	brain microvascular endothelial cell	http://purl.obolibrary.org/obo/CL_2000044
+E-MTAB-11468		ERR8764988	factor	growth condition	monoculture
+E-MTAB-11468		ERR8764988	factor	stimulus	tumor necrosis factor alpha	http://www.ebi.ac.uk/efo/EFO_0003271
+E-MTAB-11468		ERR8764989	characteristic	cell type	brain microvascular endothelial cell	http://purl.obolibrary.org/obo/CL_2000044
+E-MTAB-11468		ERR8764989	characteristic	growth condition	co-culture
+E-MTAB-11468		ERR8764989	characteristic	organism	Homo sapiens	http://purl.obolibrary.org/obo/NCBITaxon_9606
+E-MTAB-11468		ERR8764989	characteristic	progenitor cell type	induced pluripotent stem cell	http://www.ebi.ac.uk/efo/EFO_0004905
+E-MTAB-11468		ERR8764989	characteristic	stimulus	tumor necrosis factor alpha	http://www.ebi.ac.uk/efo/EFO_0003271
+E-MTAB-11468		ERR8764989	factor	cell type	brain microvascular endothelial cell	http://purl.obolibrary.org/obo/CL_2000044
+E-MTAB-11468		ERR8764989	factor	growth condition	co-culture
+E-MTAB-11468		ERR8764989	factor	stimulus	tumor necrosis factor alpha	http://www.ebi.ac.uk/efo/EFO_0003271
+E-MTAB-11468		ERR8764990	characteristic	cell type	brain microvascular endothelial cell	http://purl.obolibrary.org/obo/CL_2000044
+E-MTAB-11468		ERR8764990	characteristic	growth condition	co-culture
+E-MTAB-11468		ERR8764990	characteristic	organism	Homo sapiens	http://purl.obolibrary.org/obo/NCBITaxon_9606
+E-MTAB-11468		ERR8764990	characteristic	progenitor cell type	induced pluripotent stem cell	http://www.ebi.ac.uk/efo/EFO_0004905
+E-MTAB-11468		ERR8764990	characteristic	stimulus	tumor necrosis factor alpha	http://www.ebi.ac.uk/efo/EFO_0003271
+E-MTAB-11468		ERR8764990	factor	cell type	brain microvascular endothelial cell	http://purl.obolibrary.org/obo/CL_2000044
+E-MTAB-11468		ERR8764990	factor	growth condition	co-culture
+E-MTAB-11468		ERR8764990	factor	stimulus	tumor necrosis factor alpha	http://www.ebi.ac.uk/efo/EFO_0003271
