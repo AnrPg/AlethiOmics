@@ -2,7 +2,8 @@
 
 
 # import anndata
-import scanpy
+# import scanpy
+# import anndata
 import zarr
 
 print("Up and running...")
@@ -28,9 +29,9 @@ print("Now exploring the Zarr file structure...")
 # adata = ad.read_zarr("parkinson_organoid_data.zarr")
 # Open the Zarr file
 # root = zarr.open("parkinson_organoid_data.zarr", mode="r")
-root = scanpy.read_zarr("parkinson_organoid_data.zarr")
- 
-def print_and_log(message, logfile="./data_familiarizing_1.log"):
+root = zarr.open("raw_data/CELLxGENE/dementia/astrocyte_DLPFC.zarr", mode="r")
+
+def print_and_log(message, logfile="./data_familiarizing_astrocyte_DLPFC.log"):
     """It prints a message to the console and logs it to a file.
 
     Args:

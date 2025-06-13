@@ -6,3 +6,4 @@ venv/
 __pycache__/
 .ipynb_checkpoints/
 environment.yml
+raw_data/
