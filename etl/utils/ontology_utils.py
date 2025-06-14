@@ -141,3 +141,5 @@ def enrich_ontology_term(id_str: str) -> Optional[Dict[str, Optional[str]]]:
     # If OLS failed, try Ontobee instead
     enriched = fetch_from_ontobee(norm["iri"])
     return norm | (enriched if enriched else {"name": None, "definition": None})
+
+# canonical_ols_iri: calls enrich_ontology_term (to make sure that this ontology exists online) but keeps and returns only the iri
