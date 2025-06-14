@@ -147,3 +147,31 @@ MIT — see `LICENSE` for details.
 
 Course project for *Big Data & Warehousing* (2025).
 Thanks to ArrayExpress, Human Organoid Atlas, and Vanderbilt VANTAGE for open data.
+
+---
+
+## TODO after first demo
+
+- [ ] **Bridge-table load logic**  
+      Update `load.py` to parse SDRF columns `exposure_chemical` and `co_culture_taxon`.  
+      * Split semicolon-separated lists.*  
+      * Bulk-insert into `SampleStimulus` and `SampleMicrobe`.*  
+      * Remove obsolete `stimulus_id` / `microbe_id` columns from `Samples` once stable.*
+
+- [ ] **Stimuli IRI validation trigger**  
+      Create MySQL BEFORE INSERT/UPDATE trigger on `Stimuli` to enforce  
+      `CHEBI:` or `EFO:` prefix (or `NONE`).  
+      * See `docs/db/triggers.sql` for pattern.*  
+      * Add CI unit test that rejects `PUBCHEM:` sample row.*
+
+- [ ] **Add `species_taxon_id` to `Genes`**  
+      Schema change + back-fill script.  
+      * Populate via gene-ID prefix (`ENSG` → 9606, `ENSMUSG` → 10090) or
+        from SDRF `organism_ontology_term_id`.*  
+      * Expose as foreign key to `DimOrganism` in the warehouse.*
+
+- [ ] **Refactor Power BI model**  
+      Re-wire relationships to use new bridge tables and organism dimension
+      once the above DB changes land.
+
+_These items are postponed to keep the MVP deliverable simple; I will tackle them after the first working demo is signed off._
