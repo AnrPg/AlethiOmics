@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 
+from collections import defaultdict
 import re, requests, xml.etree.ElementTree as ET
 from typing import Optional, Dict, Callable
 from urllib.parse import quote
@@ -354,6 +355,11 @@ def canonical_iri(id_str: str) -> Optional[str]:
             return iri  # success → canonical IRI
 
     # No service could verify the term
+    print(f"[ERROR] Could not resolve {id_str} to a canonical IRI")
+    # (this is logged, not raised, to avoid ETL failure)
+    
+    # Return None to indicate failure
+    print("[ERROR] Returning None")
     return None
 
 def enrich_ontology_term(id_str: str) -> Optional[Dict[str, Any]]:
@@ -425,7 +431,7 @@ def harmonise(records, mapping):
                 value = rec["value"]
                 # Run transform steps in order
                 for fn in rule["transforms"]:
-                    value = getattr(transforms, fn)(value)
+                    value = getattr("transforms", fn)(value)
                 staging[(rule["target_table"], rule["target_column"])].add(value)
                 break   # stop at first matching rule
     return staging
