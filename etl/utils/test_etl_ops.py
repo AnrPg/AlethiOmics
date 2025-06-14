@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-from ontology_utils import enrich_ontology_term
+from etl.harmonise import enrich_ontology_term
 
 print(enrich_ontology_term("CL:0000057"))
 print("\n")
