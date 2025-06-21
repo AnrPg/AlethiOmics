@@ -2,7 +2,7 @@
 
 from pathlib import Path
 
-def discover(landing_dir="data/raw"):
+def discover(landing_dir="raw_data"):
     for path in Path(landing_dir).rglob("*"):
         if path.suffix in {".zarr", ".tsv", ".txt"}:
             yield path
