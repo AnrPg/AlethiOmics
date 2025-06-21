@@ -1,96 +1,88 @@
-# conf/mapping_catalogue.yml  (excerpt)
+# # conf/mapping_catalogue.yml  (excerpt)
 
+version: 1
 columns:
-  gene_id:
-    regex: "^[Ee][Nn][Ss][Gg]\\d{11}(?:\\.\\d+)?$"
+
+  # ------------------------------------------------------------------------
+  # Genes table  (gene_id, gene_name)
+  # ------------------------------------------------------------------------
+  gene_entry:
+    regex: "(ENS[A-Z]*G\\d{5,})"
+    transforms:
+      - extract_gene_id            # scalar → ENSG…
+      - harmonize_to_ensembl       # dict  → {gene_id, gene_name}
     target_table: Genes
     target_column: gene_id
+
+  # ------------------------------------------------------------------------
+  # Stimuli table  (iri, label, class_hint)
+  # ------------------------------------------------------------------------
+  stimulus_entry:
+    regex: "(CHEBI:\\d+|EFO:\\d+|TNFα|butyrate|none)"
     transforms:
-      - strip_version
-      - harmonize_to_ensembl
-      - extract_gene_id
-
-  gs_symbol:
-    regex: "^[A-Z0-9]{2,}$"
-    target_table: Genes
-    target_column: gene_name
-    transforms: []
-
-  stimulus:
-    regex: "(?<=\\b(?:characteristic|factor)\\s+stimulus\\s+)(.*?)(?=\\s+http)"                # free-text; normalised later
+      - canonical_iri               # scalar → full IRI
+      - fetch_stimulus_metadata    # dict   → {iri, label, class_hint}
     target_table: Stimuli
-    target_column: label
-    transforms:
-      - lowercase_ascii
-      - resolve_stimulus_iri
+    target_column: iri
 
-  # ── Cell-type ontology IDs ────────────────────────────────────────────
-  cell_type_ontology_term_id:               # CL terms (full IRI or short form)
-    regex: "^(?:https?://.*obo/)?CL[:_]\\d+$"
-    target_table: Samples
-    target_column: cell_type_iri
+  # ------------------------------------------------------------------------
+  # Microbes table  (taxon_id, species_name)
+  # ------------------------------------------------------------------------
+  microbe_entry:
+    regex: "NCBITaxon:\\d+"
     transforms:
-      - canonical_iri
+      - fetch_from_ncbi_taxon      #extract_taxon_numeric_id   # scalar → 816 (int)
+      - fetch_microbe_metadata     # dict   → {taxon_id, species_name}
+    target_table: Microbes
+    target_column: taxon_id
 
-  assay_ontology_term_id:           # EFO cell-line / sample terms
-    regex: "^(?:https?://.*obo/)?EFO[:_]\\d+$"
-    target_table: Samples
-    target_column: cell_type_iri
+  # ------------------------------------------------------------------------
+  # Studies table  (study_id, title, source_repo)
+  # ------------------------------------------------------------------------
+  study_accession:
+    regex: "(E-MTAB-\\d+|GSE\\d+|LOCAL-[A-Za-z0-9_-]+)"
     transforms:
-      - canonical_iri
+      - normalize_study_accession  # scalar → canonical study_id
+      - fetch_study_metadata       # dict   → {study_id, title, source_repo}
+    target_table: Studies
+    target_column: study_id
 
-    # ── Anatomical / developmental context ───────────────────────────────
-  tissue_ontology_term_id:
-    # e.g. UBERON:0009834  or  http://purl.obolibrary.org/obo/UBERON_0009834
-    regex: "^(?:https?://.*obo/)?UBERON[:_]\\d+$"
-    target_table: Samples
-    target_column: tissue_iri
+  # ------------------------------------------------------------------------
+  # Samples table  (wide metadata payload)
+  # ------------------------------------------------------------------------
+  sample_accession:
+    regex: "(SAM[END]\\d+|SRS\\d+|SAMPLE_[A-Za-z0-9_-]+)"
     transforms:
-      - split_commas            # splits into list
-      - canonical_iri
+      - extract_sample_id          # scalar → sample_id
+      - fetch_sample_metadata      # dict   → {
+                                      # sample_id,
+                                      # study_id,
+                                      # cell_type_iri, cell_type_label,
+                                      # tissue_iri, tissue_label,
+                                      # organism_iri, organism_label,
+                                      # growth_condition,
+                                      # stimulus_id, microbe_id,
+                                      # zarr_uri
+                                      # }
+    target_table: Samples
+    target_column: sample_id
 
-  development_stage_ontology_term_id:
-    # e.g. HsapDv:0000095
-    regex: "^(?:https?://.*obo/)?HsapDv[:_]\\d+$"
-    target_table: Samples
-    target_column: development_stage_iri        # add this column if it doesn’t exist yet
+  # ------------------------------------------------------------------------
+  # MicrobeStimulus link‑table  (microbe_id, stimulus_id, evidence)
+  # ------------------------------------------------------------------------
+  microbe_stimulus_evidence:
+    regex: "NCBITaxon:\\d+.*(CHEBI:\\d+|EFO:\\d+)"
     transforms:
-      - split_commas            # splits into list
-      - canonical_iri
+      - parse_microbe_stimulus_record   # dict → {microbe_id, stimulus_id, evidence}
+    target_table: MicrobeStimulus
+    target_column: microbe_id
 
-  # ── Health / disease state ───────────────────────────────────────────
-  disease_ontology_term_id:
-    # accepts either MONDO or PATO disease-quality terms
-    regex: "^(?:https?://.*obo/)?(?:MONDO|PATO)[:_]\\d+$"
-    target_table: Samples
-    target_column: disease_iri                  # add this column if needed
+  # ------------------------------------------------------------------------
+  # ExpressionStats table  (sample_id, gene_id, log2_fc, p_value, significance)
+  # ------------------------------------------------------------------------
+  expression_stat_record:
+    regex: "exprstat:.*"                # adjust to your extractor’s tag
     transforms:
-      - split_commas            # splits into list
-      - canonical_iri
-
-  # ── Organism provenance ─────────────────────────────────────────────
-  organism_ontology_term_id:
-    # e.g. NCBITaxon:9606  (human)
-    regex: "^(?:https?://.*obo/)?NCBITaxon[:_]\\d+$"
-    target_table: Samples
-    target_column: organism_iri                 # re-uses the column already in schema
-    transforms:
-      - canonical_iri
-
-  # ── Donor metadata ──────────────────────────────────────────────────
-  self_reported_ethnicity_ontology_term_id:
-    # one or more HANCESTRO IDs separated by commas
-    regex: "^(?:https?://.*obo/)?HANCESTRO[:_]\\d+(?:,\\s*HANCESTRO[:_]\\d+)*$"
-    target_table: Samples
-    target_column: ethnicity_iris               # create as JSON/text array if multiple values
-    transforms:
-      - split_commas            # splits into list
-      - canonical_iri       # runs on each element
-
-  sex_ontology_term_id:
-    # PATO sex terms:  PATO:0000383 (female), PATO:0000384 (male)
-    regex: "^(?:https?://.*obo/)?PATO[:_]\\d+$"
-    target_table: Samples
-    target_column: sex_iri                      # add this column if needed
-    transforms:
-      - canonical_iri
+      - parse_expression_stat_record    # dict → {sample_id, gene_id, log2_fc, p_value, significance}
+    target_table: ExpressionStats
+    target_column: sample_id

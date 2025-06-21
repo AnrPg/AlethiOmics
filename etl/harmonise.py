@@ -550,20 +550,96 @@ TRANSFORM_REGISTRY = {
     # Add any other transforms here
 }
 
-def harmonise(records, mapping):
-    staging = defaultdict(set)
-    for rec in records:
-        for rule_name, rule in mapping["columns"].items():
-            # print(f"Processing record {rec} with rule '{rule_name}'")
-            # print(f"Rule regex: {rule['regex']} matches {rec['value']}: {re.match(rule['regex'], rec['value']) is not None}")
-            if re.match(rule["regex"], rec["value"]) is not None:
-                # print(f"Matched rule '{rule_name}' for value '{rec['value']}'")
-                value = rec["value"]
-                # Run transform steps in order
-                for fn in rule["transforms"]:
-                    value = TRANSFORM_REGISTRY[fn](value)
-                    # print(f"\t#####\tApplying transform '{fn}' to value '{rec['value']}' → '{value}'")
-                staging[(rule["target_table"], rule["target_column"])].add(value)
-                break   # stop at first matching rule
-    return staging
+# def harmonise(records, mapping):
+#     staging = defaultdict(set)
+#     for rec in records:
+#         for rule_name, rule in mapping["columns"].items():
+#             # print(f"Processing record {rec} with rule '{rule_name}'")
+#             # print(f"Rule regex: {rule['regex']} matches {rec['value']}: {re.match(rule['regex'], rec['value']) is not None}")
+#             if re.match(rule["regex"], rec["value"]) is not None:
+#                 # print(f"Matched rule '{rule_name}' for value '{rec['value']}'")
+#                 value = rec["value"]
+#                 # Run transform steps in order
+#                 for fn in rule["transforms"]:
+#                     value = TRANSFORM_REGISTRY[fn](value)
+#                     # print(f"\t#####\tApplying transform '{fn}' to value '{rec['value']}' → '{value}'")
+#                 staging[(rule["target_table"], rule["target_column"])].add(value)
+#                 break   # stop at first matching rule
+#     return staging
 
+
+def harmonise(records, mapping):
+    """Populate a staging structure for bulk INSERTs.
+
+    Parameters
+    ----------
+    records : iterable
+        A stream of dictionaries coming from the raw extractor, each with at least
+        a ``value`` key.
+    mapping : dict
+        Parsed mapping.yml structure.
+
+    Returns
+    -------
+    defaultdict(set)
+        Keys are (table_name, column_name) tuples, values are *unique* primitives
+        ready to be inserted.  Using sets prevents duplicates within the same
+        batch and keeps the rest of the loader unchanged.
+
+    Notes
+    -----
+    * ``target_column`` in mapping.yml can now be **either** a single string **or**
+      a list whose indices align with the declared ``transforms``.  This lets
+      you stage scalar outputs from *each* transform in a chain—handy for cases
+      like the *Taxa* table where you want both ``kingdom`` *and* ``rank``.
+    * Whenever a transform returns a ``dict`` we unpack every key/value pair and
+      stage them as individual columns.  The special key ``ensembl_id`` is still
+      mapped back to the rule’s primary ``target_column`` for backward‑compat.
+    """
+
+    staging = defaultdict(set)
+
+    for rec in records:
+        raw_value = rec["value"]
+
+        for rule_name, rule in mapping["columns"].items():
+            if re.match(rule["regex"], raw_value) is None:
+                continue  # next rule
+
+            target_table = rule["target_table"]
+            target_cols = rule["target_column"]  # str | List[str]
+            transforms = rule.get("transforms", [])
+
+            value = raw_value  # feed into first transform
+
+            for idx, fn_name in enumerate(transforms):
+                fn = TRANSFORM_REGISTRY[fn_name]
+                result = fn(value)
+
+                # --- 1. Dict result -> multi‑column insert -------------------
+                if isinstance(result, dict):
+                    for k, v in result.items():
+                        if v is None:
+                            continue
+                        # Legacy alias for Genes: map 'ensembl_id' back
+                        # to the rule’s primary column name.
+                        col_name = (
+                            target_cols if (isinstance(target_cols, str) and k == "ensembl_id") else k
+                        ) # TODO: remove this legacy alias in future
+                        staging[(target_table, col_name)].add(v)
+
+                # --- 2. Scalar result ---------------------------------------
+                else:
+                    if isinstance(target_cols, list):
+                        # Align with transform index; fall back to last entry
+                        col_name = target_cols[idx] if idx < len(target_cols) else target_cols[-1]
+                    else:
+                        col_name = target_cols
+                    staging[(target_table, col_name)].add(result)
+
+                # Pass result downstream so transforms can chain
+                value = result
+
+            break  # stop after first matching rule – same as original
+
+    return staging
