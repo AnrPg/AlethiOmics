@@ -1,14 +1,15 @@
 #!/usr/bin/env python3
 
 from collections import defaultdict
-import re, requests, xml.etree.ElementTree as ET
+import re, requests
+import xmltodict
 from typing import Optional, Dict, Callable
 from urllib.parse import quote
 import requests
 from typing import Optional, Dict
 from typing import Any, Dict, Optional
 
-from etl.utils.preprocessing import lowercase_ascii
+import etl.utils.preprocessing as preprocessing
 # from functools import reduce
 
 
@@ -25,7 +26,6 @@ PREFIX_TO_IRI = {
     "MONDO": "http://purl.obolibrary.org/obo/MONDO_",
     "HsapDv": "http://purl.obolibrary.org/obo/HsapDv_"
 }
-
 
 TIMEOUT = 10  # seconds
 
@@ -62,22 +62,25 @@ def harmonize_to_ensembl(gene_id: str, species: str = "human") -> dict:
         'gene_name': 'TP53'
     }
     """
-    formatting = detect_gene_id_format(gene_id)
+    gene_id_norm = gene_id.strip().upper()
+    formatting = detect_gene_id_format(gene_id_norm)
     if formatting == 'ensembl':
+        print(f"\t------------->  [DEBUG]\tInput {gene_id_norm} is already in Ensembl format.")
         return {
             'input': gene_id,
             'detected_format': 'ensembl',
-            'ensembl_id': gene_id,
+            'ensembl_id': gene_id_norm,
             'gene_name': None
         }
 
-    query_url = f"https://mygene.info/v3/query?q={gene_id}&fields=ensembl.gene,symbol&species={species}"
+    query_url = f"https://mygene.info/v3/query?q={gene_id_norm}&fields=ensembl.gene,symbol&species={species}"
+    print(f"\t[DEBUG]\tQuerying MyGene.info for {gene_id_norm} ({species}) at {query_url}")
     try:
         response = requests.get(query_url, timeout=TIMEOUT)
         data = response.json()
 
         if not data.get('hits'):
-            return {'input': gene_id, 'detected_format': formatting, 'ensembl_id': None, 'gene_name': None}
+            return {'input': gene_id_norm, 'detected_format': formatting, 'ensembl_id': None, 'gene_name': None}
 
         hit = data['hits'][0]
         ensembl_id = hit.get('ensembl', {}).get('gene') if isinstance(hit.get('ensembl'), dict) else hit.get('ensembl')[0].get('gene')
@@ -92,6 +95,44 @@ def harmonize_to_ensembl(gene_id: str, species: str = "human") -> dict:
     except Exception as e:
         print(f"Error fetching Ensembl ID for {gene_id} ({species}): {e}")
         return {'input': gene_id, 'detected_format': formatting, 'ensembl_id': None, 'gene_name': None}
+
+def extract_gene_id(entry: dict) -> str:
+    """
+    Given an entry like:
+        {
+            'input': gene_id,
+            'detected_format': formatting,
+            'ensembl_id': ensembl_id,
+            'gene_name': gene_name
+        }
+    return the gene_id (entry['input']) as a string.
+    """
+    try:
+        gene_id = entry["ensembl_id"]
+    except KeyError:
+        raise KeyError("Entry missing required 'ensembl_id' key") from None
+
+    # Convert to str (in case it’s not already)
+    return str(gene_id)
+
+def extract_gene_name(entry: dict) -> str:
+    """
+    Given an entry like:
+        {
+            'input': gene_id,
+            'detected_format': formatting,
+            'ensembl_id': ensembl_id,
+            'gene_name': gene_name
+        }
+    return the gene_name as a string.
+    """
+    try:
+        gene_name = entry["gene_name"]
+    except KeyError:
+        raise KeyError("Entry missing required 'gene_name' key") from None
+
+    # Convert to str (in case it’s not already)
+    return str(gene_name)
 
 # -------------------------------------------------------------
 # --------------- Harmonization of Ontology IDs ---------------
@@ -145,7 +186,7 @@ def fetch_from_ols(id_str: str) -> Optional[Dict[str, Optional[str]]]:
     print(f"[OLS] Looking up {curie} from ontology '{prefix.lower()}'")
 
     # OLS expects lowercase ontology prefixes and uses the OBO ID (CURIE) as a parameter
-    url = f"https://www.ebi.ac.uk/ols/api/ontologies/{prefix.lower()}/terms?obo_id={quote(curie)}"
+    url = f"https://www.ebi.ac.uk/ols4/api/ontologies/{prefix.lower()}/terms?obo_id={quote(curie)}"
     try:
         # Perform the HTTP request to fetch term info from OLS
         r = requests.get(url, timeout=5)
@@ -171,10 +212,12 @@ def fetch_from_ols(id_str: str) -> Optional[Dict[str, Optional[str]]]:
 
 # If OLS fails, fallback to Ontobee by performing a SPARQL query to its public endpoint.
 # This is useful for ontologies that OLS does not cover (e.g., HsapDv) or for edge cases.
-def fetch_from_ontobee(iri: str) -> Optional[Dict[str, Optional[str]]]:
-    print(f"[Ontobee] Trying SPARQL query for {iri}")
+import requests
+from typing import Optional, Dict
 
-    # SPARQL query that asks for label and optional definition using standard RDF properties
+HEADERS = {"Accept": "application/sparql-results+json"}
+
+def fetch_from_ontobee(iri: str) -> Optional[Dict[str, Optional[str]]]:
     sparql = f"""
     PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
     SELECT ?label ?def WHERE {{
@@ -183,51 +226,124 @@ def fetch_from_ontobee(iri: str) -> Optional[Dict[str, Optional[str]]]:
     }}
     LIMIT 1
     """
+
     try:
-        # Send the query to Ontobee's SPARQL endpoint
-        r = requests.get("http://www.ontobee.org/sparql", params={"query": sparql, "format": "json"}, timeout=5)
+        r = requests.post(
+            "https://sparql.hegroup.org/sparql",        # ← new host
+            data={"query": sparql, "format": "json"},   # POST is safer for long queries
+            headers=HEADERS,
+            timeout=10,
+        )
         r.raise_for_status()
+        print(f"[Ontobee] Looking up {iri}")
+
+        if r.headers.get("Content-Type", "").startswith("text/html"):
+            raise ValueError("Ontobee returned HTML instead of JSON")
+
         bindings = r.json()["results"]["bindings"]
         if not bindings:
-            print(f"[Ontobee] No bindings returned for {iri}")
             return None
 
-        # Extract label and definition if available
         label = bindings[0]["label"]["value"]
-        definition = bindings[0].get("def", {}).get("value", None)
-
+        definition = bindings[0].get("def", {}).get("value")
         print(f"[Ontobee] Success: {iri} → {label}")
+        # Return a dictionary with the label and definition
+        # Note: definition may be None if not available
+        if definition is None:
+            definition = "No definition available"
         return {"name": label, "definition": definition}
-    except Exception as e:
-        print(f"[Ontobee ERROR] {iri}: {e}")
+
+    except Exception as exc:
+        print(f"[Ontobee ERROR] {iri}: {exc}")
         return None
 
-def fetch_from_chebi(curie: str) -> bool:
-    """Return True if the CHEBI term exists, else False (no parsing needed)."""
+    
+    # try:
+    #     data = response.json()
+    # except ValueError:
+    #     print(f"Ontobee returned non-JSON response for {iri}:")
+    #     print(response.text)
+    #     return None
+
+
+def fetch_from_chebi(curie: str) -> str:
+    """Return the name of the CHEBI term if it exists, else None."""
     chebi_id = curie.split(":")[1]          # '17924'
-    url = f"https://www.ebi.ac.uk/chebi/ws/rest/chebiId/{chebi_id}"
+    url = f"https://www.ebi.ac.uk/webservices/chebi/2.0/test/getCompleteEntity?chebiId={curie}&format=xml"
+    # Note: the URL is a test endpoint, but it works for existence checks
+    # (the production endpoint requires a valid API key, which we don’t have)
+    # Note: the response is XML, but we only need to check if it’s valid
+    # (if the term exists, it will return a valid XML with <ChebiEntity
     try:
         r = requests.get(url, timeout=TIMEOUT)
         r.raise_for_status()
-        # Minimal parse: if it’s valid XML with <ChebiEntity>, we’re good
-        ET.fromstring(r.text)
-        return True
+        
+        doc = xmltodict.parse(r.text)
+        try:
+            node = (
+                doc['S:Envelope']
+                ['S:Body']
+                ["getCompleteEntityResponse"]    
+                ["return"]                       
+                ["chebiAsciiName"]              
+            )
+            # If the node exists, it means the term is valid
+            # (if it’s not valid, the response will be empty or missing)
+            # Return the name of the term, or None if it’s not found
+            return node.strip() if node else None
+        except (KeyError, TypeError):
+            return None
     except Exception:
         return False
 
 
-def fetch_from_ncbi_taxon(curie: str) -> bool:
-    """Cheap existence test via Entrez ESummary."""
-    tax_id = curie.split(":")[1]
-    url = ("https://eutils.ncbi.nlm.nih.gov/entrez/eutils/"
-           f"esummary.fcgi?db=taxonomy&id={tax_id}&retmode=json")
+import requests, urllib.parse as up
+from typing import Optional
+
+TIMEOUT = 10
+BASE    = "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esummary.fcgi"
+TOOL    = "gutbrain_dw"                 # anything < 20 chars
+EMAIL   = "regas.apn@gmail.com"          # a real address → higher quota
+API_KEY = "2a9ddd7e4d0f586db43c4f07640c3fcb7509"     # optional but raises quota to 10 req/s
+
+def fetch_from_ncbi_taxon(curie: str, email: str = EMAIL, tool: str  = TOOL) -> bool:
+    tax_id = curie.split(":", 1)[1]
+    print(f"os.getenv: {API_KEY}")
+    
+    params = {
+        "db":      "taxonomy",
+        "id":      tax_id,
+        "retmode": "json",
+        "tool":    tool,
+        "email":   email,      
+        "api_key": API_KEY,    
+    }
+    url = f"{BASE}?{up.urlencode(params)}"
+    print(f"[NCBI Taxon] GET {url}")
+
     try:
-        r = requests.get(url, timeout=TIMEOUT)
+        r = requests.get(
+        url,
+        params=params,
+        headers={"Accept": "application/json"},
+        timeout=TIMEOUT,
+    )
         r.raise_for_status()
+        
+        if r.headers.get("Content-Type", "").startswith("text/html"):
+            # Will happen if NCBI is down and serves a banner page
+            print("[NCBI Taxon] HTML response — treating as not-found")
+            return False
+
         data = r.json()
-        return bool(data["result"].get(tax_id))
-    except Exception:
+        hit  = bool(data.get("result", {}).get(tax_id))
+        print(f"[NCBI Taxon] Found={hit}")
+        return hit
+
+    except Exception as exc:
+        print(f"[NCBI Taxon ERROR] {curie}: {exc}")
         return False
+
 
 
 # ----------------------------------------------------------------
@@ -283,7 +399,7 @@ def resolve_stimulus_iri(label: Optional[str]) -> Optional[str]:
     if label is None:
         return None
 
-    canon = lowercase_ascii(label)
+    canon = preprocessing.lowercase_ascii(label)
     if canon is None:
         return None
 
@@ -423,15 +539,31 @@ def enrich_ontology_term(id_str: str) -> Optional[Dict[str, Any]]:
     # All lookups exhausted without usable data
     return None
 
+TRANSFORM_REGISTRY = {
+    "strip_version": preprocessing.strip_version,
+    "harmonize_to_ensembl": harmonize_to_ensembl,
+    "lowercase_ascii": preprocessing.lowercase_ascii,
+    "resolve_stimulus_iri": resolve_stimulus_iri,
+    "canonical_iri": canonical_iri,
+    "split_commas": preprocessing.split_commas,
+    "extract_gene_id": extract_gene_id,
+    # Add any other transforms here
+}
+
 def harmonise(records, mapping):
     staging = defaultdict(set)
     for rec in records:
         for rule_name, rule in mapping["columns"].items():
-            if re.match(rule["regex"], rec["value"]):
+            # print(f"Processing record {rec} with rule '{rule_name}'")
+            # print(f"Rule regex: {rule['regex']} matches {rec['value']}: {re.match(rule['regex'], rec['value']) is not None}")
+            if re.match(rule["regex"], rec["value"]) is not None:
+                # print(f"Matched rule '{rule_name}' for value '{rec['value']}'")
                 value = rec["value"]
                 # Run transform steps in order
                 for fn in rule["transforms"]:
-                    value = getattr("transforms", fn)(value)
+                    value = TRANSFORM_REGISTRY[fn](value)
+                    # print(f"\t#####\tApplying transform '{fn}' to value '{rec['value']}' → '{value}'")
                 staging[(rule["target_table"], rule["target_column"])].add(value)
                 break   # stop at first matching rule
     return staging
+
