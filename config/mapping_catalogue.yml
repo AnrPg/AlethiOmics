@@ -2,12 +2,13 @@
 
 columns:
   gene_id:
-    regex: "^ENSG\\d{11}(\\.\\d+)?$"
+    regex: "^[Ee][Nn][Ss][Gg]\\d{11}(?:\\.\\d+)?$"
     target_table: Genes
     target_column: gene_id
     transforms:
       - strip_version
-      - ensembl_canonical_id
+      - harmonize_to_ensembl
+      - extract_gene_id
 
   gs_symbol:
     regex: "^[A-Z0-9]{2,}$"
@@ -16,7 +17,7 @@ columns:
     transforms: []
 
   stimulus:
-    regex: ".*"                # free-text; normalised later
+    regex: "(?<=\\b(?:characteristic|factor)\\s+stimulus\\s+)(.*?)(?=\\s+http)"                # free-text; normalised later
     target_table: Stimuli
     target_column: label
     transforms:
