@@ -7,7 +7,7 @@ import unicodedata
 # ---------------------------------------------------------------------
 #  strip_version  – remove “.17” (or any dot-suffix) from Ensembl IDs
 # ---------------------------------------------------------------------
-_ENS_VERSION_RE = re.compile(r"^([A-Z]{2,4}\d{6,})(?:\.\d+)?$")
+_ENS_VERSION_RE = re.compile(r"^([A-Za-z]{2,4}\d{6,})(?:\.\d+)?$")
 
 def strip_version(gene_id: Union[str, None]) -> Optional[str]:
     """
@@ -58,6 +58,56 @@ def split_commas(raw: Union[str, None]) -> List[str]:
 #  normalize case  – convert text to plain ASCII lowercase
 # ---------------------------------------------------------------------
 
+GREEK_TO_ASCII = {
+    "α": "alpha",  "β": "beta",   "γ": "gamma", "δ": "delta",
+    "ε": "epsilon","ζ": "zeta",   "η": "eta",   "θ": "theta",
+    "ι": "iota",   "κ": "kappa",  "λ": "lambda","μ": "mu",
+    "ν": "nu",     "ξ": "xi",     "ο": "omicron","π": "pi",
+    "ρ": "rho",    "σ": "sigma",  "ς": "sigma", "τ": "tau",
+    "υ": "upsilon","φ": "phi",    "χ": "chi",   "ψ": "psi",
+    "ω": "omega",
+    
+    "Α": "alpha",  "Β": "beta",   "Γ": "gamma", "Δ": "delta",
+    "Ε": "epsilon","Ζ": "zeta",   "Η": "eta",   "Θ": "theta",
+    "Ι": "iota",   "Κ": "kappa",  "Λ": "lambda","Μ": "mu",
+    "Ν": "nu",     "Ξ": "xi",     "Ο": "omicron","Π": "pi",
+    "Ρ": "rho",    "Ο": "sigma",  "Σ": "sigma", "Τ": "tau",
+    "Υ": "upsilon","Φ": "phi",    "Χ": "chi",   "Ψ": "psi",
+    "Ω": "omega"
+}
+
+PUNCT_MAP = {
+    # dashes
+    "\u2010": "-", "\u2011": "-", "\u2012": "-", "\u2013": "-",
+    "\u2014": "-", "\u2212": "-",
+    # quotes
+    "“": '"', "”": '"', "„": '"', "‟": '"', "«": '"', "»": '"',
+    "‘": "'", "’": "'", "‚": "'", "‹": "'", "›": "'",
+    # misc symbols
+    "×": "x",  "·": ".",  "±": "+/-", "µ": "u", "°": "deg",
+    "\u00A0": " ",
+}
+_PUNCT_REGEX = re.compile("|".join(map(re.escape, PUNCT_MAP)))
+_greek_pattern = re.compile("|".join(map(re.escape, GREEK_TO_ASCII)))
+
+def tidy_punct(text: str) -> str:
+    """Translate non-ASCII punctuation to ASCII equivalents."""
+    return _PUNCT_REGEX.sub(lambda m: PUNCT_MAP[m.group(0)], text)
+
+
+def ascii_slug(text: str) -> str | None:
+    """
+    → Lower-case ASCII with Greek letters spelled out.
+    Returns None on blank / None input.
+    """
+    if not text or text.strip() == "":
+        return None
+
+    # 1) swap Greek letters for their ASCII names
+    text = _greek_pattern.sub(lambda m: GREEK_TO_ASCII[m.group(0)], text)
+
+    return re.sub(r"\s+", " ", text).strip().lower()
+
 def lowercase_ascii(text: Optional[str]) -> Optional[str]:
     """
     Convert *text* to plain ASCII lowercase.
@@ -68,12 +118,11 @@ def lowercase_ascii(text: Optional[str]) -> Optional[str]:
 
     Returns None if input is None or empty/whitespace only.
     """
-    if text is None:
+    if text is None or not text.strip() or text == "":
         return None
 
-    # Unicode → decomposed ASCII
     norm = (
-        unicodedata.normalize("NFKD", text)
+        unicodedata.normalize("NFKD", ascii_slug(tidy_punct(text)))
         .encode("ascii", "ignore")
         .decode("ascii")
         .strip()
