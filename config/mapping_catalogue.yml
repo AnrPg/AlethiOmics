@@ -1,6 +1,6 @@
 # # conf/mapping_catalogue.yml  (excerpt)
 
-version: 1
+version: 2
 columns:
 
   # ------------------------------------------------------------------------
@@ -9,7 +9,8 @@ columns:
   gene_entry:
     regex: "(ENS[A-Z]*G\\d{5,})"
     transforms:
-      - extract_gene_id            # scalar → ENSG…
+      # - extract_gene_id            # scalar → ENSG…
+      - strip_version
       - harmonize_to_ensembl       # dict  → {gene_id, gene_name}
     target_table: Genes
     target_column: gene_id
@@ -86,3 +87,36 @@ columns:
       - parse_expression_stat_record    # dict → {sample_id, gene_id, log2_fc, p_value, significance}
     target_table: ExpressionStats
     target_column: sample_id
+
+
+# ---------------------------------------------------------------------------
+# AVAILABLE TRANSFORM OPERATORS
+# ---------------------------------------------------------------------------
+# Below is a complete list of all functions that are referenced here, in mapping_catalogue.yml:
+#
+# • extract_gene_id(text: str) -> str
+#   └── Plucks the first Ensembl gene ID (ENS…)
+# • harmonize_to_ensembl(gene_id: str) -> dict
+#   └── Enriches gene_id via MyGene.info → {gene_id, gene_name}
+# • canonical_iri(curie_or_label: str) -> str
+#   └── Expands CURIEs (CHEBI:, EFO:, etc.) to full IRIs
+# • curie_to_iri = canonical_iri
+# • fetch_stimulus_metadata(iri: str) -> dict
+#   └── Queries EMBL‑EBI OLS → {iri, label, class_hint}
+# • extract_taxon_numeric_id(curie: str) -> int | None
+#   └── Parses NCBITaxon:NNN → NNN
+# • fetch_from_ncbi_taxon = extract_taxon_numeric_id
+# • fetch_microbe_metadata(taxon_id: int) -> dict
+#   └── NCBI Taxonomy API lookup → {taxon_id, species_name}
+# • normalize_study_accession(acc: str) -> str
+#   └── Trims/canonicalizes study accession strings
+# • fetch_study_metadata(study_id: str) -> dict
+#   └── Fetches title/source from ArrayExpress or GEO
+# • extract_sample_id(text: str) -> str
+#   └── Pass-through sample accession
+# • fetch_sample_metadata(sample_id: str) -> dict
+#   └── Merges metadata from BioSamples, SRA, or local CXG JSON
+# • parse_microbe_stimulus_record(text: str) -> dict
+#   └── Parses JSON, TSV, or free‑text → {microbe_id, stimulus_id, evidence}
+# • parse_expression_stat_record(text: str) -> dict
+#   └── Parses legacy or TSV exprstat rows → {sample_id, gene_id, log2_fc, p_value, significance}

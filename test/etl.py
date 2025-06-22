@@ -51,6 +51,7 @@ def sample_records():
 # Add the project root to sys.path for absolute imports
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
+from etl.harmonise import harmonise
 import etl.utils.preprocessing as pre
 
 def test_strip_version():
