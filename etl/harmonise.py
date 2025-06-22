@@ -107,6 +107,7 @@ def extract_gene_id(entry: dict) -> str:
         }
     return the gene_id (entry['input']) as a string.
     """
+    print(f"\t[DEBUG]\tExtracting gene ID from entry: {entry}")
     try:
         gene_id = entry["ensembl_id"]
     except KeyError:
@@ -333,6 +334,7 @@ def fetch_from_ncbi_taxon(curie: str, email: str = EMAIL, tool: str  = TOOL) -> 
         if r.headers.get("Content-Type", "").startswith("text/html"):
             # Will happen if NCBI is down and serves a banner page
             print("[NCBI Taxon] HTML response — treating as not-found")
+            print(f"[NCBI Taxon] Response: {r.text}")  # print first 1000 chars
             return False
 
         data = r.json()
@@ -362,7 +364,7 @@ PREFIX_LOOKUP_CHAIN: Dict[str, tuple[Callable[[str], bool], ...]] = {
 DEFAULT_CHAIN = (fetch_from_ols, fetch_from_ontobee)
 
 # -----------------------------------------------------------------------------
-# 2. resolve_stimulus_iri  – map free-text metabolite names to canonical IRIs
+#  resolve_stimulus_iri  – map free-text metabolite names to canonical IRIs
 # -----------------------------------------------------------------------------
 _OLS_SEARCH_URL = "https://www.ebi.ac.uk/ols/api/search"
 
@@ -437,6 +439,109 @@ def resolve_stimulus_iri(label: Optional[str]) -> Optional[str]:
         pass
 
     return None
+
+import logging
+logger = logging.getLogger(__name__)
+
+def fetch_stimulus_metadata(iri: str) -> Dict[str, Any]:
+    """Resolve *iri* via EMBL‑EBI OLS.  Fallback to label heuristics."""
+    if not iri.startswith("http"):
+        return {"iri": iri, "label": iri.split(":" if ":" in iri else " ")[0], "class_hint": None}
+
+    api = "https://www.ebi.ac.uk/ols4/api/terms?iri=" + requests.utils.quote(iri, safe="")
+    try:
+        r = requests.get(api, timeout=TIMEOUT)
+        if r.ok and (resp := r.json()).get("_embedded"):
+            term = resp["_embedded"]["terms"][0]
+            return {
+                "iri": iri,
+                "label": term.get("label"),
+                "class_hint": term.get("annotation", {}).get("hasExactSynonym", [None])[0],
+            }
+    except Exception as exc:
+        logger.debug("OLS lookup failed: %s", exc)
+    return {"iri": iri, "label": iri.rsplit("/", 1)[-1], "class_hint": None}
+
+# TODO: when NCBI unblocks my IP check if it is possibly redundant or could shorten to a single fetch_from_ncbi_taxon call
+def fetch_microbe_metadata(taxon_id: int | None) -> Dict[str, Any]:
+    """Fetch Latin binomial from NCBI Taxonomy API (minimal payload)."""
+    if taxon_id is None:
+        return {"taxon_id": None, "species_name": None}
+    api = f"https://api.ncbi.nlm.nih.gov/taxonomy/v0/id/{taxon_id}"
+    try:
+        r = requests.get(api, timeout=TIMEOUT)
+        if r.ok:
+            data = r.json()
+            sci = data.get("scientificName") or data.get("lineage", [{}])[-1].get("scientificName")
+            return {"taxon_id": taxon_id, "species_name": sci}
+    except Exception as exc:
+        logger.debug("NCBI taxonomy failed: %s", exc)
+    return {"taxon_id": taxon_id, "species_name": None}
+
+def normalize_study_accession(acc: str) -> str:
+    """Canonicalise study accession – just strip whitespace for now."""
+    return acc.strip()
+
+def fetch_study_metadata(study_id: str) -> Dict[str, Any]:
+    """Very thin wrapper to d‑get title / source from ArrayExpress/CELLxGENE.
+    Only stubs right now to avoid heavy network dependency.
+    """
+    source = "ArrayExpress" if study_id.startswith("E-MTAB") else "CELLxGENE" if study_id.startswith("GSE") else "LOCAL"
+    return {
+        "study_id": study_id,
+        "title": f"Study {study_id}",
+        "source_repo": source,
+    }
+    
+def extract_sample_id(text: str) -> str:
+    """Return the sample accession unchanged (placeholder)."""
+    return text.strip()
+    
+def fetch_sample_metadata(sample_id: str) -> Dict[str, Any]:
+    """Stub – in real life this would pull from MGnify / GEO / CXG API."""
+    return {
+        "sample_id": sample_id,
+        "study_id": None,
+        "cell_type_iri": None,
+        "cell_type_label": None,
+        "tissue_iri": None,
+        "tissue_label": None,
+        "organism_iri": None,
+        "organism_label": None,
+        "growth_condition": None,
+        "stimulus_id": None,
+        "microbe_id": None,
+        "zarr_uri": None,
+    }
+
+# --- Link table (MicrobeStimulus) ------------------------------------------
+
+def parse_microbe_stimulus_record(text: str) -> Dict[str, Any]:
+    """Extract IDs and ‘evidence’ from raw co‑occurrence string."""
+    m_microbe = re.search(r"NCBITaxon:(\d+)", text)
+    m_stim = re.search(r"(CHEBI:\d+|EFO:\d+)", text)
+    microbe_id = int(m_microbe.group(1)) if m_microbe else None
+    stimulus_id = canonical_iri(m_stim.group(1)) if m_stim else None
+    evidence = "literature" if "PMC" in text else "mgnify"
+    return {"microbe_id": microbe_id, "stimulus_id": stimulus_id, "evidence": evidence}
+
+# --- Expression statistics --------------------------------------------------
+
+def parse_expression_stat_record(text: str) -> Dict[str, Any]:
+    """Assume format ``exprstat:SAMPLE,GENE,log2fc,pval,sig``."""
+    try:
+        _, payload = text.split(":", 1)
+        sample_id, gene_id, log2_fc, p_value, significance = payload.split(",")
+        return {
+            "sample_id": sample_id,
+            "gene_id": gene_id,
+            "log2_fc": float(log2_fc),
+            "p_value": float(p_value),
+            "significance": significance,
+        }
+    except ValueError:
+        logger.warning("Malformed exprstat row: %s", text)
+        return {}
 
 
 # ----------------------------------------------------------------
@@ -540,14 +645,36 @@ def enrich_ontology_term(id_str: str) -> Optional[Dict[str, Any]]:
     return None
 
 TRANSFORM_REGISTRY = {
+    # versioning & cleanup
     "strip_version": preprocessing.strip_version,
-    "harmonize_to_ensembl": harmonize_to_ensembl,
     "lowercase_ascii": preprocessing.lowercase_ascii,
-    "resolve_stimulus_iri": resolve_stimulus_iri,
-    "canonical_iri": canonical_iri,
     "split_commas": preprocessing.split_commas,
+
+    # gene enrichment
     "extract_gene_id": extract_gene_id,
-    # Add any other transforms here
+    "harmonize_to_ensembl": harmonize_to_ensembl,
+
+    # stimulus resolution
+    "resolve_stimulus_iri": canonical_iri,
+    "canonical_iri": canonical_iri,
+    "fetch_stimulus_metadata": fetch_stimulus_metadata,
+
+    # microbial taxonomy
+    # "extract_taxon_numeric_id": extract_taxon_numeric_id,
+    "fetch_from_ncbi_taxon": fetch_from_ncbi_taxon,
+    "fetch_microbe_metadata": fetch_microbe_metadata,
+
+    # study metadata
+    "normalize_study_accession": normalize_study_accession,
+    "fetch_study_metadata": fetch_study_metadata,
+
+    # sample metadata
+    "extract_sample_id": extract_sample_id,
+    "fetch_sample_metadata": fetch_sample_metadata,
+
+    # links and stats
+    "parse_microbe_stimulus_record": parse_microbe_stimulus_record,
+    "parse_expression_stat_record": parse_expression_stat_record,
 }
 
 # def harmonise(records, mapping):
