@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 
+import locale
 import time
 import os
 from collections import defaultdict
@@ -8,12 +9,18 @@ from collections import defaultdict
 _log_counters = defaultdict(int)
 _logfile_names = {}
 
+# Set the locale for time‐based formatting
+# e.g. for Greek (as used in Europe/Athens timezone):
+locale.setlocale(locale.LC_TIME, 'el_GR.UTF-8')
+# or for U.S. English:
+# locale.setlocale(locale.LC_TIME, 'en_US.UTF-8')
+
 def print_and_log(
     message,
     add_timestamp=True,
     logfile_path="./main",
     also_show_to_screen=True,
-    collapse_size=20,
+    collapse_size=100,
 ) -> str:
     """
     Print and log messages, collapsing up to `collapse_size` messages per line.

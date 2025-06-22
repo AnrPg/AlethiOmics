@@ -5,6 +5,7 @@ from pathlib import Path
 def discover(landing_dir="raw_data"):
     for path in Path(landing_dir).rglob("*"):
         if path.suffix in {".zarr", ".tsv", ".txt"}:
+            # print(f"\t[DEBUG]\tFound file: {path}")
             yield path
         elif path.is_dir() and not path.name.startswith("."):
             # Recursively yield files in subdirectories
