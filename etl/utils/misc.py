@@ -2,12 +2,14 @@
 
 import time
 
-def print_and_log(message, logfile_prefix="./main"):
+def print_and_log(message, logfile_prefix="./main") -> str:
     """Prints a message to the console and logs it to a timestamped file.
 
     Args:
         message (string): The message to print and log.
         logfile_prefix (string, optional): Path prefix for the log file (without extension). Defaults to './main'.
+    Returns:
+        str: The path to the log file where the message was written.
     """
     if not isinstance(message, str):
         message = str(message)
@@ -25,3 +27,4 @@ def print_and_log(message, logfile_prefix="./main"):
             group = lines[i:i+20]
             combined_line = " | ".join(group)
             log_file.write(combined_line + "\n")
+    return logfile
