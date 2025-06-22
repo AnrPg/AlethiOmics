@@ -7,7 +7,9 @@ def print_and_log(message, add_timestamp=True, logfile_path="./main", also_show_
 
     Args:
         message (string): The message to print and log.
-        logfile_prefix (string, optional): Path prefix for the log file (without extension). Defaults to './main'.
+        add_timestamp (bool, optional): Whether to add a timestamp to the log file name. Defaults to True. If True, then a new logfile is generated each time this function is called.
+        logfile_path (string, optional): Path prefix for the log file (without extension). Defaults to './main'.
+        also_show_to_screen (bool, optional): Whether to also print the message to the console (apart from logfile it is). Defaults to True.
     Returns:
         str: The path to the log file where the message was written.
     """
