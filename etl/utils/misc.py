@@ -2,7 +2,7 @@
 
 import time
 
-def print_and_log(message, logfile_prefix="./main", also_show_to_screen=True) -> str:
+def print_and_log(message, add_timestamp=True, logfile_path="./main", also_show_to_screen=True) -> str:
     """Prints a message to the console and logs it to a timestamped file.
 
     Args:
@@ -20,7 +20,11 @@ def print_and_log(message, logfile_prefix="./main", also_show_to_screen=True) ->
 
     # Generate timestamped logfile name
     timestamp = time.strftime("%Y%m%d_%H%M%S")
-    logfile = f"{logfile_prefix}_{timestamp}.log"
+    if add_timestamp:
+        logfile_path = logfile_path.rstrip(".log")  # Remove any existing .log extension
+        logfile = f"{logfile_path}_{timestamp}.log"
+    else:
+        logfile = logfile_path.rstrip("_")  # Remove trailing underscore if present
 
     # Write to log file in chunks of 20 lines per line
     lines = message.splitlines()
