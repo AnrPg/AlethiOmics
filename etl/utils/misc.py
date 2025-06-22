@@ -1,38 +1,90 @@
 #!/usr/bin/env python3
 
 import time
+import os
+from collections import defaultdict
 
-def print_and_log(message, add_timestamp=True, logfile_path="./main", also_show_to_screen=True) -> str:
-    """Prints a message to the console and logs it to a timestamped file.
+# Module‐level state to track counts and filenames per logfile prefix
+_log_counters = defaultdict(int)
+_logfile_names = {}
+
+def print_and_log(
+    message,
+    add_timestamp=True,
+    logfile_path="./main",
+    also_show_to_screen=True,
+    collapse_size=20,
+) -> str:
+    """
+    Print and log messages, collapsing up to `collapse_size` messages per line.
+
+    If `message` contains multiple lines, bypass collapsing and
+    output the message in full (preserving its line breaks).
 
     Args:
-        message (string): The message to print and log.
-        add_timestamp (bool, optional): Whether to add a timestamp to the log file name. Defaults to True. If True, then a new logfile is generated each time this function is called.
-        logfile_path (string, optional): Path prefix for the log file (without extension). Defaults to './main'.
-        also_show_to_screen (bool, optional): Whether to also print the message to the console (apart from logfile it is). Defaults to True.
+        message (str): Text to print and log.
+        add_timestamp (bool): Create a timestamped logfile on first use.
+        logfile_path (str): Exact filename or path to use; extension is preserved.
+        also_show_to_screen (bool): If True, echo output to console.
+        collapse_size (int): Number of messages to join on one line.
+
     Returns:
-        str: The path to the log file where the message was written.
+        str: Path to the logfile used for this run.
     """
+    # Ensure we have a string
     if not isinstance(message, str):
         message = str(message)
 
-    if also_show_to_screen:
-        # Print the message to the console
-        print(message)
-
-    # Generate timestamped logfile name
-    timestamp = time.strftime("%Y%m%d_%H%M%S")
+    # Determine or create the logfile name once per prefix
     if add_timestamp:
-        logfile_path = logfile_path.rstrip(".log")  # Remove any existing .log extension
-        logfile = f"{logfile_path}_{timestamp}.log"
+        if logfile_path not in _logfile_names:
+            # Split name and extension to insert timestamp
+            base, ext = os.path.splitext(logfile_path)
+            ts = time.strftime("%Y%m%d_%H%M%S")
+            _logfile_names[logfile_path] = f"{base}_{ts}{ext}"
+        logfile = _logfile_names[logfile_path]
     else:
-        logfile = logfile_path.rstrip("_")  # Remove trailing underscore if present
+        # Use the provided path exactly, without altering its extension
+        logfile = logfile_path
 
-    # Write to log file in chunks of 20 lines per line
-    lines = message.splitlines()
-    with open(logfile, "a") as log_file:
-        for i in range(0, len(lines), 20):
-            group = lines[i:i+20]
-            combined_line = " | ".join(group)
-            log_file.write(combined_line + "\n")
+    # If message is multi-line, bypass collapsing and write as-is
+    if "\n" in message:
+        with open(logfile, "a") as f:
+            f.write(message + "\n")
+        if also_show_to_screen:
+            print(message)
+        return logfile
+
+    # Single-line message: apply collapsing logic
+    _log_counters[logfile] += 1
+    count = _log_counters[logfile]
+    sep = "\t|\t"
+
+    # Determine prefix for log
+    log_prefix = ""
+    if count % collapse_size == 1 and count > 1:
+        log_prefix = "\n"
+    elif count % collapse_size != 1:
+        log_prefix = sep
+
+    # Append message to logfile
+    with open(logfile, "a") as f:
+        f.write(f"{log_prefix}{message}")
+
+    # Echo to console
+    if also_show_to_screen:
+        if count % collapse_size == 1 and count > 1:
+            print()
+            print(message, end="")
+        elif count % collapse_size == 1:
+            print(message, end="")
+        else:
+            print(sep + message, end="")
+        if count % collapse_size == 0:
+            print()
+        try:
+            import sys; sys.stdout.flush()
+        except Exception:
+            pass
+
     return logfile
