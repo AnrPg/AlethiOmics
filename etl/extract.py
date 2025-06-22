@@ -12,9 +12,12 @@ def _yield_dicts(column: str, values: Iterable[Any]) -> Generator[Dict[str, Any]
 
 def extract(path: Path,
             mapping,
+            *,
+            want: str = "all",                       # new: "all" | "meta" | "genes"
             skip_zarr_datasets: set = None,
             skip_tsv_columns: set = None
            ) -> Generator[Dict[str, Any], None, None]:
+
     """
     Streams rows from .zarr or tab-separated files as {"column": …, "value": …} dicts,
     but skips any raw-counts arrays or columns.
@@ -28,7 +31,7 @@ def extract(path: Path,
         import zarr
         root = zarr.open(path, mode="r")
 
-        # ---- 1. Gene IDs  (root['var'] is the variable/feature table) ----
+        # 1. Gene IDs (only if want includes genes) if want in ("all", "genes"):
         var_group = root["var"]
         keys = list(var_group.array_keys())
         # auto-detect object-dtype arrays for gene IDs
@@ -44,11 +47,12 @@ def extract(path: Path,
             print(f"[warning] using '{gene_ds_name}' for gene IDs")
 
         gene_ids = var_group[gene_ds_name]
-        for start in range(0, gene_ids.shape[0], CHUNK):
-            for row in _yield_dicts("gene_id", gene_ids[start:start + CHUNK]):
-                yield row
+        if want in ("all", "genes"):
+            for start in range(0, gene_ids.shape[0], CHUNK):
+                for row in _yield_dicts("gene_id", gene_ids[start:start + CHUNK]):
+                    yield row
 
-        # 2. Sample-level metadata (obs)
+        # 2. Metadata from obs (only if want includes meta) if want in ("all", "meta"):
         obs_table = root["obs"]
         for obs_key in obs_table.array_keys():
             if obs_key in skip_zarr_datasets:
