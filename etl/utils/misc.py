@@ -2,7 +2,7 @@
 
 import time
 
-def print_and_log(message, logfile_prefix="./main") -> str:
+def print_and_log(message, logfile_prefix="./main", also_show_to_screen=True) -> str:
     """Prints a message to the console and logs it to a timestamped file.
 
     Args:
@@ -14,7 +14,9 @@ def print_and_log(message, logfile_prefix="./main") -> str:
     if not isinstance(message, str):
         message = str(message)
 
-    print(message)
+    if also_show_to_screen:
+        # Print the message to the console
+        print(message)
 
     # Generate timestamped logfile name
     timestamp = time.strftime("%Y%m%d_%H%M%S")
