@@ -62,7 +62,7 @@ for path in discvr.discover(discover_dir):
     
     mapping = load_mapping("config/mapping_catalogue.yml")
     print(f"Loading metadata from file: {path}\n")  
-    for row in extract(path, mapping):
+    for row in extract(path, mapping, want="meta"):
         
         # row["value"] = lowercase_ascii(str(row["value"]) if row["value"] is not None else "") 
         harmonised_row = harmonise([row], mapping)
