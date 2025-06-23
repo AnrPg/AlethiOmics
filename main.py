@@ -61,12 +61,15 @@ for path in discvr.discover(discover_dir):
     from etl.utils.preprocessing import lowercase_ascii
     
     mapping = load_mapping("config/mapping_catalogue.yml")
-    print(f"Loading metadata from file: {path}\n")  
     for row in extract(path, mapping, want="meta"):
         
         # row["value"] = lowercase_ascii(str(row["value"]) if row["value"] is not None else "") 
         harmonised_row = harmonise([row], mapping)
+        if not harmonised_row:
+            # print(f"\t!!!!!!!\tNo harmonised data for row: {row}, skipping...\n")
+            continue
         
+        print(f"Loading metadata from file: {path}\n")  
         # Accumulate staging data into batch
         
         # print(f"\n\nProcessing row: {row}\n")
@@ -77,8 +80,8 @@ for path in discvr.discover(discover_dir):
         for (table, column), values in harmonised_row.items():
             batch_staging[(table, column)].update(values)
             print(f"Staging datum #{batch_count+1} for table: {table}, column: {column}, values: {values}")
+            batch_count += 1
 
-        batch_count += 1
         
         # Process batch when it reaches BATCH_SIZE
         if batch_count >= BATCH_SIZE:
