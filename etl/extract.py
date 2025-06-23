@@ -1,84 +1,100 @@
 #!/usr/bin/env python3
-
 from pathlib import Path
-from typing import Dict, Generator, Any, Iterable
+from typing import Dict, Generator, Any, Optional
+import zarr
+import yaml
 
-CHUNK = 10000               # adjust to the largest batch the RAM will tolerate
+# adjust to the largest batch the RAM will tolerate
+CHUNK = 10000
 
-def _yield_dicts(column: str, values: Iterable[Any]) -> Generator[Dict[str, Any], None, None]:
-    """Tiny helper so we don’t repeat the yield block two dozen times."""
-    for v in values:
-        yield {"column": column, "value": v}
+# Load feature configuration
+CONFIG_PATH = Path("config/features.yml")
+config = yaml.safe_load(CONFIG_PATH.read_text())
+FEATURE_META = set(config.get('meta', []))
+FEATURE_GENES = set(config.get('genes', []))
+
+# Define which obs fields map to Samples columns (extendable via config)
+OBS_TO_SAMPLE = {
+    "barcodekey": "sample_id",
+    "cell_type_ontology_term_id": "cell_type_iri",
+    "cell_type": "cell_type_label",
+    "tissue_ontology_term_id": "tissue_iri",
+    "tissue": "tissue_label",
+    "organism_ontology_term_id": "organism_iri",
+    "organism": "organism_label",
+    "growth_condition": "growth_condition",
+    # 'stimulus' and 'microbe' handled separately
+}
+
 
 def extract(path: Path,
-            mapping,
-            *,
-            want: str = "all",                       # new: "all" | "meta" | "genes"
-            skip_zarr_datasets: set = None,
-            skip_tsv_columns: set = None
+            mapping: Dict[str, Dict[str, Any]],
+            skip_zarr: Optional[set] = None
            ) -> Generator[Dict[str, Any], None, None]:
-
     """
-    Streams rows from .zarr or tab-separated files as {"column": …, "value": …} dicts,
-    but skips any raw-counts arrays or columns.
+    Stream structured rows for each table based on config/features.yml.
+    mapping provides foreign-key values for stimuli, microbes, studies, etc.
     """
-    suffix = path.suffix.lower()
-    skip_zarr_datasets = skip_zarr_datasets or {"X", "counts"}
-    skip_tsv_columns   = skip_tsv_columns   or set()
-    
-    # ───────────────────────────── Zarr ──────────────────────────────
-    if suffix == ".zarr":
-        import zarr
-        root = zarr.open(path, mode="r")
+    skip_zarr = skip_zarr or {"X", "counts"}
+    root = zarr.open(path, mode="r")
 
-        # 1. Gene IDs (only if want includes genes) if want in ("all", "genes"):
-        var_group = root["var"]
-        keys = list(var_group.array_keys())
-        # auto-detect object-dtype arrays for gene IDs
-        obj_keys = [k for k in keys if var_group[k].dtype.kind in ("U", "O")]
-        if len(obj_keys) == 1:
-            gene_ds_name = obj_keys[0]
-        elif "feature_name" in keys:
-            gene_ds_name = "feature_name"
-        elif "ensembl_id" in keys:
-            gene_ds_name = "ensembl_id"
-        else:
-            gene_ds_name = keys[0]
-            print(f"[warning] using '{gene_ds_name}' for gene IDs")
+    # 1. Extract Genes
+    var_group = root["var"]
+    # Identify gene ID array from var (e.g. gene_id, feature_name)
+    gene_keys = [k for k in var_group.array_keys() if k in FEATURE_GENES or 'id' in k]
+    if not gene_keys:
+        raise ValueError("No gene identifier found in var group.")
+    gene_ds = var_group[gene_keys[0]]
 
-        gene_ids = var_group[gene_ds_name]
-        if want in ("all", "genes"):
-            for start in range(0, gene_ids.shape[0], CHUNK):
-                for row in _yield_dicts("gene_id", gene_ids[start:start + CHUNK]):
-                    yield row
+    for start in range(0, gene_ds.shape[0], CHUNK):
+        chunk = gene_ds[start:start + CHUNK]
+        for gene in chunk:
+            row = {"table": "Genes", "gene_id": str(gene)}
+            # filter by config
+            yield {k: v for k, v in row.items() if k in FEATURE_GENES or k == 'table'}
 
-        # 2. Metadata from obs (only if want includes meta) if want in ("all", "meta"):
-        obs_table = root["obs"]
-        for obs_key in obs_table.array_keys():
-            if obs_key in skip_zarr_datasets:
-                continue
-            col = obs_table[obs_key][:]
-            for row in _yield_dicts(obs_key, col):
-                yield row
+    # 2. Extract Samples
+    obs = root["obs"]
+    sample_ids = obs["barcodekey"][:]
+    num = sample_ids.shape[0]
+    study_id = mapping.get("study_id")
 
-        # (we do *not* touch root["X"] or any other datasets in the Zarr)
+    for i in range(num):
+        row: Dict[str, Any] = {"table": "Samples"}
+        # static fields
+        row["sample_id"] = str(sample_ids[i])
+        row["study_id"] = study_id
+        row["zarr_uri"] = str(path)
+        # dynamic obs fields
+        for obs_key, col in OBS_TO_SAMPLE.items():
+            if obs_key in obs.array_keys():
+                val = obs[obs_key][:][i]
+                row[col] = str(val)
+        # stimulus mapping
+        if "stimulus" in obs.array_keys():
+            raw = str(obs["stimulus"][i])
+            row["stimulus_id"] = mapping.get("stimuli", {}).get(raw)
+        # microbe mapping
+        if "microbe" in obs.array_keys():
+            raw = str(obs["microbe"][i])
+            row["microbe_id"] = mapping.get("microbes", {}).get(raw)
+        # filter by config
+        yield {k: v for k, v in row.items() if k in FEATURE_META or k == 'table'}
 
-    # ───────────────────────────── TSV / TXT ──────────────────────────────
-    elif suffix in {".tsv", ".txt"}:
-        import pandas as pd
-
-        # if the filename suggests raw/counts, skip the entire file
-        if any(k in path.name.lower() for k in ("raw", "count", "idf", "raw_counts")):
-            return
-
-        df = pd.read_csv(path, sep="\t")
-
-        for col in df:
-            if col in skip_tsv_columns:
-                continue
-            for row in _yield_dicts(col, df[col].values):
-                yield row
-    # ───────────────────────────── Unsupported ──────────────────────────────
-    else:
-        # raise ValueError(f"Unsupported file type: {suffix!r} for {path!r}")
-        pass
+    # 3. Extract ExpressionStats (if present arrays)
+    # expects arrays 'log2_fc', 'p_value', 'significance' aligned to var x obs
+    if all(name in root for name in ['obs', 'var', 'layers']):
+        log2 = root['layers']['log2_fc']
+        pval = root['layers']['p_value']
+        sig = root['layers']['significance']
+        for i in range(log2.shape[0]):
+            for j in range(log2.shape[1]):
+                row = {
+                    "table": "ExpressionStats",
+                    "sample_id": str(sample_ids[j]),
+                    "gene_id": str(var_group[gene_keys[0]][i]),
+                    "log2_fc": float(log2[i, j]),
+                    "p_value": float(pval[i, j]),
+                    "significance": str(sig[i, j]),
+                }
+                yield {k: v for k, v in row.items() if k in FEATURE_META or k in ('table',)}
