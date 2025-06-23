@@ -1,100 +1,149 @@
 #!/usr/bin/env python3
+"""Streaming extractor that emits only the features required by the
+MySQL transactional schema, as declared in *feature_mapping.yml* (or an
+in‑memory dict).  Any Zarr dataset or TSV column **not** referenced in the
+mapping is silently skipped.
+
+Returned rows are simple ``{"column": <str>, "value": <Any>}`` dicts that
+feed the downstream harmoniser.
+"""
+from __future__ import annotations
+
 from pathlib import Path
-from typing import Dict, Generator, Any, Optional
-import zarr
-import yaml
+from typing import Dict, Generator, Any, Iterable, Tuple, Set, Union
+import types
+import yaml  # PyYAML – already a dependency elsewhere in the repo
 
-# adjust to the largest batch the RAM will tolerate
-CHUNK = 10000
+CHUNK = 10_000  # tune to available memory
 
-# Load feature configuration
-CONFIG_PATH = Path("config/features.yml")
-config = yaml.safe_load(CONFIG_PATH.read_text())
-FEATURE_META = set(config.get('meta', []))
-FEATURE_GENES = set(config.get('genes', []))
+# ───────────────────────────── helpers ─────────────────────────────
 
-# Define which obs fields map to Samples columns (extendable via config)
-OBS_TO_SAMPLE = {
-    "barcodekey": "sample_id",
-    "cell_type_ontology_term_id": "cell_type_iri",
-    "cell_type": "cell_type_label",
-    "tissue_ontology_term_id": "tissue_iri",
-    "tissue": "tissue_label",
-    "organism_ontology_term_id": "organism_iri",
-    "organism": "organism_label",
-    "growth_condition": "growth_condition",
-    # 'stimulus' and 'microbe' handled separately
-}
+def _yield_dicts(column: str, values: Iterable[Any]) -> Generator[Dict[str, Any], None, None]:
+    """Yield the (column, value) pairs one‑by‑one as tiny dicts."""
+    for v in values:
+        yield {"column": column, "value": v}
 
 
-def extract(path: Path,
-            mapping: Dict[str, Dict[str, Any]],
-            skip_zarr: Optional[set] = None
-           ) -> Generator[Dict[str, Any], None, None]:
+def _parse_mapping_columns(mapping: Union[Path, str, Dict[str, Any]]) -> Tuple[Set[str], Set[str], Set[str]]:
+    """Return three *allowed* sets: (obs_keys, var_keys, tsv_columns).
+
+    * ``obs_keys`` – keys inside ``root['obs']`` datasets of AnnData Zarr.
+    * ``var_keys`` – keys inside ``root['var']`` (feature metadata) datasets.
+    * ``tsv_columns`` – DataFrame columns allowed when reading .tsv/.txt
+      (the raw column names **after** any explicit prefix, e.g. ``Gene ID``).
     """
-    Stream structured rows for each table based on config/features.yml.
-    mapping provides foreign-key values for stimuli, microbes, studies, etc.
+
+    # -------- 1) Load mapping YAML to dict if necessary --------
+    if isinstance(mapping, (str, Path)):
+        mapping_path = Path(mapping)
+        with mapping_path.open("r", encoding="utf-8") as fh:
+            mapping_dict = yaml.safe_load(fh)
+    elif isinstance(mapping, dict):
+        mapping_dict = mapping
+    else:
+        raise TypeError("'mapping' must be a path, str, or dict")
+
+    raw_keys = set(mapping_dict.get("columns", {}).keys())
+
+    # -------- 2) Derive *unqualified* dataset/column names --------
+    obs_keys: Set[str] = set()
+    var_keys: Set[str] = set()
+    tsv_keys: Set[str] = set()
+
+    TSV_PREFIXES = ("counts.", "sdrf.", "idf.", "uns.")
+
+    for k in raw_keys:
+        # strip optional inline comments like " (distinct)"
+        k = k.split("(")[0].strip()  # e.g. "sdrf.stimulus_iri (distinct)" -> "sdrf.stimulus_iri"
+
+        if "." in k:
+            prefix, name = k.split(".", 1)
+            if prefix == "obs":
+                obs_keys.add(name)
+            elif prefix == "var":
+                var_keys.add(name)
+            elif k.startswith(TSV_PREFIXES):
+                tsv_keys.add(name)
+        else:
+            # plain key (rare) – treat as TSV column name
+            tsv_keys.add(k)
+
+    return obs_keys, var_keys, tsv_keys
+
+# ───────────────────────────── main extractor ─────────────────────────────
+
+def extract(
+    path: Path,
+    mapping: Union[Path, str, Dict[str, Any]],
+    *,
+    skip_zarr_datasets: Set[str] | None = None,
+    skip_tsv_columns: Set[str] | None = None,
+) -> Generator[Dict[str, Any], None, None]:
+    """Stream records from *path* while ignoring everything not present in
+    the mapping catalogue.
+
+    Parameters
+    ----------
+    path
+        Input file (.zarr, .tsv, .txt).
+    mapping
+        Either (a) a *dict* already parsed from YAML **or** (b) a *Path/str*
+        to a ``feature_mapping.yml`` file.
+    skip_zarr_datasets
+        Extra dataset names (within ``root['obs']``) that should *always* be
+        skipped (defaults to {"X", "counts"}).
+    skip_tsv_columns
+        Extra DataFrame column names that should *always* be skipped.
     """
-    skip_zarr = skip_zarr or {"X", "counts"}
-    root = zarr.open(path, mode="r")
 
-    # 1. Extract Genes
-    var_group = root["var"]
-    # Identify gene ID array from var (e.g. gene_id, feature_name)
-    gene_keys = [k for k in var_group.array_keys() if k in FEATURE_GENES or 'id' in k]
-    if not gene_keys:
-        raise ValueError("No gene identifier found in var group.")
-    gene_ds = var_group[gene_keys[0]]
+    obs_allowed, var_allowed, tsv_allowed = _parse_mapping_columns(mapping)
 
-    for start in range(0, gene_ds.shape[0], CHUNK):
-        chunk = gene_ds[start:start + CHUNK]
-        for gene in chunk:
-            row = {"table": "Genes", "gene_id": str(gene)}
-            # filter by config
-            yield {k: v for k, v in row.items() if k in FEATURE_GENES or k == 'table'}
+    # merge caller‑provided skip masks
+    skip_zarr = set(skip_zarr_datasets or {"X", "counts"})
+    skip_tsv = set(skip_tsv_columns or set())
 
-    # 2. Extract Samples
-    obs = root["obs"]
-    sample_ids = obs["barcodekey"][:]
-    num = sample_ids.shape[0]
-    study_id = mapping.get("study_id")
+    suffix = path.suffix.lower()
 
-    for i in range(num):
-        row: Dict[str, Any] = {"table": "Samples"}
-        # static fields
-        row["sample_id"] = str(sample_ids[i])
-        row["study_id"] = study_id
-        row["zarr_uri"] = str(path)
-        # dynamic obs fields
-        for obs_key, col in OBS_TO_SAMPLE.items():
-            if obs_key in obs.array_keys():
-                val = obs[obs_key][:][i]
-                row[col] = str(val)
-        # stimulus mapping
-        if "stimulus" in obs.array_keys():
-            raw = str(obs["stimulus"][i])
-            row["stimulus_id"] = mapping.get("stimuli", {}).get(raw)
-        # microbe mapping
-        if "microbe" in obs.array_keys():
-            raw = str(obs["microbe"][i])
-            row["microbe_id"] = mapping.get("microbes", {}).get(raw)
-        # filter by config
-        yield {k: v for k, v in row.items() if k in FEATURE_META or k == 'table'}
+    # ───────────────────────────── Zarr ──────────────────────────────
+    if suffix == ".zarr":
+        import zarr
 
-    # 3. Extract ExpressionStats (if present arrays)
-    # expects arrays 'log2_fc', 'p_value', 'significance' aligned to var x obs
-    if all(name in root for name in ['obs', 'var', 'layers']):
-        log2 = root['layers']['log2_fc']
-        pval = root['layers']['p_value']
-        sig = root['layers']['significance']
-        for i in range(log2.shape[0]):
-            for j in range(log2.shape[1]):
-                row = {
-                    "table": "ExpressionStats",
-                    "sample_id": str(sample_ids[j]),
-                    "gene_id": str(var_group[gene_keys[0]][i]),
-                    "log2_fc": float(log2[i, j]),
-                    "p_value": float(pval[i, j]),
-                    "significance": str(sig[i, j]),
-                }
-                yield {k: v for k, v in row.items() if k in FEATURE_META or k in ('table',)}
+        root = zarr.open(path, mode="r")
+
+        # ---- 1. Gene / feature metadata (root['var']) ----
+        var_group = root["var"]
+        for key in var_group.array_keys():
+            if key not in var_allowed:
+                continue  # skip non‑mapped var datasets
+            array = var_group[key]
+            for start in range(0, len(array), CHUNK):
+                for row in _yield_dicts(key, array[start : start + CHUNK]):
+                    yield row
+
+        # ---- 2. Sample‑level metadata (root['obs']) ----
+        obs_table = root["obs"]
+        for obs_key in obs_table.array_keys():
+            if obs_key in skip_zarr or obs_key not in obs_allowed:
+                continue
+            col = obs_table[obs_key][:]
+            for row in _yield_dicts(obs_key, col):
+                yield row
+
+        # (Root['X'] and other numeric matrices are intentionally ignored.)
+
+    # ───────────────────────────── TSV / TXT ──────────────────────────
+    elif suffix in {".tsv", ".txt"}:
+        import pandas as pd
+
+        # When the file name suggests raw read counts, leave decision to mapping
+        df = pd.read_csv(path, sep="\t")
+
+        for col in df.columns:
+            if col in skip_tsv or col not in tsv_allowed:
+                continue
+            for row in _yield_dicts(col, df[col].values):
+                yield row
+
+    # ───────────────────────────── Unsupported ────────────────────────
+    else:
+        raise ValueError(f"Unsupported file type: {suffix!r} for {path!r}")

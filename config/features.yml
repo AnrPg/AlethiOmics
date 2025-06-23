@@ -1,28 +1,84 @@
 # config/features.yml
-meta:
-  - stimulus_id
-  - iri
-  - label
-  - class_hint
-  - microbe_id
-  - taxon_id
-  - species_name
-  - evidence
-  - study_id
-  - title
-  - source_repo
-  - sample_id
-  - cell_type_iri
-  - cell_type_label
-  - tissue_iri
-  - tissue_label
-  - organism_iri
-  - organism_label
-  - growth_condition
-  - zarr_uri
-  - log2_fc
-  - p_value
-  - significance
 
-genes:
-  - gene_id
+# Feature‑to‑column mapping for Gut‑Brain Organoid ETL
+# ----------------------------------------------------------------------
+# Keys on the left are **raw attributes** observed in your input files
+#   • TSV (counts / SDRF / IDF)
+#   • Zarr AnnData (obs / var / uns)
+# Values specify the exact **destination table and column** in the
+# transactional MySQL schema you provided. No transforms / regexes here –
+# this is a pure routing catalogue for extract.py.
+# ----------------------------------------------------------------------
+columns:
+
+  # ───────────────────────── genes ─────────────────────────
+  counts.Gene ID:                 {table: Genes,        column: gene_id}
+  counts.Gene Name:               {table: Genes,        column: gene_name}
+  var.ensembl_id:                 {table: Genes,        column: gene_id}
+  var.ensg:                       {table: Genes,        column: gene_id}
+  var.feature_name:               {table: Genes,        column: gene_name}
+
+  # ───────────────────────── studies ───────────────────────
+  idf.study_accession:            {table: Studies,      column: study_id}
+  sdrf.study_accession:           {table: Studies,      column: study_id}
+  uns.title:                      {table: Studies,      column: title}
+  idf.Investigation Title:        {table: Studies,      column: title}
+  uns.schema_reference:           {table: Studies,      column: source_repo}
+
+  # ───────────────────────── samples ───────────────────────
+  sdrf.sample_accession:          {table: Samples,      column: sample_id}
+  counts.sample_accession:        {table: Samples,      column: sample_id}
+  obs.sample_accession:           {table: Samples,      column: sample_id}
+  # FK link
+  (derived) study_accession → sample: {table: Samples,  column: study_id}
+
+  obs.cell_type_ontology_term_id: {table: Samples,      column: cell_type_iri}
+  obs.cell_type:                  {table: Samples,      column: cell_type_label}
+  sdrf.cell_type_iri:             {table: Samples,      column: cell_type_iri}
+  sdrf.cell_type_label:           {table: Samples,      column: cell_type_label}
+
+  obs.tissue_ontology_term_id:    {table: Samples,      column: tissue_iri}
+  obs.tissue:                     {table: Samples,      column: tissue_label}
+  sdrf.tissue_iri:                {table: Samples,      column: tissue_iri}
+  sdrf.tissue_label:              {table: Samples,      column: tissue_label}
+
+  obs.organism_ontology_term_id:  {table: Samples,      column: organism_iri}
+  obs.organism:                   {table: Samples,      column: organism_label}
+  sdrf.organism_iri:              {table: Samples,      column: organism_iri}
+  sdrf.organism_label:            {table: Samples,      column: organism_label}
+
+  obs.growth_condition:           {table: Samples,      column: growth_condition}
+  sdrf.growth_condition:          {table: Samples,      column: growth_condition}
+
+  # stimulus / metabolite link at sample level
+  sdrf.stimulus_iri:              {table: Samples,      column: stimulus_id}
+  sdrf.stimulus_label:            {table: Samples,      column: stimulus_id}
+
+  # microbe link at sample level (may be inferred)
+  obs.microbe_taxon_id:           {table: Samples,      column: microbe_id}
+
+  zarr.uri:                       {table: Samples,      column: zarr_uri}
+
+  # ───────────────────────── stimuli (metabolites) ────────
+  sdrf.stimulus_iri (distinct):   {table: Stimuli,      column: iri}
+  sdrf.stimulus_label (distinct): {table: Stimuli,      column: label}
+
+  # optional class hint (manual curation)
+  curated.stimulus_class:         {table: Stimuli,      column: class_hint}
+
+  # ───────────────────────── microbes ──────────────────────
+  obs.ncbi_taxon_id:              {table: Microbes,     column: taxon_id}
+  external.species_name:          {table: Microbes,     column: species_name}
+
+  # ───────────────────────── microbe‑stimulus link ────────
+  cooccur.microbe_id:             {table: MicrobeStimulus, column: microbe_id}
+  cooccur.stimulus_id:            {table: MicrobeStimulus, column: stimulus_id}
+  cooccur.evidence:               {table: MicrobeStimulus, column: evidence}
+
+  # ───────────────────────── expression stats ─────────────
+  exprstat.sample_id:             {table: ExpressionStats, column: sample_id}
+  exprstat.gene_id:               {table: ExpressionStats, column: gene_id}
+  exprstat.log2_fc:               {table: ExpressionStats, column: log2_fc}
+  exprstat.p_value:               {table: ExpressionStats, column: p_value}
+  exprstat.significance:          {table: ExpressionStats, column: significance}
+
