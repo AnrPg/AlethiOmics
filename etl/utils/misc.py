@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
 
-import time
 import os
 from datetime import datetime
 from zoneinfo import ZoneInfo
@@ -10,11 +9,20 @@ from collections import defaultdict
 _log_counters = defaultdict(int)
 _logfile_names = {}
 
-# Set the locale for time‐based formatting
-# e.g. for Greek (as used in Europe/Athens timezone):
-now_athens = datetime.now(ZoneInfo("Europe/Athens"))
-# or for U.S. English:
-# locale.setlocale(locale.LC_TIME, 'en_US.UTF-8')
+# Precompute Athens timestamp once
+_NOW_ATHENS = datetime.now(ZoneInfo("Europe/Athens"))
+
+def create_timestamped_filename(prefix: str) -> str:
+    """
+    Generate a timestamped filename for the given prefix, caching per prefix.
+    Returns the full filename including extension.
+    """
+    if prefix not in _logfile_names:
+        base, ext = os.path.splitext(prefix)
+        ts = _NOW_ATHENS.strftime("%Y-%m-%d at %H_%M_%S")
+        _logfile_names[prefix] = f"{base}_{ts}{ext}"
+    return _logfile_names[prefix]
+
 
 def print_and_log(
     message,
@@ -34,7 +42,8 @@ def print_and_log(
         add_timestamp (bool): Create a timestamped logfile on first use.
         logfile_path (str): Exact filename or path to use; extension is preserved.
         also_show_to_screen (bool): If True, echo output to console.
-        collapse_size (int): Number of messages to join on one line.
+        collapse_size (int): Number of messages to join on one line;
+                             if 0, disables collapsing entirely.
 
     Returns:
         str: Path to the logfile used for this run.
@@ -43,20 +52,14 @@ def print_and_log(
     if not isinstance(message, str):
         message = str(message)
 
-    # Determine or create the logfile name once per prefix
+    # Determine logfile name
     if add_timestamp:
-        if logfile_path not in _logfile_names:
-            # Split name and extension to insert timestamp
-            base, ext = os.path.splitext(logfile_path)
-            ts = now_athens.strftime("%Y-%m-%d at %H_%M_%S")
-            _logfile_names[logfile_path] = f"{base}_{ts}{ext}"
-        logfile = _logfile_names[logfile_path]
+        logfile = create_timestamped_filename(logfile_path)
     else:
-        # Use the provided path exactly, without altering its extension
         logfile = logfile_path
 
-    # If message is multi-line, bypass collapsing and write as-is
-    if "\n" in message:
+    # If collapsing is disabled, just write and print the message as-is
+    if collapse_size == 0 or "\n" in message:
         with open(logfile, "a") as f:
             f.write(message + "\n")
         if also_show_to_screen:
