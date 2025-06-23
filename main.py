@@ -8,6 +8,7 @@ from sshtunnel import SSHTunnelForwarder
 from collections import defaultdict
 
 from etl import discover as discvr
+from etl.utils.misc import print_and_log
 
 # adjust these for your cluster
 SSH_HOST     = "devanr.tenant-a9.svc.cluster.local"
@@ -51,8 +52,8 @@ batch_staging = defaultdict(set)
 batch_num = 1
 batch_count = 0
 
-discover_dir = "test/data"
-print(f"Looking for files in directory: {discover_dir}\n")
+discover_dir = "raw_data"
+logfile = print_and_log(f"Looking for files in directory: {discover_dir}\n")
 
 for path in discvr.discover(discover_dir):
     from etl.extract import extract
@@ -61,59 +62,61 @@ for path in discvr.discover(discover_dir):
     from etl.utils.preprocessing import lowercase_ascii
     
     mapping = load_mapping("config/mapping_catalogue.yml")
-    for row in extract(path, mapping, want="meta"):
+    for row in extract(path, mapping):
         
+        # , add_timestamp=False, logfile_path=logfile, collapse_size=3
+        print_and_log(f"Loading metadata from file: {path}\n", add_timestamp=False, logfile_path=logfile, collapse_size=3)
         # row["value"] = lowercase_ascii(str(row["value"]) if row["value"] is not None else "") 
         harmonised_row = harmonise([row], mapping)
         if not harmonised_row:
-            # print(f"\t!!!!!!!\tNo harmonised data for row: {row}, skipping...\n")
+            # print_and_log(f"\t!!!!!!!\tNo harmonised data for row: {row}, skipping...\n")
             continue
         
-        print(f"Loading metadata from file: {path}\n")  
+        # print_and_log(f"Loading metadata from file: {path}\n")  
         # Accumulate staging data into batch
         
-        # print(f"\n\nProcessing row: {row}\n")
-        # print(f"Harmonised row:\n")
-        # [print(f"{key}: {value}") for key, value in harmonised_row.items()]
-        # print(f"Harmonised row keys: {list(harmonised_row.keys())}\n")
-        # print(f"Harmonised row values: {list(harmonised_row.values())}\n\n\n")
-        for (table, column), values in harmonised_row.items():
-            batch_staging[(table, column)].update(values)
-            print(f"Staging datum #{batch_count+1} for table: {table}, column: {column}, values: {values}")
-            batch_count += 1
+        # print_and_log(f"\n\nProcessing row: {row}\n")
+        # print_and_log(f"Harmonised row:\n")
+        # [print_and_log(f"{key}: {value}") for key, value in harmonised_row.items()]
+        # print_and_log(f"Harmonised row keys: {list(harmonised_row.keys())}\n")
+        # print_and_log(f"Harmonised row values: {list(harmonised_row.values())}\n\n\n")
+#         for (table, column), values in harmonised_row.items():
+#             batch_staging[(table, column)].update(values)
+#             print_and_log(f"Staging datum #{batch_count+1} for table: {table}, column: {column}, values: {values}")
+#             batch_count += 1
 
         
-        # Process batch when it reaches BATCH_SIZE
-        if batch_count >= BATCH_SIZE:
-            print(f"Processing batch {batch_num} of {batch_count} records")
-            print(f"Loading batch data into MySQL database: {mysql_url}\n")
+#         # Process batch when it reaches BATCH_SIZE
+#         if batch_count >= BATCH_SIZE:
+#             print_and_log(f"Processing batch {batch_num} of {batch_count} records")
+#             print_and_log(f"Loading batch data into MySQL database: {mysql_url}\n")
             
-            # Convert defaultdict to regular dict for load function
-            staging_dict = dict(batch_staging)
-            load(staging_dict, mysql_url)
+#             # Convert defaultdict to regular dict for load function
+#             staging_dict = dict(batch_staging)
+#             load(staging_dict, mysql_url)
             
-            print(f"Batch completed successfully\n")
+#             print_and_log(f"Batch completed successfully\n")
             
-            # Reset batch accumulator
-            batch_staging = defaultdict(set)
-            batch_num += 1
-            batch_count = 0
+#             # Reset batch accumulator
+#             batch_staging = defaultdict(set)
+#             batch_num += 1
+#             batch_count = 0
 
-# Process any remaining records in the final batch
-if batch_count > 0:
-    print(f"Processing final batch of {batch_count} records")
-    print(f"Loading batch data into MySQL database: {mysql_url}\n")
+# # Process any remaining records in the final batch
+# if batch_count > 0:
+#     print_and_log(f"Processing final batch of {batch_count} records")
+#     print_and_log(f"Loading batch data into MySQL database: {mysql_url}\n")
     
-    staging_dict = dict(batch_staging)
-    load(staging_dict, mysql_url)
+#     staging_dict = dict(batch_staging)
+#     load(staging_dict, mysql_url)
     
-    print(f"Final batch completed successfully\n")
+#     print_and_log(f"Final batch completed successfully\n")
         
 tunnel.stop()
-print("ETL process completed successfully.\n\n")
+print_and_log("ETL process completed successfully.\n\n")
 # Close the database connection
 engine.dispose()
 # Close the SSH tunnel
 tunnel.close()
-print("SSH tunnel closed.")
-print("Database connection disposed.")
+print_and_log("SSH tunnel closed.")
+print_and_log("Database connection disposed.")

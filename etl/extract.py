@@ -1,74 +1,59 @@
 #!/usr/bin/env python3
-"""Streaming extractor that emits only the features required by the
-MySQL transactional schema, as declared in *feature_mapping.yml* (or an
-in‑memory dict).  Any Zarr dataset or TSV column **not** referenced in the
-mapping is silently skipped.
+"""Streaming extractor – **v2** (2025‑06‑23)
 
-Returned rows are simple ``{"column": <str>, "value": <Any>}`` dicts that
-feed the downstream harmoniser.
+Changes
+=======
+* Robust TSV/SDRF/IDF reader that loads **only mapped columns** with the
+  *Python* engine + ``on_bad_lines='skip'`` – avoids Pandas ``ParserError``
+  when rows have variable field counts.
+* Uses ``usecols`` so off‑schema columns are never even parsed.
+* Retains early‑exit for internal ``.zarr`` paths.
+* API unchanged: ``extract(Path, mapping) -> iterable of {column, value}``.
 """
 from __future__ import annotations
 
 from pathlib import Path
 from typing import Dict, Generator, Any, Iterable, Tuple, Set, Union
-import types
-import yaml  # PyYAML – already a dependency elsewhere in the repo
+import yaml
 
-CHUNK = 10_000  # tune to available memory
+from etl.utils.misc import print_and_log  # PyYAML
+
+CHUNK = 10_000  # rows per chunk when iterating arrays
 
 # ───────────────────────────── helpers ─────────────────────────────
 
 def _yield_dicts(column: str, values: Iterable[Any]) -> Generator[Dict[str, Any], None, None]:
-    """Yield the (column, value) pairs one‑by‑one as tiny dicts."""
+    """Yield successive ``{"column": column, "value": v}`` dicts."""
     for v in values:
         yield {"column": column, "value": v}
 
 
 def _parse_mapping_columns(mapping: Union[Path, str, Dict[str, Any]]) -> Tuple[Set[str], Set[str], Set[str]]:
-    """Return three *allowed* sets: (obs_keys, var_keys, tsv_columns).
-
-    * ``obs_keys`` – keys inside ``root['obs']`` datasets of AnnData Zarr.
-    * ``var_keys`` – keys inside ``root['var']`` (feature metadata) datasets.
-    * ``tsv_columns`` – DataFrame columns allowed when reading .tsv/.txt
-      (the raw column names **after** any explicit prefix, e.g. ``Gene ID``).
-    """
-
-    # -------- 1) Load mapping YAML to dict if necessary --------
     if isinstance(mapping, (str, Path)):
-        mapping_path = Path(mapping)
-        with mapping_path.open("r", encoding="utf-8") as fh:
+        with Path(mapping).open("r", encoding="utf-8") as fh:
             mapping_dict = yaml.safe_load(fh)
     elif isinstance(mapping, dict):
         mapping_dict = mapping
     else:
-        raise TypeError("'mapping' must be a path, str, or dict")
+        raise TypeError("mapping must be Path | str | dict")
 
-    raw_keys = set(mapping_dict.get("columns", {}).keys())
-
-    # -------- 2) Derive *unqualified* dataset/column names --------
-    obs_keys: Set[str] = set()
-    var_keys: Set[str] = set()
-    tsv_keys: Set[str] = set()
-
+    raw_keys = set(mapping_dict.get("columns", {}))
+    obs, var, tsv = set(), set(), set()
     TSV_PREFIXES = ("counts.", "sdrf.", "idf.", "uns.")
 
     for k in raw_keys:
-        # strip optional inline comments like " (distinct)"
-        k = k.split("(")[0].strip()  # e.g. "sdrf.stimulus_iri (distinct)" -> "sdrf.stimulus_iri"
-
+        k = k.split("(")[0].strip()
         if "." in k:
             prefix, name = k.split(".", 1)
             if prefix == "obs":
-                obs_keys.add(name)
+                obs.add(name)
             elif prefix == "var":
-                var_keys.add(name)
+                var.add(name)
             elif k.startswith(TSV_PREFIXES):
-                tsv_keys.add(name)
+                tsv.add(name)
         else:
-            # plain key (rare) – treat as TSV column name
-            tsv_keys.add(k)
-
-    return obs_keys, var_keys, tsv_keys
+            tsv.add(k)
+    return obs, var, tsv
 
 # ───────────────────────────── main extractor ─────────────────────────────
 
@@ -79,71 +64,79 @@ def extract(
     skip_zarr_datasets: Set[str] | None = None,
     skip_tsv_columns: Set[str] | None = None,
 ) -> Generator[Dict[str, Any], None, None]:
-    """Stream records from *path* while ignoring everything not present in
-    the mapping catalogue.
+    """Stream mapping‑relevant records from *path*.
 
-    Parameters
-    ----------
-    path
-        Input file (.zarr, .tsv, .txt).
-    mapping
-        Either (a) a *dict* already parsed from YAML **or** (b) a *Path/str*
-        to a ``feature_mapping.yml`` file.
-    skip_zarr_datasets
-        Extra dataset names (within ``root['obs']``) that should *always* be
-        skipped (defaults to {"X", "counts"}).
-    skip_tsv_columns
-        Extra DataFrame column names that should *always* be skipped.
+    Handles `.zarr`, `.tsv`, `.txt`.  All other files are silently ignored.
     """
+    logfile = print_and_log(f"[extract] Processing file: {path}", collapse_size=1)
+    # Abort if we're inside a .zarr store (internal file)
+    parts = path.parts
+    if any(p.endswith(".zarr") for p in parts[:-1]):
+        return  # skip silently
 
     obs_allowed, var_allowed, tsv_allowed = _parse_mapping_columns(mapping)
 
-    # merge caller‑provided skip masks
     skip_zarr = set(skip_zarr_datasets or {"X", "counts"})
     skip_tsv = set(skip_tsv_columns or set())
 
     suffix = path.suffix.lower()
 
-    # ───────────────────────────── Zarr ──────────────────────────────
+    # ───────────────────────── Zarr ────────────────────────────
     if suffix == ".zarr":
         import zarr
-
         root = zarr.open(path, mode="r")
 
-        # ---- 1. Gene / feature metadata (root['var']) ----
-        var_group = root["var"]
-        for key in var_group.array_keys():
+        # var (feature metadata)
+        var_grp = root["var"]
+        for key in var_grp.array_keys():
+            print_and_log(f"Processing var key: {key}", add_timestamp=False, logfile_path=logfile, collapse_size=1)
             if key not in var_allowed:
-                continue  # skip non‑mapped var datasets
-            array = var_group[key]
-            for start in range(0, len(array), CHUNK):
-                for row in _yield_dicts(key, array[start : start + CHUNK]):
-                    yield row
-
-        # ---- 2. Sample‑level metadata (root['obs']) ----
-        obs_table = root["obs"]
-        for obs_key in obs_table.array_keys():
-            if obs_key in skip_zarr or obs_key not in obs_allowed:
+                print_and_log(f"\tSkipping var key: {key} (not in mapping)", add_timestamp=False, logfile_path=logfile, collapse_size=1)
                 continue
-            col = obs_table[obs_key][:]
-            for row in _yield_dicts(obs_key, col):
-                yield row
+            arr = var_grp[key]
+            for start in range(0, len(arr), CHUNK):
+                print_and_log(f"\tProcessing var chunk: {start} to {start + CHUNK}: {key} --> {arr[start : start + 10]}", add_timestamp=False, logfile_path=logfile, collapse_size=1)
+                yield from _yield_dicts(key, arr[start : start + CHUNK])
 
-        # (Root['X'] and other numeric matrices are intentionally ignored.)
+        # obs (sample metadata)
+        obs_grp = root["obs"]
+        for key in obs_grp.array_keys():
+            print_and_log(f"Processing obs key: {key}", add_timestamp=False, logfile_path=logfile, collapse_size=1)
+            if key in skip_zarr or key not in obs_allowed:
+                print_and_log(f"\tSkipping obs key: {key} (not in mapping or skipped)", add_timestamp=False, logfile_path=logfile, collapse_size=1)
+                continue
+            col = obs_grp[key][:]
+            print_and_log(f"\tProcessing obs column: {key} with {len(col)} values: {col[:10]}", add_timestamp=False, logfile_path=logfile, collapse_size=1)
+            yield from _yield_dicts(key, col)
 
-    # ───────────────────────────── TSV / TXT ──────────────────────────
+    # ───────────────────────── TSV / TXT ───────────────────────
     elif suffix in {".tsv", ".txt"}:
         import pandas as pd
 
-        # When the file name suggests raw read counts, leave decision to mapping
-        df = pd.read_csv(path, sep="\t")
+        # Prepare list of columns to load (intersection + honour skip list)
+        allowed_cols = [c for c in tsv_allowed if c not in skip_tsv]
+        if not allowed_cols:
+            return  # nothing mapped from this file
+
+        try:
+            df = pd.read_csv(
+                path,
+                sep="\t",
+                engine="python",          # tolerant to ragged rows
+                on_bad_lines="skip",       # skip malformed rows silently
+                usecols=lambda c: c in allowed_cols,
+                comment="#",               # ignore metadata comment lines
+                dtype=str,                 # keep as strings for harmoniser
+            )
+        except Exception as exc:
+            # Log & skip unreadable file instead of crashing whole ETL
+            print_and_log(f"[extract] WARN: could not parse {path}: {exc}; skipping file.", add_timestamp=False, logfile_path=logfile, collapse_size=1)
+            return
 
         for col in df.columns:
-            if col in skip_tsv or col not in tsv_allowed:
-                continue
-            for row in _yield_dicts(col, df[col].values):
-                yield row
+            print_and_log(f"Processing column: {col} with {len(df[col])} values: {df[col].values[:10]}", add_timestamp=False, logfile_path=logfile, collapse_size=1)
+            yield from _yield_dicts(col, df[col].values)
 
-    # ───────────────────────────── Unsupported ────────────────────────
+    # ───────────────────────── Other – ignore ──────────────────
     else:
-        raise ValueError(f"Unsupported file type: {suffix!r} for {path!r}")
+        return  # silently skip unsupported file types
