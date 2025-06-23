@@ -1,775 +1,203 @@
 #!/usr/bin/env python3
+"""
+Harmonizer v2.2 – mapping.yml–driven, with fallback APIs for ontology and taxonomy lookups.
+2025-06-23
+"""
 
-from collections import defaultdict
-import re, requests
-import xmltodict
-from typing import Optional, Dict, Callable
-from urllib.parse import quote
+import re
+import yaml
 import requests
-from typing import Optional, Dict
+import xmltodict
+from pathlib import Path
 from typing import Any, Dict, Optional
 
-import etl.utils.preprocessing as preprocessing
-# from functools import reduce
+# ─── Core ontology & taxonomy helpers ───────────────────────────────────────────
 
-
-# This dictionary maps ontology prefixes (e.g., "CL", "EFO") to the IRI base used to construct full URLs.
-# It is essential for converting compact CURIEs like "CL:0000057" into their canonical IRI form.
 PREFIX_TO_IRI = {
-    "CL": "http://purl.obolibrary.org/obo/CL_",
-    "EFO": "http://www.ebi.ac.uk/efo/EFO_",
+    "CL":        "http://purl.obolibrary.org/obo/CL_",
+    "EFO":       "http://www.ebi.ac.uk/efo/EFO_",
     "NCBITaxon": "http://purl.obolibrary.org/obo/NCBITaxon_",
-    "UBERON": "http://purl.obolibrary.org/obo/UBERON_",
-    "PATO": "http://purl.obolibrary.org/obo/PATO_",
-    "CHEBI": "http://purl.obolibrary.org/obo/CHEBI_",
+    "UBERON":    "http://purl.obolibrary.org/obo/UBERON_",
+    "PATO":      "http://purl.obolibrary.org/obo/PATO_",
+    "CHEBI":     "http://purl.obolibrary.org/obo/CHEBI_",
     "HANCESTRO": "http://purl.obolibrary.org/obo/HANCESTRO_",
-    "MONDO": "http://purl.obolibrary.org/obo/MONDO_",
-    "HsapDv": "http://purl.obolibrary.org/obo/HsapDv_"
+    "MONDO":     "http://purl.obolibrary.org/obo/MONDO_",
+    "HsapDv":    "http://purl.obolibrary.org/obo/HsapDv_",
 }
 
-TIMEOUT = 10  # seconds
-
-# ---------------------------------------------------------
-# --------------- Harmonization of Gene IDs ---------------
-# ---------------------------------------------------------
-
-# --- Regex-based gene ID format detection ---
-def detect_gene_id_format(gene_id: str) -> str:
-    """
-    Detects the format of a gene ID.
-    Returns one of: 'ensembl', 'entrez', 'symbol', 'unknown'
-    """
-    if re.match(r'^ENS[A-Z]{0,3}G\d{6,}$', gene_id):
-        return 'ensembl'
-    elif re.match(r'^\d+$', gene_id):
-        return 'entrez'
-    elif re.match(r'^[A-Z0-9\-]+$', gene_id):
-        return 'symbol'
-    else:
-        return 'unknown'
-
-# --- Harmonizer to Ensembl using MyGene.info API ---
-def harmonize_to_ensembl(gene_id: str, species: str = "human") -> dict:
-    """
-    Converts gene ID (Entrez or Symbol) to Ensembl Gene ID using MyGene.info.
-    Accepts a `species` argument, default is "human".
-    
-    Returns a dictionary like:
-    {
-        'input': 'TP53',
-        'detected_format': 'symbol',
-        'ensembl_id': 'ENSG00000141510',
-        'gene_name': 'TP53'
-    }
-    """
-    gene_id_norm = gene_id.strip().upper()
-    formatting = detect_gene_id_format(gene_id_norm)
-    if formatting == 'ensembl':
-        print(f"\t------------->  [DEBUG]\tInput {gene_id_norm} is already in Ensembl format.")
-        return {
-            'input': gene_id,
-            'detected_format': 'ensembl',
-            'ensembl_id': gene_id_norm,
-            'gene_name': None
-        }
-
-    query_url = f"https://mygene.info/v3/query?q={gene_id_norm}&fields=ensembl.gene,symbol&species={species}"
-    print(f"\t[DEBUG]\tQuerying MyGene.info for {gene_id_norm} ({species}) at {query_url}")
-    try:
-        response = requests.get(query_url, timeout=TIMEOUT)
-        data = response.json()
-
-        if not data.get('hits'):
-            return {'input': gene_id_norm, 'detected_format': formatting, 'ensembl_id': None, 'gene_name': None}
-
-        hit = data['hits'][0]
-        ensembl_id = hit.get('ensembl', {}).get('gene') if isinstance(hit.get('ensembl'), dict) else hit.get('ensembl')[0].get('gene')
-        gene_name = hit.get('symbol')
-        return {
-            'input': gene_id,
-            'detected_format': formatting,
-            'ensembl_id': ensembl_id,
-            'gene_name': gene_name
-        }
-
-    except Exception as e:
-        print(f"Error fetching Ensembl ID for {gene_id} ({species}): {e}")
-        return {'input': gene_id, 'detected_format': formatting, 'ensembl_id': None, 'gene_name': None}
-
-def extract_gene_id(entry: dict) -> str:
-    """
-    Given an entry like:
-        {
-            'input': gene_id,
-            'detected_format': formatting,
-            'ensembl_id': ensembl_id,
-            'gene_name': gene_name
-        }
-    return the gene_id (entry['input']) as a string.
-    """
-    print(f"\t[DEBUG]\tExtracting gene ID from entry: {entry}")
-    try:
-        gene_id = entry["ensembl_id"]
-    except KeyError:
-        raise KeyError("Entry missing required 'ensembl_id' key") from None
-
-    # Convert to str (in case it’s not already)
-    return str(gene_id)
-
-def extract_gene_name(entry: dict) -> str:
-    """
-    Given an entry like:
-        {
-            'input': gene_id,
-            'detected_format': formatting,
-            'ensembl_id': ensembl_id,
-            'gene_name': gene_name
-        }
-    return the gene_name as a string.
-    """
-    try:
-        gene_name = entry["gene_name"]
-    except KeyError:
-        raise KeyError("Entry missing required 'gene_name' key") from None
-
-    # Convert to str (in case it’s not already)
-    return str(gene_name)
-
-# -------------------------------------------------------------
-# --------------- Harmonization of Ontology IDs ---------------
-# -------------------------------------------------------------
+TIMEOUT = 5  # HTTP timeout
 
 
-# Converts a CURIE (like "CL:0000057") to its corresponding full IRI using the mapping above.
-# Returns None if the CURIE is malformed or the prefix is unknown.
-def curie_to_iri(curie: str) -> Optional[str]:
-    if ":" not in curie:
-        return None
-    prefix, local_id = curie.split(":")
-    base = PREFIX_TO_IRI.get(prefix)
-    return base + local_id if base else None
-
-# Converts a full IRI (like "http://purl.obolibrary.org/obo/CL_0000057") to its corresponding CURIE.
-# This helps normalize identifiers and can be used to reverse earlier mappings.
-def iri_to_curie(iri: str) -> Optional[str]:
-    for prefix, base in PREFIX_TO_IRI.items():
-        if iri.startswith(base):
-            return f"{prefix}:{iri[len(base):]}"
-    return None
-
-# Takes any ontology identifier (either CURIE or IRI) and returns a normalized dictionary
-# containing the canonical IRI, the CURIE form, and the ontology prefix.
-# This step standardizes identifiers so later enrichment functions can treat them uniformly.
-def normalize_ontology_id(id_str: str) -> Optional[Dict[str, str]]:
+def normalize_ontology_id(id_str: str) -> Optional[Dict[str,str]]:
+    """Given a CURIE or full IRI, return standardized iri+curie+prefix or None."""
     if id_str.startswith("http"):
         iri = id_str
-        curie = iri_to_curie(iri)
-    elif ":" in id_str:
-        curie = id_str
-        iri = curie_to_iri(curie)
-    else:
+        for pfx, base in PREFIX_TO_IRI.items():
+            if iri.startswith(base):
+                return {"iri": iri, "curie": f"{pfx}:{iri[len(base):]}", "prefix": pfx}
         return None
-    if not iri or not curie:
-        return None
-    prefix = curie.split(":")[0]
-    return {"iri": iri, "curie": curie, "ontology_prefix": prefix}
-
-# Queries the OLS (Ontology Lookup Service) API to get metadata (name, definition)
-# for a given ontology term. The input is any string (CURIE or IRI), which is normalized internally.
-# This is the primary enrichment source.
-def fetch_from_ols(id_str: str) -> Optional[Dict[str, Optional[str]]]:
-    norm = normalize_ontology_id(id_str)
-    if norm is None:
-        return None
-    curie = norm["curie"]
-    prefix = norm["ontology_prefix"]
-
-    print(f"[OLS] Looking up {curie} from ontology '{prefix.lower()}'")
-
-    # OLS expects lowercase ontology prefixes and uses the OBO ID (CURIE) as a parameter
-    url = f"https://www.ebi.ac.uk/ols4/api/ontologies/{prefix.lower()}/terms?obo_id={quote(curie)}"
-    try:
-        # Perform the HTTP request to fetch term info from OLS
-        r = requests.get(url, timeout=5)
-        r.raise_for_status()
-        results = r.json().get("_embedded", {}).get("terms", [])
-        if not results:
-            print(f"[OLS] No result found for {curie}")
+    if ":" in id_str:
+        pfx, local = id_str.split(":", 1)
+        base = PREFIX_TO_IRI.get(pfx)
+        if not base:
             return None
+        return {"iri": base + local, "curie": id_str, "prefix": pfx}
+    return None
 
-        # Extract term metadata from the first result (most relevant)
-        term = results[0]
-        name = term.get("label")
-        # You asked for definition to be retrieved from the "obo_definition_citation" key instead of the "definition" key
-        definition = term.get("obo_definition_citation")
-        if isinstance(definition, list):
-            definition = definition[0]
+# ─── Fallback taxonomy rank via NCBI ─────────────────────────────────────────
 
-        print(f"[OLS] Success: {curie} → {name}")
-        return {"name": name, "definition": definition}
-    except Exception as e:
-        print(f"[OLS ERROR] {curie}: {e}")
-        return None
-
-# If OLS fails, fallback to Ontobee by performing a SPARQL query to its public endpoint.
-# This is useful for ontologies that OLS does not cover (e.g., HsapDv) or for edge cases.
-import requests
-from typing import Optional, Dict
-
-HEADERS = {"Accept": "application/sparql-results+json"}
-
-def fetch_from_ontobee(iri: str) -> Optional[Dict[str, Optional[str]]]:
-    sparql = f"""
-    PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-    SELECT ?label ?def WHERE {{
-      <{iri}> rdfs:label ?label .
-      OPTIONAL {{ <{iri}> <http://purl.obolibrary.org/obo/IAO_0000115> ?def . }}
-    }}
-    LIMIT 1
-    """
-
+def ncbi_get_rank(taxon_id: str) -> Optional[str]:
+    """Fetch taxonomic rank from NCBI taxonomy API."""
     try:
-        r = requests.post(
-            "https://sparql.hegroup.org/sparql",        # ← new host
-            data={"query": sparql, "format": "json"},   # POST is safer for long queries
-            headers=HEADERS,
-            timeout=10,
-        )
-        r.raise_for_status()
-        print(f"[Ontobee] Looking up {iri}")
-
-        if r.headers.get("Content-Type", "").startswith("text/html"):
-            raise ValueError("Ontobee returned HTML instead of JSON")
-
-        bindings = r.json()["results"]["bindings"]
-        if not bindings:
-            return None
-
-        label = bindings[0]["label"]["value"]
-        definition = bindings[0].get("def", {}).get("value")
-        print(f"[Ontobee] Success: {iri} → {label}")
-        # Return a dictionary with the label and definition
-        # Note: definition may be None if not available
-        if definition is None:
-            definition = "No definition available"
-        return {"name": label, "definition": definition}
-
-    except Exception as exc:
-        print(f"[Ontobee ERROR] {iri}: {exc}")
-        return None
-
-    
-    # try:
-    #     data = response.json()
-    # except ValueError:
-    #     print(f"Ontobee returned non-JSON response for {iri}:")
-    #     print(response.text)
-    #     return None
-
-
-def fetch_from_chebi(curie: str) -> str:
-    """Return the name of the CHEBI term if it exists, else None."""
-    chebi_id = curie.split(":")[1]          # '17924'
-    url = f"https://www.ebi.ac.uk/webservices/chebi/2.0/test/getCompleteEntity?chebiId={curie}&format=xml"
-    # Note: the URL is a test endpoint, but it works for existence checks
-    # (the production endpoint requires a valid API key, which we don’t have)
-    # Note: the response is XML, but we only need to check if it’s valid
-    # (if the term exists, it will return a valid XML with <ChebiEntity
-    try:
+        url = f"https://api.ncbi.nlm.nih.gov/taxonomy/v0/id/{taxon_id}?format=json"
         r = requests.get(url, timeout=TIMEOUT)
         r.raise_for_status()
-        
-        doc = xmltodict.parse(r.text)
-        try:
-            node = (
-                doc['S:Envelope']
-                ['S:Body']
-                ["getCompleteEntityResponse"]    
-                ["return"]                       
-                ["chebiAsciiName"]              
-            )
-            # If the node exists, it means the term is valid
-            # (if it’s not valid, the response will be empty or missing)
-            # Return the name of the term, or None if it’s not found
-            return node.strip() if node else None
-        except (KeyError, TypeError):
-            return None
-    except Exception:
-        return False
-
-
-import requests, urllib.parse as up
-from typing import Optional
-
-TIMEOUT = 10
-BASE    = "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esummary.fcgi"
-TOOL    = "gutbrain_dw"                 # anything < 20 chars
-EMAIL   = "regas.apn@gmail.com"          # a real address → higher quota
-API_KEY = "2a9ddd7e4d0f586db43c4f07640c3fcb7509"     # optional but raises quota to 10 req/s
-
-def fetch_from_ncbi_taxon(curie: str, email: str = EMAIL, tool: str  = TOOL) -> bool:
-    tax_id = curie.split(":", 1)[1]
-    print(f"os.getenv: {API_KEY}")
-    
-    params = {
-        "db":      "taxonomy",
-        "id":      tax_id,
-        "retmode": "json",
-        "tool":    tool,
-        "email":   email,      
-        "api_key": API_KEY,    
-    }
-    url = f"{BASE}?{up.urlencode(params)}"
-    print(f"[NCBI Taxon] GET {url}")
-
-    try:
-        r = requests.get(
-        url,
-        params=params,
-        headers={"Accept": "application/json"},
-        timeout=TIMEOUT,
-    )
-        r.raise_for_status()
-        
-        if r.headers.get("Content-Type", "").startswith("text/html"):
-            # Will happen if NCBI is down and serves a banner page
-            print("[NCBI Taxon] HTML response — treating as not-found")
-            print(f"[NCBI Taxon] Response: {r.text}")  # print first 1000 chars
-            return False
-
         data = r.json()
-        hit  = bool(data.get("result", {}).get(tax_id))
-        print(f"[NCBI Taxon] Found={hit}")
-        return hit
-
-    except Exception as exc:
-        print(f"[NCBI Taxon ERROR] {curie}: {exc}")
-        return False
-
-
-
-# ----------------------------------------------------------------
-#  Lookup strategy per ontology prefix
-# ----------------------------------------------------------------
-
-# Each entry is ordered list of *callables* that return True/False
-PREFIX_LOOKUP_CHAIN: Dict[str, tuple[Callable[[str], bool], ...]] = {
-    # Preferred specialist endpoints first, then general OLS / Ontobee
-    "CHEBI":    (fetch_from_chebi, fetch_from_ols, fetch_from_ontobee),
-    "NCBITaxon": (fetch_from_ncbi_taxon, fetch_from_ols, fetch_from_ontobee),
-    "HsapDv":   (fetch_from_ontobee, ),                    # Ontobee only
-    # Everything else defaults to OLS → Ontobee
-}
-
-DEFAULT_CHAIN = (fetch_from_ols, fetch_from_ontobee)
-
-# -----------------------------------------------------------------------------
-#  resolve_stimulus_iri  – map free-text metabolite names to canonical IRIs
-# -----------------------------------------------------------------------------
-_OLS_SEARCH_URL = "https://www.ebi.ac.uk/ols/api/search"
-
-# Curated one-shot mapping for the metabolites you know you’ll see often
-# (synonyms folded to lowercase ASCII so they match the output of lowercase_ascii)
-_CURATED: dict[str, str] = {
-    "butyrate":          "CHEBI:30772",
-    "sodium butyrate":   "CHEBI:32177",
-    "acetate":           "CHEBI:30089",
-    "lps":               "CHEBI:16412",        # lipopolysaccharide
-    "tnfα":              "CHEBI:18259",        # TNF alpha cytokine
-    "tnfa":              "CHEBI:18259",
-    "none":              None,                 # explicit “no stimulus”
-}
-
-# Loose regex to recognise an already-supplied CHEBI or EFO CURIE inside the text
-_CURIE_RE = re.compile(r"\b((?:CHEBI|EFO)[:_]\d+)\b", flags=re.I)
-
-def resolve_stimulus_iri(label: Optional[str]) -> Optional[str]:
-    """
-    Best-effort conversion of a *free-text* stimulus label into a canonical OBO IRI.
-
-    Strategy
-    --------
-    1. Label → lowercase_ascii
-    2. If it already contains a recognised CURIE (CHEBI:12345), return its IRI.
-    3. Check curated synonym table (fast path).
-    4. Fallback: live query to the OLS `/search` endpoint, restricted to CHEBI & EFO.
-       The first exact-label hit is accepted.
-
-    If every step fails, returns None (the ETL will keep the raw text in
-    `Stimuli.label` and leave `Stimuli.iri` NULL).
-    """
-    if label is None:
-        return None
-
-    canon = preprocessing.lowercase_ascii(label)
-    if canon is None:
-        return None
-
-    # Already contains CURIE?  (user may have typed "CHEBI:30772 (butyrate)")
-    m = _CURIE_RE.search(canon)
-    if m:
-        curie = m.group(1).replace("_", ":").upper()
-        return canonical_iri(curie)        # validate & expand to IRI
-
-    # Curated dictionary hit
-    if canon in _CURATED:
-        curie = _CURATED[canon]
-        return canonical_iri(curie) if curie else None
-
-    # Online lookup: OLS text search limited to CHEBI + EFO
-    try:
-        import requests
-        from urllib.parse import quote_plus
-
-        params = {
-            "q": quote_plus(canon),
-            "ontology": "chebi,efo",
-            "exact": "true",
-            "fieldList": "iri,obo_id,label",
-        }
-        r = requests.get(_OLS_SEARCH_URL, params=params, timeout=5)
-        r.raise_for_status()
-        docs = r.json().get("response", {}).get("docs", [])
-        if docs:
-            # trust the first exact match
-            candidate_iri  = docs[0]["iri"]
-            return canonical_iri(candidate_iri)
+        return data.get('rank')
     except Exception:
-        # Network issues, unknown label – silently fall through
-        pass
-
-    return None
-
-import logging
-logger = logging.getLogger(__name__)
-
-def fetch_stimulus_metadata(iri: str) -> Dict[str, Any]:
-    """Resolve *iri* via EMBL‑EBI OLS.  Fallback to label heuristics."""
-    if not iri.startswith("http"):
-        return {"iri": iri, "label": iri.split(":" if ":" in iri else " ")[0], "class_hint": None}
-
-    api = "https://www.ebi.ac.uk/ols4/api/terms?iri=" + requests.utils.quote(iri, safe="")
-    try:
-        r = requests.get(api, timeout=TIMEOUT)
-        if r.ok and (resp := r.json()).get("_embedded"):
-            term = resp["_embedded"]["terms"][0]
-            return {
-                "iri": iri,
-                "label": term.get("label"),
-                "class_hint": term.get("annotation", {}).get("hasExactSynonym", [None])[0],
-            }
-    except Exception as exc:
-        logger.debug("OLS lookup failed: %s", exc)
-    return {"iri": iri, "label": iri.rsplit("/", 1)[-1], "class_hint": None}
-
-# TODO: when NCBI unblocks my IP check if it is possibly redundant or could shorten to a single fetch_from_ncbi_taxon call
-def fetch_microbe_metadata(taxon_id: int | None) -> Dict[str, Any]:
-    """Fetch Latin binomial from NCBI Taxonomy API (minimal payload)."""
-    if taxon_id is None:
-        return {"taxon_id": None, "species_name": None}
-    api = f"https://api.ncbi.nlm.nih.gov/taxonomy/v0/id/{taxon_id}"
-    try:
-        r = requests.get(api, timeout=TIMEOUT)
-        if r.ok:
-            data = r.json()
-            sci = data.get("scientificName") or data.get("lineage", [{}])[-1].get("scientificName")
-            return {"taxon_id": taxon_id, "species_name": sci}
-    except Exception as exc:
-        logger.debug("NCBI taxonomy failed: %s", exc)
-    return {"taxon_id": taxon_id, "species_name": None}
-
-def normalize_study_accession(acc: str) -> str:
-    """Canonicalise study accession – just strip whitespace for now."""
-    return acc.strip()
-
-def fetch_study_metadata(study_id: str) -> Dict[str, Any]:
-    """Very thin wrapper to d‑get title / source from ArrayExpress/CELLxGENE.
-    Only stubs right now to avoid heavy network dependency.
-    """
-    source = "ArrayExpress" if study_id.startswith("E-MTAB") else "CELLxGENE" if study_id.startswith("GSE") else "LOCAL"
-    return {
-        "study_id": study_id,
-        "title": f"Study {study_id}",
-        "source_repo": source,
-    }
-    
-def extract_sample_id(text: str) -> str:
-    """Return the sample accession unchanged (placeholder)."""
-    return text.strip()
-    
-def fetch_sample_metadata(sample_id: str) -> Dict[str, Any]:
-    """Stub – in real life this would pull from MGnify / GEO / CXG API."""
-    return {
-        "sample_id": sample_id,
-        "study_id": None,
-        "cell_type_iri": None,
-        "cell_type_label": None,
-        "tissue_iri": None,
-        "tissue_label": None,
-        "organism_iri": None,
-        "organism_label": None,
-        "growth_condition": None,
-        "stimulus_id": None,
-        "microbe_id": None,
-        "zarr_uri": None,
-    }
-
-# --- Link table (MicrobeStimulus) ------------------------------------------
-
-def parse_microbe_stimulus_record(text: str) -> Dict[str, Any]:
-    """Extract IDs and ‘evidence’ from raw co‑occurrence string."""
-    m_microbe = re.search(r"NCBITaxon:(\d+)", text)
-    m_stim = re.search(r"(CHEBI:\d+|EFO:\d+)", text)
-    microbe_id = int(m_microbe.group(1)) if m_microbe else None
-    stimulus_id = canonical_iri(m_stim.group(1)) if m_stim else None
-    evidence = "literature" if "PMC" in text else "mgnify"
-    return {"microbe_id": microbe_id, "stimulus_id": stimulus_id, "evidence": evidence}
-
-# --- Expression statistics --------------------------------------------------
-
-def parse_expression_stat_record(text: str) -> Dict[str, Any]:
-    """Assume format ``exprstat:SAMPLE,GENE,log2fc,pval,sig``."""
-    try:
-        _, payload = text.split(":", 1)
-        sample_id, gene_id, log2_fc, p_value, significance = payload.split(",")
-        return {
-            "sample_id": sample_id,
-            "gene_id": gene_id,
-            "log2_fc": float(log2_fc),
-            "p_value": float(p_value),
-            "significance": significance,
-        }
-    except ValueError:
-        logger.warning("Malformed exprstat row: %s", text)
-        return {}
-
-
-# ----------------------------------------------------------------
-#  The canonicaliser itself
-# ----------------------------------------------------------------
-def canonical_iri(id_str: str) -> Optional[str]:
-    """
-    • Normalises *id_str* (CURIE or IRI)
-    • Picks a lookup chain based on ontology prefix
-    • Returns canonical IRI if the term can be resolved, None otherwise
-    """
-    norm = normalize_ontology_id(id_str)
-    if norm is None:
         return None
 
-    curie  = norm["curie"]
-    iri    = norm["iri"]
-    prefix = norm["ontology_prefix"]
+# ─── Transform functions registry ────────────────────────────────────────────
 
-    # Decide which lookup functions to try
-    chain = PREFIX_LOOKUP_CHAIN.get(prefix, DEFAULT_CHAIN)
+def strip_version(val: str) -> str:
+    return re.sub(r"\.\d+$", "", val)
 
-    for fetcher in chain:
-        ok = False
-        # fetch_from_ols / _ontobee return dict on success, specialist fetchers return bool
+def canonical_iri(val: str) -> Optional[str]:
+    gv = strip_version(val)
+    return f"http://identifiers.org/ensembl/{gv}"
+
+def get_local_link(val: str) -> str:
+    return f"/samples/{val}"
+
+def get_iri(val: str) -> Optional[str]:
+    norm = normalize_ontology_id(val)
+    return norm["iri"] if norm else None
+
+def get_name(val: str) -> Optional[str]:
+    """Fetch term label from OLS4, fallback to Ontobee."""
+    norm = normalize_ontology_id(val)
+    if not norm:
+        return None
+    prefix = norm['prefix'].lower()
+    curie = norm['curie']
+    # primary: OLS4
+    try:
+        url = f"https://www.ebi.ac.uk/ols4/api/ontologies/{prefix}/terms?obo_id={curie}"
+        r = requests.get(url, timeout=TIMEOUT)
+        r.raise_for_status()
+        terms = r.json().get("_embedded", {}).get("terms", [])
+        if terms and terms[0].get("label"):
+            return terms[0]["label"]
+    except Exception:
+        pass
+    # fallback: Ontobee SPARQL
+    try:
+        sparql = (
+            f"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>"
+            f" SELECT ?label WHERE {{ <{norm['iri']}> rdfs:label ?label }}"
+        )
+        ob_url = "https://www.ontobee.org/sparql"
+        r2 = requests.get(ob_url, params={'query': sparql, 'output': 'json'}, timeout=TIMEOUT)
+        r2.raise_for_status()
+        bindings = r2.json().get('results', {}).get('bindings', [])
+        if bindings:
+            return bindings[0]['label']['value']
+    except Exception:
+        pass
+    return None
+
+def get_chem_class(val: str) -> Optional[str]:
+    """Fetch CHEBI classification via OLS4 annotation, fallback to XML service."""
+    norm = normalize_ontology_id(val)
+    if norm:
         try:
-            res = fetcher(curie if fetcher is not fetch_from_ontobee else iri)
-            ok  = bool(res)
+            url = f"https://www.ebi.ac.uk/ols4/api/ontologies/{norm['prefix'].lower()}/terms?obo_id={norm['curie']}"
+            r = requests.get(url, timeout=TIMEOUT)
+            r.raise_for_status()
+            ann = r.json().get("_embedded", {}).get("terms", [])[0].get("annotation", {})
+            if ann.get('chebi_class'):
+                return ann['chebi_class'][0]
         except Exception:
-            ok = False
-        if ok:
-            return iri  # success → canonical IRI
+            pass
+    try:
+        chebi_id = val.split(':',1)[1]
+        url = f"https://www.ebi.ac.uk/webservices/chebi/2.0/test/getCompleteEntity?chebiId={chebi_id}&format=xml"
+        r2 = requests.get(url, timeout=TIMEOUT)
+        r2.raise_for_status()
+        doc = xmltodict.parse(r2.text)
+        return doc['S:Envelope']['S:Body']["getCompleteEntityResponse"]["return"]["chebiAsciiName"].strip()
+    except Exception:
+        return None
 
-    # No service could verify the term
-    print(f"[ERROR] Could not resolve {id_str} to a canonical IRI")
-    # (this is logged, not raised, to avoid ETL failure)
-    
-    # Return None to indicate failure
-    print("[ERROR] Returning None")
+def get_ranking(val: str) -> Optional[str]:
+    """Query taxonomy rank via OLS4, fallback to NCBI taxonomy API."""
+    norm = normalize_ontology_id(val)
+    if not norm:
+        return None
+    prefix = norm['prefix'].lower()
+    curie = norm['curie']
+    # primary: OLS4 annotation 'has_rank'
+    try:
+        url = f"https://www.ebi.ac.uk/ols4/api/ontologies/{prefix}/terms?obo_id={curie}"
+        r = requests.get(url, timeout=TIMEOUT)
+        r.raise_for_status()
+        ann = r.json().get("_embedded", {}).get("terms", [])[0].get("annotation", {})
+        if ann.get('has_rank'):
+            rank = ann['has_rank']
+            return rank[0] if isinstance(rank, list) else rank
+    except Exception:
+        pass
+    # fallback: NCBI taxonomy
+    if norm['prefix'] == 'NCBITaxon':
+        taxid = norm['curie'].split(':',1)[1]
+        return ncbi_get_rank(taxid)
     return None
 
-def enrich_ontology_term(id_str: str) -> Optional[Dict[str, Any]]:
-    """
-    Resolve *id_str* (CURIE or IRI) and return a dictionary with:
-        • iri               – canonical full IRI           (str)
-        • curie             – CURIE form                  (str)
-        • ontology_prefix   – e.g. 'CL', 'UBERON'         (str)
-        • label             – preferred human-readable    (str or None)
-        • definition        – textual definition          (str or None)
-        • source            – service that supplied data  (str)
-    
-    On complete failure returns None.
-    """
-    norm = normalize_ontology_id(id_str)
-    if norm is None:
-        return None                        # malformed identifier
+def get_ontology(val: str) -> Optional[str]:
+    norm = normalize_ontology_id(val)
+    return norm['prefix'] if norm else None
 
-    curie  = norm["curie"]
-    iri    = norm["iri"]
-    prefix = norm["ontology_prefix"]
-
-    lookups = PREFIX_LOOKUP_CHAIN.get(prefix, DEFAULT_CHAIN)
-
-    # Helper to merge two (possibly partial) result dicts
-    def _merge(d1: Dict[str, Any], d2: Dict[str, Any]) -> Dict[str, Any]:
-        merged = d1.copy()
-        merged.update({k: v for k, v in d2.items() if v})   # keep non-null values
-        return merged
-
-    # Start with the normalised identifiers; we’ll enrich as we go
-    payload: Dict[str, Any] = {
-        "iri": iri,
-        "curie": curie,
-        "ontology_prefix": prefix,
-        "label": None,
-        "definition": None,
-        "source": None,
-    }
-
-    for fetcher in lookups:
-        try:
-            if fetcher is fetch_from_ontobee:
-                res = fetcher(iri)          # Ontobee needs full IRI
-            else:
-                res = fetcher(curie)
-
-            # Specialist probes (e.g. fetch_from_chebi / _ncbi_taxon) return bool
-            if res is True:
-                payload["source"] = fetcher.__name__
-                return payload            # existence confirmed; no rich metadata available
-            elif isinstance(res, dict):
-                payload = _merge(payload, res)
-                payload["source"] = fetcher.__name__
-                # If we now have at least a label, declare success
-                if payload["label"]:
-                    return payload
-        except Exception:                  # keep trying the next service
-            continue
-
-    # All lookups exhausted without usable data
-    return None
-
-TRANSFORM_REGISTRY = {
-    # versioning & cleanup
-    "strip_version": preprocessing.strip_version,
-    "lowercase_ascii": preprocessing.lowercase_ascii,
-    "split_commas": preprocessing.split_commas,
-
-    # gene enrichment
-    "extract_gene_id": extract_gene_id,
-    "harmonize_to_ensembl": harmonize_to_ensembl,
-
-    # stimulus resolution
-    "resolve_stimulus_iri": canonical_iri,
+TRANSFORM_FUNCS: Dict[str, Any] = {
+    "strip_version": strip_version,
     "canonical_iri": canonical_iri,
-    "fetch_stimulus_metadata": fetch_stimulus_metadata,
-
-    # microbial taxonomy
-    # "extract_taxon_numeric_id": extract_taxon_numeric_id,
-    "fetch_from_ncbi_taxon": fetch_from_ncbi_taxon,
-    "fetch_microbe_metadata": fetch_microbe_metadata,
-
-    # study metadata
-    "normalize_study_accession": normalize_study_accession,
-    "fetch_study_metadata": fetch_study_metadata,
-
-    # sample metadata
-    "extract_sample_id": extract_sample_id,
-    "fetch_sample_metadata": fetch_sample_metadata,
-
-    # links and stats
-    "parse_microbe_stimulus_record": parse_microbe_stimulus_record,
-    "parse_expression_stat_record": parse_expression_stat_record,
+    "get_local_link": get_local_link,
+    "get_iri": get_iri,
+    "get_name": get_name,
+    "get_chem_class": get_chem_class,
+    "get_ranking": get_ranking,
+    "get_ontology": get_ontology,
 }
 
-# def harmonise(records, mapping):
-#     staging = defaultdict(set)
-#     for rec in records:
-#         for rule_name, rule in mapping["columns"].items():
-#             # print(f"Processing record {rec} with rule '{rule_name}'")
-#             # print(f"Rule regex: {rule['regex']} matches {rec['value']}: {re.match(rule['regex'], rec['value']) is not None}")
-#             if re.match(rule["regex"], rec["value"]) is not None:
-#                 # print(f"Matched rule '{rule_name}' for value '{rec['value']}'")
-#                 value = rec["value"]
-#                 # Run transform steps in order
-#                 for fn in rule["transforms"]:
-#                     value = TRANSFORM_REGISTRY[fn](value)
-#                     # print(f"\t#####\tApplying transform '{fn}' to value '{rec['value']}' → '{value}'")
-#                 staging[(rule["target_table"], rule["target_column"])].add(value)
-#                 break   # stop at first matching rule
-#     return staging
+# ─── Mapping‐driven harmonization ────────────────────────────────────────────
 
+def load_mapping(path: Path) -> Dict[str,Any]:
+    with open(path, "r") as fh:
+        return yaml.safe_load(fh)
 
-def harmonise(records, mapping):
-    """Populate a staging structure for bulk INSERTs.
+def harmonize(item: Dict[str,Any], mapping: Dict[str,Any]) -> Optional[Dict[str,Any]]:
+    col, val = item["column"], item["value"]
+    candidates = [k for k in mapping["columns"] if k.endswith(f".{col}")]
+    if len(candidates) != 1:
+        return None
+    entry = mapping["columns"][candidates[0]]
+    out = val
+    for t in entry.get("transforms", []):
+        fn = TRANSFORM_FUNCS.get(t)
+        if not fn:
+            raise KeyError(f"Unknown transform '{t}'")
+        out = fn(out)
+    return {"table": entry["target_table"], "column": entry["target_column"], "value": out}
 
-    Parameters
-    ----------
-    records : iterable
-        A stream of dictionaries coming from the raw extractor, each with at least
-        a ``value`` key.
-    mapping : dict
-        Parsed mapping.yml structure.
+# ─── CLI harness ─────────────────────────────────────────────────────────────
 
-    Returns
-    -------
-    defaultdict(set)
-        Keys are (table_name, column_name) tuples, values are *unique* primitives
-        ready to be inserted.  Using sets prevents duplicates within the same
-        batch and keeps the rest of the loader unchanged.
-
-    Notes
-    -----
-    * ``target_column`` in mapping.yml can now be **either** a single string **or**
-      a list whose indices align with the declared ``transforms``.  This lets
-      you stage scalar outputs from *each* transform in a chain—handy for cases
-      like the *Taxa* table where you want both ``kingdom`` *and* ``rank``.
-    * Whenever a transform returns a ``dict`` we unpack every key/value pair and
-      stage them as individual columns.  The special key ``ensembl_id`` is still
-      mapped back to the rule’s primary ``target_column`` for backward‑compat.
-    """
-
-    staging = defaultdict(set)
-
-    for rec in records:
-        raw_value = rec["value"]
-        if type(raw_value) is not str or type(raw_value) is int or type(raw_value) is float:
-            # Skip non-string values (e.g. None, byte-like, etc.)
-            continue
-
-        for rule_name, rule in mapping["columns"].items():
-            if re.match(rule["regex"], raw_value) is None:
-                continue  # next rule
-
-            target_table = rule["target_table"]
-            target_cols = rule["target_column"]  # str | List[str]
-            transforms = rule.get("transforms", [])
-
-            value = raw_value  # feed into first transform
-
-            for idx, fn_name in enumerate(transforms):
-                fn = TRANSFORM_REGISTRY[fn_name]
-                result = fn(value)
-
-                # --- 1. Dict result -> multi‑column insert -------------------
-                if isinstance(result, dict):
-                    for k, v in result.items():
-                        if v is None:
-                            continue
-                        # Legacy alias for Genes: map 'ensembl_id' back
-                        # to the rule’s primary column name.
-                        col_name = (
-                            target_cols if (isinstance(target_cols, str) and k == "ensembl_id") else k
-                        ) # TODO: remove this legacy alias in future
-                        staging[(target_table, col_name)].add(v)
-
-                # --- 2. Scalar result ---------------------------------------
-                else:
-                    if isinstance(target_cols, list):
-                        # Align with transform index; fall back to last entry
-                        col_name = target_cols[idx] if idx < len(target_cols) else target_cols[-1]
-                    else:
-                        col_name = target_cols
-                    staging[(target_table, col_name)].add(result)
-
-                # Pass result downstream so transforms can chain
-                value = result
-
-            break  # stop after first matching rule – same as original
-
-    return staging
+if __name__ == "__main__":
+    import sys, json
+    if len(sys.argv) < 2:
+        print("Usage: harmonize.py <mapping.yml>")
+        sys.exit(1)
+    mapping = load_mapping(Path(sys.argv[1]))
+    for line in sys.stdin:
+        item = json.loads(line)
+        out = harmonize(item, mapping)
+        if out:
+            print(json.dumps(out))
