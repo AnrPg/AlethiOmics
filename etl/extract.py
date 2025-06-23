@@ -13,10 +13,11 @@ Changes
 from __future__ import annotations
 
 from pathlib import Path
+import re
 from typing import Dict, Generator, Any, Iterable, Tuple, Set, Union
 import yaml
 
-from etl.utils.misc import print_and_log  # PyYAML
+from etl.utils.misc import create_timestamped_filename, print_and_log  # PyYAML
 
 CHUNK = 10_000  # rows per chunk when iterating arrays
 
@@ -61,6 +62,7 @@ def extract(
     path: Path,
     mapping: Union[Path, str, Dict[str, Any]],
     *,
+    want: str = "all",                             # <— new: "all"|"meta"|"genes"
     skip_zarr_datasets: Set[str] | None = None,
     skip_tsv_columns: Set[str] | None = None,
 ) -> Generator[Dict[str, Any], None, None]:
@@ -68,7 +70,7 @@ def extract(
 
     Handles `.zarr`, `.tsv`, `.txt`.  All other files are silently ignored.
     """
-    logfile = print_and_log(f"[extract] Processing file: {path}", collapse_size=1)
+    logfile = create_timestamped_filename("./debug_logs")
     # Abort if we're inside a .zarr store (internal file)
     parts = path.parts
     if any(p.endswith(".zarr") for p in parts[:-1]):
@@ -87,27 +89,32 @@ def extract(
         root = zarr.open(path, mode="r")
 
         # var (feature metadata)
-        var_grp = root["var"]
-        for key in var_grp.array_keys():
-            print_and_log(f"Processing var key: {key}", add_timestamp=False, logfile_path=logfile, collapse_size=1)
-            if key not in var_allowed:
-                print_and_log(f"\tSkipping var key: {key} (not in mapping)", add_timestamp=False, logfile_path=logfile, collapse_size=1)
-                continue
-            arr = var_grp[key]
-            for start in range(0, len(arr), CHUNK):
-                print_and_log(f"\tProcessing var chunk: {start} to {start + CHUNK}: {key} --> {arr[start : start + 10]}", add_timestamp=False, logfile_path=logfile, collapse_size=1)
-                yield from _yield_dicts(key, arr[start : start + CHUNK])
+        if want in ("all", "genes"):
+            var_grp = root["var"]
+            for key in var_grp.array_keys():
+                print_and_log(f"Processing var key: {key}", add_timestamp=False, logfile_path=logfile, collapse_size=0)
+                if key not in var_allowed:
+                    print_and_log(f"\tSkipping var key: {key} (not in mapping)", add_timestamp=False, logfile_path=logfile, collapse_size=0)
+                    continue
+                arr = var_grp[key]
+                for start in range(0, len(arr), CHUNK):
+                    print_and_log(f"\tProcessing var chunk: {start} to {start + CHUNK}: {key} --> {arr[start : start + 10]}", add_timestamp=False, logfile_path=logfile, collapse_size=0)
+                    yield from _yield_dicts(key, arr[start : start + CHUNK])
 
         # obs (sample metadata)
-        obs_grp = root["obs"]
-        for key in obs_grp.array_keys():
-            print_and_log(f"Processing obs key: {key}", add_timestamp=False, logfile_path=logfile, collapse_size=1)
-            if key in skip_zarr or key not in obs_allowed:
-                print_and_log(f"\tSkipping obs key: {key} (not in mapping or skipped)", add_timestamp=False, logfile_path=logfile, collapse_size=1)
-                continue
-            col = obs_grp[key][:]
-            print_and_log(f"\tProcessing obs column: {key} with {len(col)} values: {col[:10]}", add_timestamp=False, logfile_path=logfile, collapse_size=1)
-            yield from _yield_dicts(key, col)
+        if want in ("all", "meta"):
+            obs_grp = root["obs"]
+            if want in ("meta",) and re.search(r"/X/|counts|raw/", str(path)):
+                return
+
+            for key in obs_grp.array_keys():
+                print_and_log(f"Processing obs key: {key}", add_timestamp=False, logfile_path=logfile, collapse_size=0)
+                if key in skip_zarr or key not in obs_allowed:
+                    print_and_log(f"\tSkipping obs key: {key} (not in mapping or skipped)", add_timestamp=False, logfile_path=logfile, collapse_size=0)
+                    continue
+                col = obs_grp[key][:]
+                print_and_log(f"\tProcessing obs column: {key} with {len(col)} values: {col[:10]}", add_timestamp=False, logfile_path=logfile, collapse_size=0)
+                yield from _yield_dicts(key, col)
 
     # ───────────────────────── TSV / TXT ───────────────────────
     elif suffix in {".tsv", ".txt"}:
@@ -130,11 +137,11 @@ def extract(
             )
         except Exception as exc:
             # Log & skip unreadable file instead of crashing whole ETL
-            print_and_log(f"[extract] WARN: could not parse {path}: {exc}; skipping file.", add_timestamp=False, logfile_path=logfile, collapse_size=1)
+            print_and_log(f"[extract] WARN: could not parse {path}: {exc}; skipping file.", add_timestamp=False, logfile_path=logfile, collapse_size=0)
             return
 
         for col in df.columns:
-            print_and_log(f"Processing column: {col} with {len(df[col])} values: {df[col].values[:10]}", add_timestamp=False, logfile_path=logfile, collapse_size=1)
+            print_and_log(f"Processing column: {col} with {len(df[col])} values: {df[col].values[:10]}", add_timestamp=False, logfile_path=logfile, collapse_size=0)
             yield from _yield_dicts(col, df[col].values)
 
     # ───────────────────────── Other – ignore ──────────────────
