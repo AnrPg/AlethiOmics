@@ -8,7 +8,7 @@ from sshtunnel import SSHTunnelForwarder
 from collections import defaultdict
 
 from etl import discover as discvr
-from etl.utils.misc import print_and_log
+from etl.utils.misc import create_timestamped_filename, print_and_log
 
 # adjust these for your cluster
 SSH_HOST     = "devanr.tenant-a9.svc.cluster.local"
@@ -53,7 +53,8 @@ batch_num = 1
 batch_count = 0
 
 discover_dir = "raw_data"
-logfile = print_and_log(f"Looking for files in directory: {discover_dir}\n")
+logfile = create_timestamped_filename("./debug_logs")
+print_and_log(f"Looking for files in directory: {discover_dir}\n")
 
 for path in discvr.discover(discover_dir):
     from etl.extract import extract
@@ -62,10 +63,9 @@ for path in discvr.discover(discover_dir):
     from etl.utils.preprocessing import lowercase_ascii
     
     mapping = load_mapping("config/mapping_catalogue.yml")
-    for row in extract(path, mapping):
+    for row in extract(path, mapping, want='meta'):
         
         # , add_timestamp=False, logfile_path=logfile, collapse_size=3
-        print_and_log(f"Loading metadata from file: {path}\n", add_timestamp=False, logfile_path=logfile, collapse_size=3)
         # row["value"] = lowercase_ascii(str(row["value"]) if row["value"] is not None else "") 
         harmonised_row = harmonise([row], mapping)
         if not harmonised_row:
