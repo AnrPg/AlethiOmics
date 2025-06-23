@@ -1,8 +1,9 @@
 #!/usr/bin/env python3
 
-import locale
 import time
 import os
+from datetime import datetime
+from zoneinfo import ZoneInfo
 from collections import defaultdict
 
 # Module‐level state to track counts and filenames per logfile prefix
@@ -11,7 +12,7 @@ _logfile_names = {}
 
 # Set the locale for time‐based formatting
 # e.g. for Greek (as used in Europe/Athens timezone):
-locale.setlocale(locale.LC_TIME, 'el_GR.UTF-8')
+now_athens = datetime.now(ZoneInfo("Europe/Athens"))
 # or for U.S. English:
 # locale.setlocale(locale.LC_TIME, 'en_US.UTF-8')
 
@@ -47,7 +48,7 @@ def print_and_log(
         if logfile_path not in _logfile_names:
             # Split name and extension to insert timestamp
             base, ext = os.path.splitext(logfile_path)
-            ts = time.strftime("%Y%m%d_%H%M%S")
+            ts = now_athens.strftime("%Y-%m-%d at %H_%M_%S")
             _logfile_names[logfile_path] = f"{base}_{ts}{ext}"
         logfile = _logfile_names[logfile_path]
     else:
