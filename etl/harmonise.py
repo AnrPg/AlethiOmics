@@ -728,6 +728,9 @@ def harmonise(records, mapping):
 
     for rec in records:
         raw_value = rec["value"]
+        if type(raw_value) is not str or type(raw_value) is int or type(raw_value) is float:
+            # Skip non-string values (e.g. None, byte-like, etc.)
+            continue
 
         for rule_name, rule in mapping["columns"].items():
             if re.match(rule["regex"], raw_value) is None:
