@@ -1,0 +1,13 @@
+2025-06-24 18:23:34,220 [INFO] main: 🚀  ETL pipeline started
+2025-06-24 18:23:34,221 [WARNING] main: Overwriting existing synthetic folder /home/anr/apps/AlethiOmics/raw_data
+2025-06-24 18:23:34,221 [INFO] main: 🧪  Running synthetic generator: /opt/anaconda3/envs/alethiomics/bin/python3.10 -m etl.utils.synthetic_data_generator --num_experiments 8 --seed 20250624
+2025-06-24 18:23:34,549 [ERROR] main: Synthetic generator failed (exit 2)
+2025-06-24 18:23:34,549 [ERROR] main: STDOUT:
+
+2025-06-24 18:23:34,549 [ERROR] main: STDERR:
+/opt/anaconda3/envs/alethiomics/lib/python3.10/runpy.py:126: RuntimeWarning: 'etl.utils.synthetic_data_generator' found in sys.modules after import of package 'etl.utils', but prior to execution of 'etl.utils.synthetic_data_generator'; this may result in unpredictable behaviour
+  warn(RuntimeWarning(msg))
+usage: synthetic_data_generator.py [-h] [-n NUM_EXPERIMENTS] [--seed SEED]
+                                   out_dir
+synthetic_data_generator.py: error: the following arguments are required: out_dir
+

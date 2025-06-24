@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+
 # ────────────────────────────────────────────────────────────────────────────
 # synthetic_data_generator.py   (schema-aligned, multi-file edition)
 # ---------------------------------------------------------------------------
@@ -244,11 +245,11 @@ def make_experiments(out:pathlib.Path, studies:List[str], genes:List[str]):
 def main():
     ap=argparse.ArgumentParser(
         description="Generate synthetic TSVs and raw counts aligned with DW schema")
-    ap.add_argument("outdir",type=pathlib.Path,help="output directory")
+    ap.add_argument("out_dir",type=pathlib.Path,help="output directory")
     ap.add_argument("-n","--num_experiments",type=int,default=1)
     ap.add_argument("--seed",type=int,help="random seed")
     args=ap.parse_args()
-
+    
     if args.seed is not None:
         random.seed(args.seed); np.random.seed(args.seed)
     else:
