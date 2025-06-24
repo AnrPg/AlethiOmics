@@ -1,0 +1,10 @@
+sdrf.log stimulus "stimulus\t\a*\t" Stimuli label | get_iri, get_chem_class
+obs organism "[A-Z][a-z]+ [a-z]+" Taxa species_name | get_iri, get_ranking
+obs organism_ontology_term_id "[A-Za-z]+:\d+" Taxa iri | get_name, get_ranking
+var gene_id "ENS[A-Z]*G\d{5,}" Genes gene_id | canonical_iri, strip_version, get_name
+sdrf.log "cell type" "cell type\t" OntologyTerms label -> Samples cell_type_id | get_iri, get_ontology
+obs cell_type_ontology_term_id "CL:\d{7}" OntologyTerms iri -> Samples cell_type_id | get_name, get_ontology
+obs tissue_ontology_term_id "UBERON:\d+" OntologyTerms iri -> Samples tissue_id | get_name, get_ontology
+obs suspension_type "[A-Za-z]+(?: [A-Za-z]+)*" Samples growth_condition
+sdrf.log "growth condition" "(?:mono|co)-culture" Samples growth_condition
+obs sample_id "[A-Za-z0-9_-]+" Samples.id | get_local_link

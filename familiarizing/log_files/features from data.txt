@@ -1,0 +1,1010 @@
+﻿├── X
+│   ├── data (325801358,) float32
+│   ├── indices (325801358,) int64
+│   └── indptr (87445,) int64
+├── layers
+├── obs
+│   ├── ADNC
+│   ├── APOE4 status
+│   ├── Age at death
+│   ├── Braak stage
+│   ├── CERAD score
+│   ├── Class
+│   ├── Cognitive status
+│   ├── Fraction mitochrondrial UMIs (87444,) float32
+│   ├── Genes detected (87444,) int64
+│   ├── LATE-NC stage
+│   ├── Lewy body disease pathology
+│   ├── Microinfarct pathology
+│   ├── Neurotypical reference
+│   ├── Number of UMIs (87444,) float64
+│   ├── PMI
+│   ├── Specimen ID
+│   ├── Subclass
+│   ├── Supertype
+│   ├── Thal phase
+│   ├── Years of education
+│   ├── assay
+│   ├── assay_ontology_term_id
+│   ├── cell_type
+│   ├── cell_type_ontology_term_id
+│   ├── development_stage
+│   ├── development_stage_ontology_term_id
+│   ├── disease
+│   ├── disease_ontology_term_id
+│   ├── donor_id
+│   ├── exp_component_name (87444,) object
+│   ├── is_primary_data (87444,) bool
+│   ├── observation_joinid (87444,) object
+│   ├── organism
+│   ├── organism_ontology_term_id
+│   ├── self_reported_ethnicity
+│   ├── self_reported_ethnicity_ontology_term_id
+│   ├── sex
+│   ├── sex_ontology_term_id
+│   ├── suspension_type
+│   ├── tissue
+│   ├── tissue_ontology_term_id
+│   └── tissue_type
+├── obsm
+│   ├── X_scVI (87444, 10) float32
+│   └── X_umap (87444, 2) float32
+├── obsp
+│   ├── connectivities
+│   │   ├── data (1763172,) float32
+│   │   ├── indices (1763172,) int32
+│   │   └── indptr (87445,) int32
+│   └── distances
+│       ├── data (1224216,) float64
+│       ├── indices (1224216,) int32
+│       └── indptr (87445,) int32
+├── uns
+│   ├── ADNC_colors (5,) object
+│   ├── APOE4 status_colors (3,) object
+│   ├── Age at death_colors (4,) object
+│   ├── Braak stage_colors (7,) object
+│   ├── CERAD score_colors (5,) object
+│   ├── Cognitive status_colors (3,) object
+│   ├── Great Apes Metadata () <U119
+│   ├── LATE-NC stage_colors (6,) object
+│   ├── Lewy body disease pathology_colors (8,) object
+│   ├── Microinfarct pathology_colors (4,) object
+│   ├── PMI_colors (4,) object
+│   ├── Subclass_colors (1,) object
+│   ├── Supertype_colors (6,) object
+│   ├── Thal phase_colors (7,) object
+│   ├── UW Clinical Metadata () <U121
+│   ├── Years of education_colors (4,) object
+│   ├── batch_condition (1,) object
+│   ├── citation () <U302
+│   ├── default_embedding () <U6
+│   ├── neighbors
+│   │   ├── connectivities_key () <U14
+│   │   ├── distances_key () <U9
+│   │   └── params
+│   ├── schema_reference () <U87
+│   ├── schema_version () <U5
+│   ├── sex_ontology_term_id_colors (2,) object
+│   ├── title () <U61
+│   └── umap
+│       └── params
+│           ├── a () float64
+│           └── b () float64
+├── var
+│   ├── _index (36412,) object
+│   ├── feature_biotype
+│   ├── feature_is_filtered (36412,) bool
+│   ├── feature_length
+│   ├── feature_name
+│   ├── feature_reference
+│   └── feature_type
+├── varm
+└── varp
+—--------------------------------------------------------------
+
+├── X
+│   ├── data (7936259,) float32
+│   ├── indices (7936259,) int64
+│   └── indptr (2576,) int64
+├── layers
+├── obs
+│   ├── ADNC
+│   ├── APOE4 status
+│   ├── Age at death
+│   ├── Braak stage
+│   ├── CERAD score
+│   ├── Class
+│   ├── Cognitive status
+│   ├── Fraction mitochrondrial UMIs (2575,) float32
+│   ├── Genes detected (2575,) int64
+│   ├── LATE-NC stage
+│   ├── Lewy body disease pathology
+│   ├── Microinfarct pathology
+│   ├── Neurotypical reference
+│   ├── Number of UMIs (2575,) float64
+│   ├── PMI
+│   ├── Specimen ID
+│   ├── Subclass
+│   ├── Supertype
+│   ├── Thal phase
+│   ├── Years of education
+│   ├── assay
+│   ├── assay_ontology_term_id
+│   ├── cell_type
+│   ├── cell_type_ontology_term_id
+│   ├── development_stage
+│   ├── development_stage_ontology_term_id
+│   ├── disease
+│   ├── disease_ontology_term_id
+│   ├── donor_id
+│   ├── exp_component_name (2575,) object
+│   ├── is_primary_data (2575,) bool
+│   ├── observation_joinid (2575,) object
+│   ├── organism
+│   ├── organism_ontology_term_id
+│   ├── self_reported_ethnicity
+│   ├── self_reported_ethnicity_ontology_term_id
+│   ├── sex
+│   ├── sex_ontology_term_id
+│   ├── suspension_type
+│   ├── tissue
+│   ├── tissue_ontology_term_id
+│   └── tissue_type
+├── obsm
+│   ├── X_scVI (2575, 10) float32
+│   └── X_umap (2575, 2) float32
+├── obsp
+│   ├── connectivities
+│   │   ├── data (48292,) float32
+│   │   ├── indices (48292,) int32
+│   │   └── indptr (2576,) int32
+│   └── distances
+│       ├── data (36050,) float64
+│       ├── indices (36050,) int32
+│       └── indptr (2576,) int32
+├── uns
+│   ├── ADNC_colors (5,) object
+│   ├── APOE4 status_colors (3,) object
+│   ├── Age at death_colors (4,) object
+│   ├── Braak stage_colors (7,) object
+│   ├── CERAD score_colors (5,) object
+│   ├── Cognitive status_colors (3,) object
+│   ├── Great Apes Metadata () <U119
+│   ├── LATE-NC stage_colors (6,) object
+│   ├── Lewy body disease pathology_colors (8,) object
+│   ├── Microinfarct pathology_colors (4,) object
+│   ├── PMI_colors (4,) object
+│   ├── Subclass_colors (1,) object
+│   ├── Supertype_colors (1,) object
+│   ├── Thal phase_colors (7,) object
+│   ├── UW Clinical Metadata () <U121
+│   ├── Years of education_colors (4,) object
+│   ├── batch_condition (1,) object
+│   ├── citation () <U302
+│   ├── default_embedding () <U6
+│   ├── neighbors
+│   │   ├── connectivities_key () <U14
+│   │   ├── distances_key () <U9
+│   │   └── params
+│   ├── schema_reference () <U87
+│   ├── schema_version () <U5
+│   ├── sex_ontology_term_id_colors (2,) object
+│   ├── title () <U63
+│   └── umap
+│       └── params
+│           ├── a () float64
+│           └── b () float64
+├── var
+│   ├── _index (36412,) object
+│   ├── feature_biotype
+│   ├── feature_is_filtered (36412,) bool
+│   ├── feature_length
+│   ├── feature_name
+│   ├── feature_reference
+│   └── feature_type
+├── varm
+└── varp
+—--------------------------------------------------------------
+├── X
+│   ├── data (76357608,) float32
+│   ├── indices (76357608,) int64
+│   └── indptr (30085,) int64
+├── layers
+│   ├── decontXcounts
+│   │   ├── data (76357608,) int32
+│   │   ├── indices (76357608,) int64
+│   │   └── indptr (30085,) int64
+│   └── scale_data
+│       ├── data (76357608,) float32
+│       ├── indices (76357608,) int64
+│       └── indptr (30085,) int64
+├── obs
+│   ├── 10X_run
+│   ├── _index (30084,) object
+│   ├── _scvi_batch
+│   ├── _scvi_labels (30084,) int8
+│   ├── ambient_removal
+│   ├── anatomical_position
+│   ├── assay
+│   ├── assay_ontology_term_id
+│   ├── broad_cell_class
+│   ├── cdna_plate
+│   ├── cdna_well
+│   ├── cell_type
+│   ├── cell_type_ontology_term_id
+│   ├── compartment
+│   ├── development_stage
+│   ├── development_stage_ontology_term_id
+│   ├── disease
+│   ├── disease_ontology_term_id
+│   ├── donor_assay
+│   ├── donor_id
+│   ├── donor_method
+│   ├── donor_tissue
+│   ├── donor_tissue_assay
+│   ├── ethnicity_original
+│   ├── free_annotation
+│   ├── is_primary_data (30084,) bool
+│   ├── library_plate
+│   ├── manually_annotated
+│   ├── method
+│   ├── n_genes_by_counts (30084,) int64
+│   ├── notes
+│   ├── observation_joinid (30084,) object
+│   ├── organism
+│   ├── organism_ontology_term_id
+│   ├── pct_counts_ercc (30084,) float64
+│   ├── pct_counts_mt (30084,) float64
+│   ├── published_2022
+│   ├── replicate (30084,) int32
+│   ├── sample_id
+│   ├── sample_number (30084,) int32
+│   ├── scvi_leiden_donorassay_full
+│   ├── scvi_leiden_res05_tissue
+│   ├── self_reported_ethnicity
+│   ├── self_reported_ethnicity_ontology_term_id
+│   ├── sex
+│   ├── sex_ontology_term_id
+│   ├── suspension_type
+│   ├── tissue
+│   ├── tissue_in_publication
+│   ├── tissue_ontology_term_id
+│   ├── tissue_type
+│   ├── total_counts (30084,) float64
+│   ├── total_counts_ercc (30084,) float64
+│   └── total_counts_mt (30084,) float64
+├── obsm
+│   ├── X_pca (30084, 50) float32
+│   ├── X_scvi (30084, 50) float32
+│   ├── X_tissue_uncorrected_umap (30084, 2) float32
+│   ├── X_umap (30084, 2) float32
+│   ├── X_umap_scvi_full_donorassay (30084, 2) float32
+│   ├── X_umap_tissue_scvi_donorassay (30084, 2) float32
+│   └── X_uncorrected_umap (30084, 2) float32
+├── obsp
+│   ├── connectivities
+│   │   ├── data (527676,) float32
+│   │   ├── indices (527676,) int32
+│   │   └── indptr (30085,) int32
+│   └── distances
+│       ├── data (421133,) float64
+│       ├── indices (421133,) int32
+│       └── indptr (30085,) int32
+├── uns
+│   ├── _scvi_manager_uuid () <U36
+│   ├── _scvi_uuid () <U36
+│   ├── _training_mode () <U7
+│   ├── assay_ontology_term_id_colors (2,) object
+│   ├── citation () <U299
+│   ├── compartment_colors (5,) object
+│   ├── donor_id_colors (5,) object
+│   ├── leiden
+│   │   └── params
+│   │       ├── n_iterations () int64
+│   │       └── resolution () float64
+│   ├── method_colors (2,) object
+│   ├── neighbors
+│   │   ├── connectivities_key () <U14
+│   │   ├── distances_key () <U9
+│   │   └── params
+│   ├── pca
+│   │   ├── params
+│   │   │   ├── use_highly_variable () bool
+│   │   │   └── zero_center () bool
+│   │   ├── variance (50,) float64
+│   │   └── variance_ratio (50,) float64
+│   ├── schema_reference () <U87
+│   ├── schema_version () <U5
+│   ├── sex_ontology_term_id_colors (2,) object
+│   ├── tissue_in_publication_colors (1,) object
+│   ├── title () <U32
+│   └── umap
+│       └── params
+│           ├── a () float64
+│           └── b () float64
+├── var
+│   ├── ensembl_id (61759,) object
+│   ├── ensg (61759,) object
+│   ├── ercc (61759,) bool
+│   ├── feature_biotype
+│   ├── feature_is_filtered (61759,) bool
+│   ├── feature_length
+│   ├── feature_name
+│   ├── feature_reference
+│   ├── feature_type
+│   ├── genome
+│   ├── mean (61759,) float64
+│   ├── mean_counts (61759,) float64
+│   ├── mt (61759,) bool
+│   ├── n_cells_by_counts (61759,) int64
+│   ├── pct_dropout_by_counts (61759,) float64
+│   ├── std (61759,) float64
+│   └── total_counts (61759,) float64
+├── varm
+│   └── PCs (61759, 50) float64
+└── varp
+—--------------------------------------------------------------
+├── X
+│   ├── data (113068003,) float32
+│   ├── indices (113068003,) int64
+│   └── indptr (42487,) int64
+├── layers
+├── obs
+│   ├── ADNC
+│   ├── APOE4 status
+│   ├── Age at death
+│   ├── Braak stage
+│   ├── CERAD score
+│   ├── Class
+│   ├── Cognitive status
+│   ├── Fraction mitochrondrial UMIs (42486,) float32
+│   ├── Genes detected (42486,) int64
+│   ├── LATE-NC stage
+│   ├── Lewy body disease pathology
+│   ├── Microinfarct pathology
+│   ├── Neurotypical reference
+│   ├── Number of UMIs (42486,) float64
+│   ├── PMI
+│   ├── Specimen ID
+│   ├── Subclass
+│   ├── Supertype
+│   ├── Thal phase
+│   ├── Years of education
+│   ├── assay
+│   ├── assay_ontology_term_id
+│   ├── cell_type
+│   ├── cell_type_ontology_term_id
+│   ├── development_stage
+│   ├── development_stage_ontology_term_id
+│   ├── disease
+│   ├── disease_ontology_term_id
+│   ├── donor_id
+│   ├── exp_component_name (42486,) object
+│   ├── is_primary_data (42486,) bool
+│   ├── observation_joinid (42486,) object
+│   ├── organism
+│   ├── organism_ontology_term_id
+│   ├── self_reported_ethnicity
+│   ├── self_reported_ethnicity_ontology_term_id
+│   ├── sex
+│   ├── sex_ontology_term_id
+│   ├── suspension_type
+│   ├── tissue
+│   ├── tissue_ontology_term_id
+│   └── tissue_type
+├── obsm
+│   ├── X_scVI (42486, 10) float32
+│   └── X_umap (42486, 2) float32
+├── obsp
+│   ├── connectivities
+│   │   ├── data (856350,) float32
+│   │   ├── indices (856350,) int32
+│   │   └── indptr (42487,) int32
+│   └── distances
+│       ├── data (594804,) float64
+│       ├── indices (594804,) int32
+│       └── indptr (42487,) int32
+├── uns
+│   ├── ADNC_colors (5,) object
+│   ├── APOE4 status_colors (3,) object
+│   ├── Age at death_colors (4,) object
+│   ├── Braak stage_colors (7,) object
+│   ├── CERAD score_colors (5,) object
+│   ├── Cognitive status_colors (3,) object
+│   ├── Great Apes Metadata () <U119
+│   ├── LATE-NC stage_colors (6,) object
+│   ├── Lewy body disease pathology_colors (8,) object
+│   ├── Microinfarct pathology_colors (4,) object
+│   ├── PMI_colors (4,) object
+│   ├── Subclass_colors (1,) object
+│   ├── Supertype_colors (6,) object
+│   ├── Thal phase_colors (7,) object
+│   ├── UW Clinical Metadata () <U121
+│   ├── Years of education_colors (4,) object
+│   ├── batch_condition (1,) object
+│   ├── citation () <U302
+│   ├── default_embedding () <U6
+│   ├── neighbors
+│   │   ├── connectivities_key () <U14
+│   │   ├── distances_key () <U9
+│   │   └── params
+│   ├── schema_reference () <U87
+│   ├── schema_version () <U5
+│   ├── sex_ontology_term_id_colors (2,) object
+│   ├── title () <U65
+│   └── umap
+│       └── params
+│           ├── a () float64
+│           └── b () float64
+├── var
+│   ├── _index (36412,) object
+│   ├── feature_biotype
+│   ├── feature_is_filtered (36412,) bool
+│   ├── feature_length
+│   ├── feature_name
+│   ├── feature_reference
+│   └── feature_type
+├── varm
+└── varp
+—--------------------------------------------------------------
+/
+├── X
+│   ├── data (408524309,) float32
+│   ├── indices (408524309,) int64
+│   └── indptr (145996,) int64
+├── layers
+├── obs
+│   ├── ADNC
+│   ├── APOE4 status
+│   ├── Age at death
+│   ├── Braak stage
+│   ├── CERAD score
+│   ├── Class
+│   ├── Cognitive status
+│   ├── Fraction mitochrondrial UMIs (145995,) float32
+│   ├── Genes detected (145995,) int64
+│   ├── LATE-NC stage
+│   ├── Lewy body disease pathology
+│   ├── Microinfarct pathology
+│   ├── Neurotypical reference
+│   ├── Number of UMIs (145995,) float64
+│   ├── PMI
+│   ├── Specimen ID
+│   ├── Subclass
+│   ├── Supertype
+│   ├── Thal phase
+│   ├── Years of education
+│   ├── assay
+│   ├── assay_ontology_term_id
+│   ├── cell_type
+│   ├── cell_type_ontology_term_id
+│   ├── development_stage
+│   ├── development_stage_ontology_term_id
+│   ├── disease
+│   ├── disease_ontology_term_id
+│   ├── donor_id
+│   ├── exp_component_name (145995,) object
+│   ├── is_primary_data (145995,) bool
+│   ├── observation_joinid (145995,) object
+│   ├── organism
+│   ├── organism_ontology_term_id
+│   ├── self_reported_ethnicity
+│   ├── self_reported_ethnicity_ontology_term_id
+│   ├── sex
+│   ├── sex_ontology_term_id
+│   ├── suspension_type
+│   ├── tissue
+│   ├── tissue_ontology_term_id
+│   └── tissue_type
+├── obsm
+│   ├── X_scVI (145995, 10) float32
+│   └── X_umap (145995, 2) float32
+├── obsp
+│   ├── connectivities
+│   │   ├── data (2922016,) float32
+│   │   ├── indices (2922016,) int32
+│   │   └── indptr (145996,) int32
+│   └── distances
+│       ├── data (2043930,) float64
+│       ├── indices (2043930,) int32
+│       └── indptr (145996,) int32
+├── uns
+│   ├── ADNC_colors (5,) object
+│   ├── APOE4 status_colors (3,) object
+│   ├── Age at death_colors (4,) object
+│   ├── Braak stage_colors (7,) object
+│   ├── CERAD score_colors (5,) object
+│   ├── Cognitive status_colors (3,) object
+│   ├── Great Apes Metadata () <U119
+│   ├── LATE-NC stage_colors (6,) object
+│   ├── Lewy body disease pathology_colors (8,) object
+│   ├── Microinfarct pathology_colors (4,) object
+│   ├── PMI_colors (4,) object
+│   ├── Subclass_colors (1,) object
+│   ├── Supertype_colors (4,) object
+│   ├── Thal phase_colors (7,) object
+│   ├── UW Clinical Metadata () <U121
+│   ├── Years of education_colors (4,) object
+│   ├── batch_condition (1,) object
+│   ├── citation () <U302
+│   ├── default_embedding () <U6
+│   ├── neighbors
+│   │   ├── connectivities_key () <U14
+│   │   ├── distances_key () <U9
+│   │   └── params
+│   ├── schema_reference () <U87
+│   ├── schema_version () <U5
+│   ├── sex_ontology_term_id_colors (2,) object
+│   ├── title () <U67
+│   └── umap
+│       └── params
+│           ├── a () float64
+│           └── b () float64
+├── var
+│   ├── _index (36412,) object
+│   ├── feature_biotype
+│   ├── feature_is_filtered (36412,) bool
+│   ├── feature_length
+│   ├── feature_name
+│   ├── feature_reference
+│   └── feature_type
+├── varm
+└── varp
+—--------------------------------------------------------------
+/
+├── X
+│   ├── data (6609855574,) float32
+│   ├── indices (6609855574,) int64
+│   └── indptr (2096156,) int64
+├── layers
+├── obs
+│   ├── Brain_bank
+│   ├── PMI (2096155,) float64
+│   ├── RIN (2096155,) float64
+│   ├── assay
+│   ├── assay_ontology_term_id
+│   ├── barcodekey (2096155,) object
+│   ├── cell_type
+│   ├── cell_type_ontology_term_id
+│   ├── derived_class2
+│   ├── development_stage
+│   ├── development_stage_ontology_term_id
+│   ├── disease
+│   ├── disease_ontology_term_id
+│   ├── donor_id
+│   ├── is_primary_data (2096155,) bool
+│   ├── n_counts (2096155,) float64
+│   ├── n_genes (2096155,) int64
+│   ├── observation_joinid (2096155,) object
+│   ├── organism
+│   ├── organism_ontology_term_id
+│   ├── path_braak_lb (2096155,) int64
+│   ├── self_reported_ethnicity
+│   ├── self_reported_ethnicity_ontology_term_id
+│   ├── sex
+│   ├── sex_ontology_term_id
+│   ├── suspension_type
+│   ├── tissue
+│   ├── tissue_ontology_term_id
+│   └── tissue_type
+├── obsm
+│   └── X_umap (2096155, 2) float32
+├── obsp
+├── uns
+│   ├── batch_condition (1,) object
+│   ├── citation () <U302
+│   ├── genome () <U6
+│   ├── schema_reference () <U87
+│   ├── schema_version () <U5
+│   ├── title () <U19
+│   └── uid () <U10
+├── var
+│   ├── feature_biotype
+│   ├── feature_is_filtered (17267,) bool
+│   ├── feature_length
+│   ├── feature_name
+│   ├── feature_reference
+│   ├── feature_type
+│   ├── gene_id (17267,) object
+│   ├── gene_name
+│   └── n_cells (17267,) int64
+├── varm
+└── varp
+
+
+—--------------------------------------------------------------
+├── X
+│   ├── data (692944061,) float32
+│   ├── indices (692944061,) int64
+│   └── indptr (116143,) int64
+├── layers
+├── obs
+│   ├── ADNC
+│   ├── APOE4 status
+│   ├── Age at death
+│   ├── Braak stage
+│   ├── CERAD score
+│   ├── Class
+│   ├── Cognitive status
+│   ├── Fraction mitochrondrial UMIs (116142,) float32
+│   ├── Genes detected (116142,) int64
+│   ├── LATE-NC stage
+│   ├── Lewy body disease pathology
+│   ├── Microinfarct pathology
+│   ├── Neurotypical reference
+│   ├── Number of UMIs (116142,) float64
+│   ├── PMI
+│   ├── Specimen ID
+│   ├── Subclass
+│   ├── Supertype
+│   ├── Thal phase
+│   ├── Years of education
+│   ├── assay
+│   ├── assay_ontology_term_id
+│   ├── cell_type
+│   ├── cell_type_ontology_term_id
+│   ├── development_stage
+│   ├── development_stage_ontology_term_id
+│   ├── disease
+│   ├── disease_ontology_term_id
+│   ├── donor_id
+│   ├── exp_component_name (116142,) object
+│   ├── is_primary_data (116142,) bool
+│   ├── observation_joinid (116142,) object
+│   ├── organism
+│   ├── organism_ontology_term_id
+│   ├── self_reported_ethnicity
+│   ├── self_reported_ethnicity_ontology_term_id
+│   ├── sex
+│   ├── sex_ontology_term_id
+│   ├── suspension_type
+│   ├── tissue
+│   ├── tissue_ontology_term_id
+│   └── tissue_type
+├── obsm
+│   ├── X_scVI (116142, 10) float32
+│   └── X_umap (116142, 2) float32
+├── obsp
+│   ├── connectivities
+│   │   ├── data (2281588,) float32
+│   │   ├── indices (2281588,) int32
+│   │   └── indptr (116143,) int32
+│   └── distances
+│       ├── data (1625988,) float64
+│       ├── indices (1625988,) int32
+│       └── indptr (116143,) int32
+├── uns
+│   ├── ADNC_colors (5,) object
+│   ├── APOE4 status_colors (3,) object
+│   ├── Age at death_colors (4,) object
+│   ├── Braak stage_colors (7,) object
+│   ├── CERAD score_colors (5,) object
+│   ├── Cognitive status_colors (3,) object
+│   ├── Great Apes Metadata () <U119
+│   ├── LATE-NC stage_colors (6,) object
+│   ├── Lewy body disease pathology_colors (8,) object
+│   ├── Microinfarct pathology_colors (4,) object
+│   ├── PMI_colors (4,) object
+│   ├── Subclass_colors (1,) object
+│   ├── Supertype_colors (13,) object
+│   ├── Thal phase_colors (7,) object
+│   ├── UW Clinical Metadata () <U121
+│   ├── Years of education_colors (4,) object
+│   ├── batch_condition (1,) object
+│   ├── citation () <U302
+│   ├── default_embedding () <U6
+│   ├── neighbors
+│   │   ├── connectivities_key () <U14
+│   │   ├── distances_key () <U9
+│   │   └── params
+│   ├── schema_reference () <U87
+│   ├── schema_version () <U5
+│   ├── sex_ontology_term_id_colors (2,) object
+│   ├── title () <U57
+│   └── umap
+│       └── params
+│           ├── a () float64
+│           └── b () float64
+├── var
+│   ├── _index (36412,) object
+│   ├── feature_biotype
+│   ├── feature_is_filtered (36412,) bool
+│   ├── feature_length
+│   ├── feature_name
+│   ├── feature_reference
+│   └── feature_type
+├── varm
+└── varp
+—--------------------------------------------------------------
+├── X
+│   ├── data (351080562,) float32
+│   ├── indices (351080562,) int64
+│   └── indptr (75707,) int64
+├── layers
+├── obs
+│   ├── ADNC
+│   ├── APOE4 status
+│   ├── Age at death
+│   ├── Braak stage
+│   ├── CERAD score
+│   ├── Class
+│   ├── Cognitive status
+│   ├── Fraction mitochrondrial UMIs (75706,) float32
+│   ├── Genes detected (75706,) int64
+│   ├── LATE-NC stage
+│   ├── Lewy body disease pathology
+│   ├── Microinfarct pathology
+│   ├── Neurotypical reference
+│   ├── Number of UMIs (75706,) float64
+│   ├── PMI
+│   ├── Specimen ID
+│   ├── Subclass
+│   ├── Supertype
+│   ├── Thal phase
+│   ├── Years of education
+│   ├── assay
+│   ├── assay_ontology_term_id
+│   ├── cell_type
+│   ├── cell_type_ontology_term_id
+│   ├── development_stage
+│   ├── development_stage_ontology_term_id
+│   ├── disease
+│   ├── disease_ontology_term_id
+│   ├── donor_id
+│   ├── exp_component_name (75706,) object
+│   ├── is_primary_data (75706,) bool
+│   ├── observation_joinid (75706,) object
+│   ├── organism
+│   ├── organism_ontology_term_id
+│   ├── self_reported_ethnicity
+│   ├── self_reported_ethnicity_ontology_term_id
+│   ├── sex
+│   ├── sex_ontology_term_id
+│   ├── suspension_type
+│   ├── tissue
+│   ├── tissue_ontology_term_id
+│   └── tissue_type
+├── obsm
+│   ├── X_scVI (75706, 10) float32
+│   └── X_umap (75706, 2) float32
+├── obsp
+│   ├── connectivities
+│   │   ├── data (1482136,) float32
+│   │   ├── indices (1482136,) int32
+│   │   └── indptr (75707,) int32
+│   └── distances
+│       ├── data (1059884,) float64
+│       ├── indices (1059884,) int32
+│       └── indptr (75707,) int32
+├── uns
+│   ├── ADNC_colors (5,) object
+│   ├── APOE4 status_colors (3,) object
+│   ├── Age at death_colors (4,) object
+│   ├── Braak stage_colors (7,) object
+│   ├── CERAD score_colors (5,) object
+│   ├── Cognitive status_colors (3,) object
+│   ├── Great Apes Metadata () <U119
+│   ├── LATE-NC stage_colors (6,) object
+│   ├── Lewy body disease pathology_colors (8,) object
+│   ├── Microinfarct pathology_colors (4,) object
+│   ├── PMI_colors (4,) object
+│   ├── Subclass_colors (1,) object
+│   ├── Supertype_colors (16,) object
+│   ├── Thal phase_colors (7,) object
+│   ├── UW Clinical Metadata () <U121
+│   ├── Years of education_colors (4,) object
+│   ├── batch_condition (1,) object
+│   ├── citation () <U302
+│   ├── default_embedding () <U6
+│   ├── neighbors
+│   │   ├── connectivities_key () <U14
+│   │   ├── distances_key () <U9
+│   │   └── params
+│   ├── schema_reference () <U87
+│   ├── schema_version () <U5
+│   ├── sex_ontology_term_id_colors (2,) object
+│   ├── title () <U55
+│   └── umap
+│       └── params
+│           ├── a () float64
+│           └── b () float64
+├── var
+│   ├── _index (36412,) object
+│   ├── feature_biotype
+│   ├── feature_is_filtered (36412,) bool
+│   ├── feature_length
+│   ├── feature_name
+│   ├── feature_reference
+│   └── feature_type
+├── varm
+└── varp
+—--------------------------------------------------------------
+├── X
+│   ├── data (508022972,) float32
+│   ├── indices (508022972,) int64
+│   └── indptr (100216,) int64
+├── layers
+├── obs
+│   ├── ADNC
+│   ├── APOE4 status
+│   ├── Age at death
+│   ├── Braak stage
+│   ├── CERAD score
+│   ├── Class
+│   ├── Cognitive status
+│   ├── Fraction mitochrondrial UMIs (100215,) float32
+│   ├── Genes detected (100215,) int64
+│   ├── LATE-NC stage
+│   ├── Lewy body disease pathology
+│   ├── Microinfarct pathology
+│   ├── Neurotypical reference
+│   ├── Number of UMIs (100215,) float64
+│   ├── PMI
+│   ├── Specimen ID
+│   ├── Subclass
+│   ├── Supertype
+│   ├── Thal phase
+│   ├── Years of education
+│   ├── assay
+│   ├── assay_ontology_term_id
+│   ├── cell_type
+│   ├── cell_type_ontology_term_id
+│   ├── development_stage
+│   ├── development_stage_ontology_term_id
+│   ├── disease
+│   ├── disease_ontology_term_id
+│   ├── donor_id
+│   ├── exp_component_name (100215,) object
+│   ├── is_primary_data (100215,) bool
+│   ├── observation_joinid (100215,) object
+│   ├── organism
+│   ├── organism_ontology_term_id
+│   ├── self_reported_ethnicity
+│   ├── self_reported_ethnicity_ontology_term_id
+│   ├── sex
+│   ├── sex_ontology_term_id
+│   ├── suspension_type
+│   ├── tissue
+│   ├── tissue_ontology_term_id
+│   └── tissue_type
+├── obsm
+│   ├── X_scVI (100215, 10) float32
+│   └── X_umap (100215, 2) float32
+├── obsp
+│   ├── connectivities
+│   │   ├── data (1942820,) float32
+│   │   ├── indices (1942820,) int32
+│   │   └── indptr (100216,) int32
+│   └── distances
+│       ├── data (1403010,) float64
+│       ├── indices (1403010,) int32
+│       └── indptr (100216,) int32
+├── uns
+│   ├── ADNC_colors (5,) object
+│   ├── APOE4 status_colors (3,) object
+│   ├── Age at death_colors (4,) object
+│   ├── Braak stage_colors (7,) object
+│   ├── CERAD score_colors (5,) object
+│   ├── Cognitive status_colors (3,) object
+│   ├── Great Apes Metadata () <U119
+│   ├── LATE-NC stage_colors (6,) object
+│   ├── Lewy body disease pathology_colors (8,) object
+│   ├── Microinfarct pathology_colors (4,) object
+│   ├── PMI_colors (4,) object
+│   ├── Subclass_colors (1,) object
+│   ├── Supertype_colors (16,) object
+│   ├── Thal phase_colors (7,) object
+│   ├── UW Clinical Metadata () <U121
+│   ├── Years of education_colors (4,) object
+│   ├── batch_condition (1,) object
+│   ├── citation () <U302
+│   ├── default_embedding () <U6
+│   ├── neighbors
+│   │   ├── connectivities_key () <U14
+│   │   ├── distances_key () <U9
+│   │   └── params
+│   ├── schema_reference () <U87
+│   ├── schema_version () <U5
+│   ├── sex_ontology_term_id_colors (2,) object
+│   ├── title () <U55
+│   └── umap
+│       └── params
+│           ├── a () float64
+│           └── b () float64
+├── var
+│   ├── _index (36412,) object
+│   ├── feature_biotype
+│   ├── feature_is_filtered (36412,) bool
+│   ├── feature_length
+│   ├── feature_name
+│   ├── feature_reference
+│   └── feature_type
+├── varm└── varp
+
+
+
+CREATE TABLE Stimuli (                          -- synonym of “Metabolites”
+    iri
+    id
+    label
+    class_hint
+);
+
+CREATE TABLE Taxa (
+  id
+  species_name
+  kingdom
+  ranking
+);
+
+CREATE TABLE Microbes (
+    id
+    taxon_id
+    species_name
+    FOREIGN KEY (taxon_id) REFERENCES Taxa(id),    
+    KEY idx_microbes_taxon (taxon_id)
+);
+
+CREATE TABLE Genes (
+	id
+    gene_id
+    gene_name
+    species_taxon_id
+    FOREIGN KEY (species_taxon_id) REFERENCES Taxa(id),
+    CONSTRAINT unique_comb_of_genes_and_species UNIQUE (gene_id, species_taxon_id),
+    KEY idx_gene_id (gene_id)
+);
+
+CREATE TABLE Studies (
+    id
+    title
+    source_repo
+);
+
+CREATE TABLE OntologyTerms (
+  id
+  iri
+  label
+  ontology
+);
+
+CREATE TABLE Samples (
+    id
+    study_id
+    cell_type_id
+    tissue_id
+    organism_id
+    growth_condition
+    zarr_uri
+    FOREIGN KEY (study_id)    REFERENCES Studies(id),
+    FOREIGN KEY (cell_type_id) REFERENCES OntologyTerms(id),
+    FOREIGN KEY (tissue_id) REFERENCES OntologyTerms(id),
+    FOREIGN KEY (organism_id) REFERENCES OntologyTerms(id),
+    KEY idx_samples_study      (study_id),
+    KEY idx_samples_cell_type  (cell_type_id),
+    KEY idx_samples_tissue     (tissue_id),
+    KEY idx_samples_organism   (organism_id)
+);
+
+CREATE TABLE ExpressionStats (
+    expr_id
+    sample_id
+    gene_id
+    log2_fc
+    p_value
+    significance ENUM('Low','Moderate','High') NOT NULL,
+    FOREIGN KEY (sample_id) REFERENCES Samples(id) ON DELETE RESTRICT,
+    FOREIGN KEY (gene_id)   REFERENCES Genes(id) ON DELETE RESTRICT,
+    KEY idx_expr_sample (sample_id),
+    KEY idx_expr_gene   (gene_id)
+);
+
+CREATE TABLE staging_kv (
+  file_id    VARCHAR(100),      -- e.g. sample or study
+  column_key VARCHAR(120),
+  value      TEXT,
+  PRIMARY KEY (file_id, column_key)
+);
+
+
+
