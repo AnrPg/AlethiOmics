@@ -43,7 +43,7 @@ mysql_url = (
 )
 engine = sqlalchemy.create_engine(mysql_url, pool_pre_ping=True)
 
-def load_mapping(path="config/mapping_catalogue.yml"):
+def load_mapping(path="config/features.yml"):
     with open(path, "r") as f:
         return yaml.safe_load(f)
 
@@ -59,15 +59,15 @@ print_and_log(f"Looking for files in directory: {discover_dir}\n")
 for path in discvr.discover(discover_dir):
     from etl.extract import extract
     from etl.load import load   
-    from etl.harmonise import harmonise
+    from etl.harmonise import harmonize
     from etl.utils.preprocessing import lowercase_ascii
     
-    mapping = load_mapping("config/mapping_catalogue.yml")
-    for row in extract(path, mapping, want='meta'):
+    mapping = load_mapping("config/features.yml")
+    for row in extract(path, mapping, mode='metadata'):
         
         # , add_timestamp=False, logfile_path=logfile, collapse_size=3
         # row["value"] = lowercase_ascii(str(row["value"]) if row["value"] is not None else "") 
-        harmonised_row = harmonise([row], mapping)
+        harmonised_row = harmonize([row], mapping)
         if not harmonised_row:
             # print_and_log(f"\t!!!!!!!\tNo harmonised data for row: {row}, skipping...\n")
             continue
