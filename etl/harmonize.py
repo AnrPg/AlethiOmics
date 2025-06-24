@@ -37,6 +37,9 @@ from etl.utils.preprocessing import (
     extract_sample_id,
 )
 
+def _rand_gc() -> float:
+    return round(random.uniform(30.0, 65.0), 2)
+
 # ──────────────────────────────────────────────────────────────────────────
 #  Real-world fetchers with graceful fallback
 # ──────────────────────────────────────────────────────────────────────────
@@ -508,9 +511,6 @@ class Harmonizer:
 # -------------------------------------------------------------------------
 #  Heavyweight / metadata-generating transforms
 # -------------------------------------------------------------------------
-# def _rand_gc() -> float:
-#     return round(random.uniform(30.0, 65.0), 2)
-
 
 # def fetch_gene_metadata(gene_accession: str) -> Dict[str, Any]:
 #     return {
