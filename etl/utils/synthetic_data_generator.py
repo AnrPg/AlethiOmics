@@ -17,6 +17,7 @@ from __future__ import annotations
 import argparse, csv, datetime as dt, pathlib, random, string, sys, time
 from typing import List, Dict, Tuple
 import numpy as np
+from zoneinfo import ZoneInfo
 
 # :::::::::::::::::::::::::::::::::::::::::::: CONFIG :::::::::::::::::::::::
 
@@ -62,10 +63,22 @@ TAXA: List[Tuple[int,str,str]] = [
     (1301, "F. prausnitzii",     "Bacteria"),
 ]
 
+# ::::::::::::::::::::::::::::::::::::::: GLOBALS :::::::::::::::::::::::::::
+# These may be overridden by CLI flags (--tz / --ts-format)
+DEFAULT_TZ      = "Europe/Athens"
+TIMESTAMP_FMT   = "%Y%m%d-%H%M%S"
 # ::::::::::::::::::::::::::::::::::::::: HELPERS :::::::::::::::::::::::::::
 
-def ts() -> str:
-    return dt.datetime.now().strftime("%Y%m%d-%H%M%S")
+def ts(fmt: str = TIMESTAMP_FMT, tz: str = DEFAULT_TZ) -> str:
+    """
+    Return a timestamp string in the requested *fmt* and *tz* (IANA name).
+    Falls back to UTC if the zone isn’t recognised.
+    """
+    try:
+        z = ZoneInfo(tz)
+    except Exception:
+        z = dt.timezone.utc
+    return dt.datetime.now(z).strftime(fmt)
 
 def rnd_id(prefix: str,length:int=6)->str:
     return prefix+"".join(random.choices(string.ascii_uppercase+string.digits,k=length))
@@ -245,9 +258,15 @@ def make_experiments(out:pathlib.Path, studies:List[str], genes:List[str]):
 def main():
     ap=argparse.ArgumentParser(
         description="Generate synthetic TSVs and raw counts aligned with DW schema")
-    ap.add_argument("out_dir",type=pathlib.Path,help="output directory")
+    ap.add_argument("-o","--out_dir",type=pathlib.Path,help="output directory")
     ap.add_argument("-n","--num_experiments",type=int,default=1)
     ap.add_argument("--seed",type=int,help="random seed")
+    ap.add_argument("--tz","--timezone",dest="tz",default=DEFAULT_TZ,
+                    help="IANA time-zone used for the run folder timestamp "
+                         "(default: %(default)s)")
+    ap.add_argument("--ts-format",default=TIMESTAMP_FMT,
+                    help="strftime() format for the run folder timestamp "
+                         "(default: %(default)s)")
     args=ap.parse_args()
     
     if args.seed is not None:
@@ -255,8 +274,12 @@ def main():
     else:
         random.seed(time.time_ns()&0xFFFF_FFFF)
 
-    out=args.outdir.resolve()
-    out.mkdir(parents=True,exist_ok=True)
+    # Create a per-run sub-folder named by timestamp (experiment-ID/date)
+    base_dir = args.out_dir.resolve()
+    # ts() is already defined above → YYYYMMDD-HHMMSS
+    base=args.out_dir.resolve()
+    out = base / ts(args.ts_format, args.tz)   # per-run, TZ-aware folder
+    out.mkdir(parents=True, exist_ok=True)
 
     genes=mk_gene_catalog(out,GENES_PER_RUN)
     mk_taxa_catalog(out)

@@ -45,7 +45,9 @@ def _run_synthetic_generator(
     synthetic_params: List[str],
     num_experiments: int,
     seed: int,
-    out_dir: str
+    out_dir: str,
+    tz: str,
+    ts_format: str,
 ) -> None:
     """
     Launch the synthetic-data generator as a module,
@@ -57,6 +59,8 @@ def _run_synthetic_generator(
         "--num_experiments", str(num_experiments),
         "--seed", str(seed),
         "--out_dir", str(out_dir),
+        "--tz", tz,
+        "--ts-format", ts_format,
     ]
     if synthetic_params:
         cmd += synthetic_params
@@ -98,6 +102,18 @@ def main() -> None:
         default="all",
         help="Extractor mode (pass-through to etl.extract).",
     )
+    ap.add_argument("--tz", "--timezone", dest="tz",
+                    default="Europe/Athens",
+                    help="IANA time-zone for both synthetic folder names and "
+                         "log timestamps (default: %(default)s)")
+    ap.add_argument("--ts-format",
+                    default="%Y%m%d-%H%M%S",
+                    help="strftime() pattern for experiment folder timestamp "
+                         "(default: %(default)s)")
+    ap.add_argument("--log-datefmt",
+                    default="%Y-%m-%d %H:%M:%S",
+                    help="strftime() pattern for timestamps inside the log "
+                         "file (default: %(default)s)")
     # Synthetic data generation ------------------------------------------------
     ap.add_argument(
         "--use-synthetic",
@@ -152,7 +168,7 @@ def main() -> None:
     ts = datetime.now().strftime("%Y%m%d_%H%M%S")
     log_path = Path("logs") / f"pipeline_{ts}.log"
     log_path.parent.mkdir(exist_ok=True)
-    configure_logging(log_path)
+    configure_logging(log_path, datefmt=args.log_datefmt, tz=args.tz)
     logger = get_logger(__name__)
     logger.info("🚀  ETL pipeline started")
 
@@ -172,6 +188,8 @@ def main() -> None:
             args.num_experiments,
             args.seed,
             args.out_dir,
+            args.tz,
+            args.ts_format,
         )
 
 
