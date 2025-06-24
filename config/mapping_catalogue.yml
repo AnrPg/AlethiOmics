@@ -1,136 +1,217 @@
 # --------------------------------------------------------------------------
-#  config/mapping_catalogue.yml   — v3 for “Gut-Brain Organoid DW”
+#  config/mapping_catalogue.yml   — “Complete” v3 for Gut-Brain Organoid DW
 # --------------------------------------------------------------------------
-version: 3          # bump so Harmoniser knows this is the new spec
+version: 4
 columns:
 
   # ─────────────────────────────────────────────────────────────────────────
-  # 1) Core reference tables
+  # 1) Genes
   # ─────────────────────────────────────────────────────────────────────────
   gene_entry:
     regex: "(ENS[A-Z]*G\\d{5,}(?:\\.\\d+)?)"
     transforms:
-      - strip_version               # ENSG00000139618.15 → ENSG00000139618
-      - fetch_gene_metadata         # → {gene_accession, gene_name, species_taxon_id,
-                                    #    gene_length_bp, gc_content, pathway_iri, go_terms}
+      - strip_version              # ENSG00000139618.15 → ENSG00000139618
+      - fetch_gene_metadata        # → {gene_accession, gene_name,
+                                   #    species_taxon_id, gene_length_bp,
+                                   #    gc_content_pct, pathway_iris, go_terms}
     target_table: Genes
-    target_column: gene_accession   # PK in Genes :contentReference[oaicite:11]{index=11}
+    target_columns:
+      - gene_accession            # VARCHAR(20) PK
+      - gene_name                 # VARCHAR(120)
+      - species_taxon_id          # INT (should be 9606)
+      - gene_length_bp            # INT
+      - gc_content_pct            # DECIMAL
+      - pathway_iris              # JSON / TEXT
+      - go_terms                  # JSON / TEXT
 
+  # ─────────────────────────────────────────────────────────────────────────
+  # 2) Stimuli
+  # ─────────────────────────────────────────────────────────────────────────
   stimulus_entry:
-    regex: "(CHEBI:\\d+|EFO:\\d+|TNF(?:α|a)|butyrate|propionate|acetate|GABA|none)"
+    regex: "(CHEBI:\\d+|EFO:\\d+|none)"
     transforms:
-      - canonical_iri
-      - fetch_stimulus_metadata     # + chem_formula, smiles, molecular_weight,
-                                    #   default_dose, dose_unit :contentReference[oaicite:12]{index=12}
+      - canonical_iri              # CURIE → full IRI
+      - fetch_stimulus_metadata    # → {iri, label, class_hint,
+                                   #    chemical_formula, smiles,
+                                   #    molecular_weight, default_dose,
+                                   #    dose_unit}
     target_table: Stimuli
-    target_column: iri
+    target_columns:
+      - iri                       # VARCHAR(255) PK
+      - label                     # VARCHAR(120)
+      - class_hint                # VARCHAR(40)
+      - chemical_formula          # VARCHAR(255)
+      - smiles                    # TEXT
+      - molecular_weight          # DECIMAL
+      - default_dose              # DECIMAL
+      - dose_unit                 # VARCHAR(20)
 
+  # ─────────────────────────────────────────────────────────────────────────
+  # 3) Microbes
+  # ─────────────────────────────────────────────────────────────────────────
   microbe_entry:
     regex: "NCBITaxon:\\d+"
     transforms:
-      - fetch_from_ncbi_taxon       # → taxon_id (INT)
-      - fetch_microbe_metadata      # + strain_name … prevalence :contentReference[oaicite:13]{index=13}
+      - fetch_from_ncbi_taxon      # CURIE → taxon_id (INT)
+      - fetch_microbe_metadata     # → {taxon_id, species_name,
+                                   #    strain_name, genome_size_bp,
+                                   #    gc_content_pct,
+                                   #    oxygen_requirement,
+                                   #    relative_abundance_pct,
+                                   #    prevalence_pct}
     target_table: Microbes
-    target_column: taxon_id
+    target_columns:
+      - taxon_id                  # INT PK
+      - species_name              # VARCHAR(120)
+      - strain_name               # VARCHAR(120)
+      - genome_size_bp            # BIGINT
+      - gc_content_pct            # DECIMAL
+      - oxygen_requirement        # ENUM('aerobe','anaerobe','facultative')
+      - relative_abundance_pct    # DECIMAL
+      - prevalence_pct            # DECIMAL
 
+  # ─────────────────────────────────────────────────────────────────────────
+  # 4) Taxa (metadata for ANY taxon used elsewhere)
+  # ─────────────────────────────────────────────────────────────────────────
   taxon_entry:
     regex: "NCBITaxon:\\d+"
     transforms:
       - canonical_iri
-      - fetch_taxon_numeric_id      # → id (INT)
-      - fetch_taxon_metadata        # + kingdom, ranking, gc_content, genome_length,
-                                    #   habitat, pathogenicity :contentReference[oaicite:14]{index=14}
+      - fetch_taxon_numeric_id     # IRI → id (INT)
+      - fetch_taxon_metadata       # → {id, kingdom, rank,
+                                   #    gc_content_pct,
+                                   #    genome_length_bp,
+                                   #    habitat, pathogenicity}
     target_table: Taxa
-    target_column: id               # PK in Taxa
+    target_columns:
+      - id                        # INT PK
+      - kingdom                   # VARCHAR(60)
+      - rank                      # VARCHAR(60)
+      - gc_content_pct            # DECIMAL
+      - genome_length_bp          # BIGINT
+      - habitat                   # VARCHAR(255)
+      - pathogenicity             # ENUM('pathogen','commensal','opportunist')
 
+  # ─────────────────────────────────────────────────────────────────────────
+  # 5) Ontology terms (cell types & tissues)
+  # ─────────────────────────────────────────────────────────────────────────
   ontology_term_entry:
-    regex: "(CL_\\d{7}|UBERON_\\d{7}|EFO_\\d+|NCBITaxon_\\d+)"
+    regex: "(CL_\\d{7}|UBERON_\\d{7}|EFO_\\d+)"
     transforms:
       - canonical_iri
-      - fetch_ontology_term_metadata  # + label, ontology, definition, synonyms, version :contentReference[oaicite:15]{index=15}
+      - fetch_ontology_term_metadata  # → {iri, label, ontology,
+                                     #    definition, synonyms, version}
     target_table: OntologyTerms
-    target_column: iri
+    target_columns:
+      - iri                       # VARCHAR(255) PK
+      - label                     # VARCHAR(120)
+      - ontology                  # VARCHAR(50)
+      - definition                # TEXT
+      - synonyms                  # JSON / TEXT
+      - version                   # VARCHAR(20)
 
+  # ─────────────────────────────────────────────────────────────────────────
+  # 6) Studies
+  # ─────────────────────────────────────────────────────────────────────────
   study_accession:
     regex: "(E-MTAB-\\d+|GSE\\d+|LOCAL-[A-Za-z0-9_-]+)"
     transforms:
       - normalize_study_accession
-      - fetch_study_metadata        # + title, source_repo, publication_date,
-                                    #   study_type, num_samples, contact_email :contentReference[oaicite:16]{index=16}
+      - fetch_study_metadata        # → {study_id, title, source_repo,
+                                    #    publication_date, study_type,
+                                    #    num_samples, contact_email}
     target_table: Studies
-    target_column: study_id
+    target_columns:
+      - study_id                  # VARCHAR(40) PK
+      - title                     # VARCHAR(255)
+      - source_repo               # ENUM('ArrayExpress','GEO','LOCAL')
+      - publication_date          # DATE
+      - study_type                # VARCHAR(60)
+      - num_samples               # INT
+      - contact_email             # VARCHAR(120)
 
   # ─────────────────────────────────────────────────────────────────────────
-  # 2) Samples & per-sample metadata
+  # 7) Samples (core + extra metadata)
   # ─────────────────────────────────────────────────────────────────────────
-  sample_accession:
+  sample_entry:
     regex: "(SAMP[A-Z0-9]{8})"
     transforms:
       - extract_sample_id
-      - fetch_sample_metadata       # → {iri, study_id, cell_type_id, tissue_id,
-                                    #    organism_id, growth_condition, raw_counts_uri,
-                                    #    collection_date, donor_age_years, replicate_number,
-                                    #    viability_pct, rin_score,
-                                    #    stimulus_id, microbe_id}
-                                    #    :contentReference[oaicite:17]{index=17}
+      - fetch_sample_metadata       # → full dict below
     target_table: Samples
-    target_column: iri
+    target_columns:
+      - sample_id                 # VARCHAR(40) PK
+      - study_id                  # VARCHAR(40) FK
+      - cell_type_iri             # VARCHAR(255) FK → OntologyTerms
+      - cell_type_label           # VARCHAR(120)
+      - tissue_iri                # VARCHAR(255) FK → OntologyTerms
+      - tissue_label              # VARCHAR(120)
+      - organism_iri              # VARCHAR(255) FK → Taxa
+      - organism_label            # VARCHAR(120)
+      - growth_condition          # VARCHAR(120)
+      - stimulus_iri              # VARCHAR(255) FK → Stimuli
+      - microbe_taxon_id          # INT FK → Microbes
+      - zarr_uri                  # VARCHAR(255)
+      - collection_date           # DATE
+      - donor_age_years           # INT
+      - replicate_number          # INT
+      - viability_pct             # DECIMAL
+      - rin_score                 # DECIMAL
 
   # ─────────────────────────────────────────────────────────────────────────
-  # 3) Relationship (M:N) link-tables
+  # 8) Link-tables
   # ─────────────────────────────────────────────────────────────────────────
   sample_microbe_link:
-    regex: "LINK_SM:SAMP[A-Z0-9]{8},NCBITaxon:\\d+,\\d+\\.\\d+"
+    regex: "LINK_SM:SAMP[A-Z0-9]{8},NCBITaxon:\\d+,[0-9]+\\.?[0-9]*,[a-z]+"
     transforms:
-      - parse_sample_microbe_record   # → {sample_id, microbe_id,
-                                      #    relative_abundance, evidence}
+      - parse_sample_microbe_record  # → {sample_id, microbe_taxon_id,
+                                      #    relative_abundance_pct, evidence}
     target_table: SampleMicrobe
-    target_column: sample_id          # FK → Samples.id :contentReference[oaicite:18]{index=18}
+    target_columns:
+      - sample_id
+      - microbe_taxon_id
+      - relative_abundance_pct
+      - evidence                  # ENUM('mgnify','literature','inferred')
 
   sample_stimulus_link:
-    regex: "LINK_SS:SAMP[A-Z0-9]{8},(CHEBI:\\d+|EFO:\\d+),\\d+(?:\\.\\d+)?"
+    regex: "LINK_SS:SAMP[A-Z0-9]{8},(CHEBI:\\d+|EFO:\\d+),[0-9]+\\.?[0-9]*,[A-Za-z0-9_]+"
     transforms:
-      - parse_sample_stimulus_record  # → {sample_id, stimulus_id,
-                                      #    exposure_time_hr, response_marker}
+      - parse_sample_stimulus_record # → {sample_id, stimulus_iri,
+                                       #    exposure_time_hr, response_marker}
     target_table: SampleStimulus
-    target_column: sample_id
+    target_columns:
+      - sample_id
+      - stimulus_iri
+      - exposure_time_hr          # DECIMAL
+      - response_marker          # VARCHAR(60)
 
   microbe_stimulus_link:
-    regex: "NCBITaxon:\\d+.*(CHEBI:\\d+|EFO:\\d+)"
+    regex: "NCBITaxon:\\d+.*(CHEBI:\\d+|EFO:\\d+),[0-9]+\\.?[0-9]*,[a-z]+"
     transforms:
-      - parse_microbe_stimulus_record # → {microbe_id, stimulus_id, interaction_score, evidence}
+      - parse_microbe_stimulus_record # → {microbe_taxon_id, stimulus_iri,
+                                        #    interaction_score, evidence}
     target_table: MicrobeStimulus
-    target_column: microbe_id         # FK → Microbes.id :contentReference[oaicite:19]{index=19}
+    target_columns:
+      - microbe_taxon_id
+      - stimulus_iri
+      - interaction_score         # DECIMAL
+      - evidence                  # ENUM('mgnify','literature','inferred')
 
   # ─────────────────────────────────────────────────────────────────────────
-  # 4) Differential-expression statistics
+  # 9) Expression statistics
   # ─────────────────────────────────────────────────────────────────────────
   expression_stat_record:
-    regex: "exprstat:.*"              # eg: exprstat:SAMPXXXX,ENSG...,1.23,0.04,0.05,1234,High
+    regex: "exprstat:.*"             # exprstat:SAMP...,ENSG...,1.23,0.04,500,1234,High
     transforms:
-      - parse_expression_stat_record  # → {sample_id, gene_id, log2_fc, p_value,
-                                      #    adjusted_pval, base_mean, counts, significance}
+      - parse_expression_stat_record # → {sample_id, gene_accession,
+                                       #    log2_fc, p_value, base_mean,
+                                       #    raw_count, significance}
     target_table: ExpressionStats
-    target_column: sample_id          # FK → Samples.id
-
-# --------------------------------------------------------------------------
-#  AVAILABLE TRANSFORM OPERATORS
-#  (add these to TRANSFORM_REGISTRY in etl/harmonise.py)
-# --------------------------------------------------------------------------
-#  • strip_version(text)                    – drop Ensembl “.13” suffix
-#  • canonical_iri(text)                    – CURIE ⇢ full IRI, case-normalised
-#  • fetch_gene_metadata(gene_id)           – returns full dict for *Genes*
-#  • fetch_stimulus_metadata(iri)           – returns full dict for *Stimuli*
-#  • fetch_from_ncbi_taxon(curie)           – maps to integer taxon_id
-#  • fetch_microbe_metadata(taxon_id)       – returns full dict for *Microbes*
-#  • fetch_taxon_numeric_id(curie)          – helper used inside taxon transforms
-#  • fetch_taxon_metadata(taxon_id)         – returns full dict for *Taxa*
-#  • fetch_ontology_term_metadata(iri)      – returns full dict for *OntologyTerms*
-#  • normalize_study_accession(acc)         – canonical study_id
-#  • fetch_study_metadata(study_id)         – returns full dict for *Studies*
-#  • extract_sample_id(text)                – pass-through or custom parse
-#  • fetch_sample_metadata(sample_id)       – returns full dict for *Samples*
-#  • parse_sample_microbe_record(text)      – returns dict for *SampleMicrobe*
-#  • parse_sample_stimulus_record(text)     – returns dict for *SampleStimulus*
-#  • parse_microbe_stimulus_record(text)    – returns dict for *MicrobeStimulus*
-#  • parse_expression_stat_record(text)     – returns dict for *ExpressionStats*
+    target_columns:
+      - sample_id
+      - gene_accession
+      - log2_fc                   # DECIMAL
+      - p_value                   # DECIMAL
+      - base_mean                 # DECIMAL
+      - raw_count                 # BIGINT
+      - significance              # ENUM('Low','Moderate','High')

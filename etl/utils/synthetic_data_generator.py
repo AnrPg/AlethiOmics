@@ -37,7 +37,7 @@ Output tree (per invocation):
  ├─ ontology_terms.tsv           ←   Cell & tissue terms
  ├─ sample_microbe.tsv           ←   SampleMicrobe link
  ├─ sample_stimulus.tsv          ←   SampleStimulus link
- └─  *N*×  <sample_id>_raw_counts.tsv
+ └─  *N*×*M*  <sample_id>_raw_counts.tsv
 ```
 """
 from __future__ import annotations
