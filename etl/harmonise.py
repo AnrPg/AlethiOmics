@@ -36,12 +36,13 @@ def normalize_ontology_id(id_str: str) -> Optional[Dict[str,str]]:
             if iri.startswith(base):
                 return {"iri": iri, "curie": f"{pfx}:{iri[len(base):]}", "prefix": pfx}
         return None
+    
     if ":" in id_str:
         pfx, local = id_str.split(":", 1)
         base = PREFIX_TO_IRI.get(pfx)
         if not base:
             return None
-        return {"iri": base + local, "curie": id_str, "prefix": pfx}
+        return {"iri": base, "curie": id_str, "prefix": pfx}
     return None
 
 # ─── Fallback taxonomy rank via NCBI ─────────────────────────────────────────
@@ -170,23 +171,54 @@ TRANSFORM_FUNCS: Dict[str, Any] = {
 
 # ─── Mapping‐driven harmonization ────────────────────────────────────────────
 
-def load_mapping(path: Path) -> Dict[str,Any]:
+def load_mapping(path:Path="config/features.yml") -> Dict[str,Any]:
     with open(path, "r") as fh:
         return yaml.safe_load(fh)
 
-def harmonize(item: Dict[str,Any], mapping: Dict[str,Any]) -> Optional[Dict[str,Any]]:
-    col, val = item["column"], item["value"]
-    candidates = [k for k in mapping["columns"] if k.endswith(f".{col}")]
-    if len(candidates) != 1:
-        return None
-    entry = mapping["columns"][candidates[0]]
-    out = val
-    for t in entry.get("transforms", []):
-        fn = TRANSFORM_FUNCS.get(t)
-        if not fn:
-            raise KeyError(f"Unknown transform '{t}'")
-        out = fn(out)
-    return {"table": entry["target_table"], "column": entry["target_column"], "value": out}
+# def harmonize(item: Dict[str,Any], mapping: Dict[str,Any]) -> Optional[Dict[str,Any]]:
+#     col, val = item["column"], item["value"]
+#     candidates = [k for k in mapping["columns"] if k.endswith(f".{col}")]
+#     if len(candidates) != 1:
+#         return None
+#     entry = mapping["columns"][candidates[0]]
+#     out = val
+#     for t in entry.get("transforms", []):
+#         fn = TRANSFORM_FUNCS.get(t)
+#         if not fn:
+#             raise KeyError(f"Unknown transform '{t}'")
+#         out = fn(out)
+#     return {"table": entry["target_table"], "column": entry["target_column"], "value": out}
+
+def harmonize(item_or_list: Any, mapping: Dict[str,Any]) -> Dict[tuple, set]:
+   """
+   Accepts a single {column,value} or a list thereof,
+   applies transforms, and returns a dict:
+     { (table, column): set(values) }
+   """
+   # normalize to list
+   items = item_or_list if isinstance(item_or_list, list) else [item_or_list]
+   from collections import defaultdict
+   grouped: Dict[tuple, set] = defaultdict(set)
+   for item in items:
+       col = item.get("column")
+       val = item.get("value")
+       if col is None:
+           continue
+       # find the mapping entry
+       candidates = [k for k in mapping["columns"] if k.endswith(f".{col}")]
+       if len(candidates) != 1:
+           continue
+       entry = mapping["columns"][candidates[0]]
+       # apply transforms in order
+       out = val
+       for tname in entry.get("transforms", []):
+           fn = TRANSFORM_FUNCS.get(tname)
+           if fn:
+               out = fn(out)
+       # accumulate by (table, column)
+       key = (entry["target_table"], entry["target_column"])
+       grouped[key].add(out)
+   return grouped
 
 # ─── CLI harness ─────────────────────────────────────────────────────────────
 
