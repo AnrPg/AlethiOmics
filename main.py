@@ -28,6 +28,7 @@ import sys
 from datetime import datetime
 from pathlib import Path
 from typing import List
+import yaml
 
 from sshtunnel import SSHTunnelForwarder
 
@@ -48,6 +49,7 @@ def _run_synthetic_generator(
     out_dir: str,
     tz: str,
     ts_format: str,
+    base_uri: str,
 ) -> None:
     """
     Launch the synthetic-data generator as a module,
@@ -61,6 +63,7 @@ def _run_synthetic_generator(
         "--out_dir", str(out_dir),
         "--tz", tz,
         "--ts-format", ts_format,
+        "--base-uri", base_uri,
     ]
     if synthetic_params:
         cmd += synthetic_params
@@ -85,6 +88,12 @@ def _run_synthetic_generator(
 def main() -> None:
     ap = argparse.ArgumentParser(description="Gut–Brain DW – full ETL pipeline")
     
+    # allow pointing at a YAML config
+    ap.add_argument(
+        "--config", type=Path, default=Path("config.yml"),
+        help="YAML config file (keys: base_uri, tz, ts_format, log_datefmt)"
+    )
+
     ap.add_argument(
         "--data-dir",
         default="raw_data",
@@ -114,6 +123,10 @@ def main() -> None:
                     default="%Y-%m-%d %H:%M:%S",
                     help="strftime() pattern for timestamps inside the log "
                          "file (default: %(default)s)")
+    ap.add_argument("--base-uri", dest="base_uri", default=None,
+                    help="Base URI for all outputs (file://, s3://, gs://, etc.)")
+
+    
     # Synthetic data generation ------------------------------------------------
     ap.add_argument(
         "--use-synthetic",
@@ -143,6 +156,7 @@ def main() -> None:
         default="raw_data/synthetic_runs",
         help="Output directory for synthetic runs.",
     )
+    
     # MySQL / SSH credentials --------------------------------------------------
     ap.add_argument("--ssh-host", default="devanr.tenant-a9.svc.cluster.local")
     ap.add_argument("--ssh-user", default="anr")
@@ -159,10 +173,24 @@ def main() -> None:
     ap.add_argument("--mysql-db", default=os.getenv("MYSQL_DB", "alethiomics_live"))
 
     ap.add_argument(
-        "--mapping-yaml", default="mapping.yml",
+        "--mapping-yaml", default="mapping_catalogue.yml",
         help="Column-mapping file for the Harmonizer.",
     )
+    
     args = ap.parse_args()
+
+    # --- Load YAML config and fill in any CLI‐unspecified values ---
+    if args.config.exists():
+        cfg = yaml.safe_load(args.config.read_text()) or {}
+    else:
+        cfg = {}
+
+    # Fallback: take CLI if set, else YAML, else the module default
+    args.tz            = args.tz            or cfg.get("tz")           or "Europe/Athens"
+    args.ts_format     = args.ts_format     or cfg.get("ts_format")    or "%Y%m%d-%H%M%S"
+    args.log_datefmt   = args.log_datefmt   or cfg.get("log_datefmt")  or "%Y-%m-%d at %H:%M:%S"
+    args.base_uri      = args.base_uri      or cfg.get("base_uri")     or "file://./raw_data/synthetic_runs"
+ 
 
     # 1️⃣  Logging: console + rotating file
     ts = datetime.now().strftime("%Y%m%d_%H%M%S")
@@ -183,14 +211,15 @@ def main() -> None:
         logger.debug("num_experiments: %d, seed: %d, out_dir: %s",
                      args.num_experiments, args.seed, args.out_dir)
         _run_synthetic_generator(
-            data_dir,
-            args.synthetic_params or [],
-            args.num_experiments,
-            args.seed,
-            args.out_dir,
-            args.tz,
-            args.ts_format,
-        )
+        data_dir,
+        args.synthetic_params or [],
+        args.num_experiments,
+        args.seed,
+        args.out_dir,
+        args.tz,
+        args.ts_format,
+        args.base_uri,
+    )
 
 
     if not data_dir.exists():

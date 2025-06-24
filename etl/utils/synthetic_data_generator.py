@@ -14,10 +14,20 @@
 # ────────────────────────────────────────────────────────────────────────────
 
 from __future__ import annotations
+import os
+import fsspec, yaml
 import argparse, csv, datetime as dt, pathlib, random, string, sys, time
 from typing import List, Dict, Tuple
 import numpy as np
 from zoneinfo import ZoneInfo
+from typing import List, Dict, Tuple
+import numpy as np
+
+# ::::::::::::::::::::::::::::::::::::::: GLOBALS :::::::::::::::::::::::::::
+DEFAULT_TZ        = "Europe/Athens"
+TIMESTAMP_FMT     = "%Y%m%d-%H%M%S"
+DEFAULT_BASE_URI = os.environ.get("BASE_URI", f"file://./raw_data/synthetic_runs")
+
 
 # :::::::::::::::::::::::::::::::::::::::::::: CONFIG :::::::::::::::::::::::
 
@@ -63,10 +73,6 @@ TAXA: List[Tuple[int,str,str]] = [
     (1301, "F. prausnitzii",     "Bacteria"),
 ]
 
-# ::::::::::::::::::::::::::::::::::::::: GLOBALS :::::::::::::::::::::::::::
-# These may be overridden by CLI flags (--tz / --ts-format)
-DEFAULT_TZ      = "Europe/Athens"
-TIMESTAMP_FMT   = "%Y%m%d-%H%M%S"
 # ::::::::::::::::::::::::::::::::::::::: HELPERS :::::::::::::::::::::::::::
 
 def ts(fmt: str = TIMESTAMP_FMT, tz: str = DEFAULT_TZ) -> str:
@@ -87,29 +93,39 @@ def nb_counts(n:int, mean:int, theta:int)->np.ndarray:
     r=theta; p=r/(r+mean)
     return np.random.negative_binomial(r,p,size=n)
 
+def load_config(path):
+    try:
+        return yaml.safe_load(open(path)) or {}
+    except FileNotFoundError:
+        return {}
+
 # :::::::::::::::::::::::::::::::::: CATALOGS :::::::::::::::::::::::::::::::
 
-def mk_gene_catalog(out: pathlib.Path, n:int) -> List[str]:
-    genes=[f"ENSG{str(i).zfill(11)}" for i in random.sample(range(1,30_000),n)]
-    fp=out/"gene_catalog.tsv"
-    with fp.open("w",newline="") as fh:
-        w=csv.writer(fh,delimiter="\t")
-        w.writerow(["gene_accession","gene_name","species_taxon_id",
-                    "gene_length_bp","gc_content_pct",
-                    "pathway_iris","go_terms"])
+def mk_gene_catalog(fs, root:str, n:int) -> List[str]:
+    genes = [f"ENSG{str(i).zfill(11)}" for i in random.sample(range(1,30_000), n)]
+    path = f"{root}/gene_catalog.tsv"
+    with fs.open(path, "w", newline="") as fh:
+        w = csv.writer(fh, delimiter="\t")
+        w.writerow([
+            "gene_accession","gene_name","species_taxon_id",
+            "gene_length_bp","gc_content_pct","pathway_iris","go_terms"
+        ])
         for gid in genes:
-            w.writerow([gid,
-                        f"Gene{gid[-4:]}",
-                        9606,
-                        random.randint(500,200_000),
-                        round(random.uniform(35,65),2),
-                        "[]","[]"])
+            w.writerow([
+                gid,
+                f"Gene{gid[-4:]}",
+                9606,
+                random.randint(500,200_000),
+                round(random.uniform(35,65),2),
+                "[]","[]"
+            ])
     return genes
 
-def mk_taxa_catalog(out:pathlib.Path):
-    fp=out/"taxa_catalog.tsv"
-    with fp.open("w",newline="") as fh:
-        w=csv.writer(fh,delimiter="\t")
+
+def mk_taxa_catalog(fs, root:str):
+    path = f"{root}/taxa_catalog.tsv"
+    with fs.open(path, "w", newline="") as fh:
+        w = csv.writer(fh, delimiter="\t")
         w.writerow(["id","kingdom","rank","gc_content_pct",
                     "genome_length_bp","habitat","pathogenicity"])
         for tid,name,king in TAXA:
@@ -119,9 +135,9 @@ def mk_taxa_catalog(out:pathlib.Path):
                         "intestine" if king=="Bacteria" else "human body",
                         random.choice(["commensal","opportunist","pathogen"])])
             
-def mk_microbe_catalog(out:pathlib.Path):
-    fp=out/"microbe_catalog.tsv"
-    with fp.open("w",newline="") as fh:
+def mk_microbe_catalog(fs, root:str):
+    path = f"{root}/microbe_catalog.tsv"
+    with fs.open(path, "w", newline="") as fh:
         w=csv.writer(fh,delimiter="\t")
         w.writerow(["taxon_id","species_name","strain_name",
                     "genome_size_bp","gc_content_pct","oxygen_requirement",
@@ -134,9 +150,9 @@ def mk_microbe_catalog(out:pathlib.Path):
                         round(random.uniform(0.1,10),2),
                         round(random.uniform(20,90),2)])
 
-def mk_stimulus_catalog(out:pathlib.Path):
-    fp=out/"stimulus_catalog.tsv"
-    with fp.open("w",newline="") as fh:
+def mk_stimulus_catalog(fs, root:str):
+    path = f"{root}/stimulus_catalog.tsv"
+    with fs.open(path, "w",newline="") as fh:
         w=csv.writer(fh,delimiter="\t")
         w.writerow(["iri","label","class_hint","chemical_formula",
                     "smiles","molecular_weight","default_dose","dose_unit"])
@@ -145,9 +161,9 @@ def mk_stimulus_catalog(out:pathlib.Path):
             w.writerow([iri,label,cls,chem,"",random.randint(60,500),
                         random.choice([0.1,1,10]),"mM"])
 
-def mk_ontology_catalog(out:pathlib.Path):
-    fp=out/"ontology_terms.tsv"
-    with fp.open("w",newline="") as fh:
+def mk_ontology_catalog(fs, root:str):
+    path = f"{root}/ontology_terms.tsv"
+    with fs.open(path, "w",newline="") as fh:
         w=csv.writer(fh,delimiter="\t")
         w.writerow(["iri","label","ontology","definition","synonyms","version"])
         for iri,lbl in CELL_TYPES+TISSUES:
@@ -156,10 +172,10 @@ def mk_ontology_catalog(out:pathlib.Path):
 
 # :::::::::::::::::::::::::::::::::: STUDIES ::::::::::::::::::::::::::::::::
 
-def mk_study_catalog(out:pathlib.Path, n_exp:int)->List[str]:
-    fp=out/"study_catalog.tsv"
+def mk_study_catalog(fs, root:str, n_exp:int)->List[str]:
     studies=[]
-    with fp.open("w",newline="") as fh:
+    path = f"{root}/study_catalog.tsv"
+    with fs.open(path, "w",newline="") as fh:
         w=csv.writer(fh,delimiter="\t")
         w.writerow(["study_id","title","source_repo",
                     "publication_date","study_type",
@@ -177,38 +193,41 @@ def mk_study_catalog(out:pathlib.Path, n_exp:int)->List[str]:
 
 # ::::::::::::::::::::::::::::::::: LINK TABLES :::::::::::::::::::::::::::::
 
-def init_link_files(out:pathlib.Path):
-    # create headers once, append rows later
-    (out/"sample_microbe.tsv").write_text(
-        "sample_id\tmicrobe_taxon_id\trelative_abundance_pct\tevidence\n")
-    (out/"sample_stimulus.tsv").write_text(
-        "sample_id\tstimulus_iri\texposure_time_hr\tresponse_marker\n")
-    (out/"microbe_stimulus.tsv").write_text(
-        "microbe_taxon_id\tstimulus_iri\tinteraction_score\tevidence\n")
+def init_link_files(fs, root:str) -> None:
+    headers = {
+        "sample_microbe.tsv":    "sample_id\tmicrobe_taxon_id\trelative_abundance_pct\tevidence\n",
+        "sample_stimulus.tsv":   "sample_id\tstimulus_iri\texposure_time_hr\tresponse_marker\n",
+        "microbe_stimulus.tsv":  "microbe_taxon_id\tstimulus_iri\tinteraction_score\tevidence\n",
+    }
+    for fname, hdr in headers.items():
+        path = f"{root}/{fname}"
+        with fs.open(path, "w") as fh:
+            fh.write(hdr)
 
-def append(out_file:pathlib.Path, row:List):
-    with out_file.open("a",newline="") as fh:
-        csv.writer(fh,delimiter="\t").writerow(row)
 
-# ::::::::::::::::::::::::::::::::: EXPERIMENTS ::::::::::::::::::::::::::::
+def append(fs, root:str, fname:str, row:List) -> None:
+    path = f"{root}/{fname}"
+    with fs.open(path, "a", newline="") as fh:
+        csv.writer(fh, delimiter="\t").writerow(row)
 
-def make_experiments(out:pathlib.Path, studies:List[str], genes:List[str]):
-    sm_link  = out/"sample_microbe.tsv"
-    ss_link  = out/"sample_stimulus.tsv"
-    ms_link  = out/"microbe_stimulus.tsv"
 
+def make_experiments(
+    fs, root:str,
+    studies:List[str],
+    genes:List[str],
+    base_uri:str, tz:str, ts_format:str
+) -> None:
+    
     for sid in studies:
         exp = f"experiment_{sid}"
-        meta_fp=out/f"{exp}.tsv"
-        with meta_fp.open("w",newline="") as fh:
-            w=csv.writer(fh,delimiter="\t")
+        # 1) metadata TSV
+        meta_path = f"{root}/{exp}.tsv"
+        with fs.open(meta_path, "w", newline="") as fh:
+            w = csv.writer(fh, delimiter="\t")
             w.writerow([
-                "sample_id","study_id",
-                "cell_type_iri","cell_type_label",
-                "tissue_iri","tissue_label",
-                "organism_iri","organism_label",
-                "growth_condition",
-                "stimulus_iri","stimulus_label",
+                "sample_id","study_id","cell_type_iri","cell_type_label",
+                "tissue_iri","tissue_label","organism_iri","organism_label",
+                "growth_condition","stimulus_iri","stimulus_label",
                 "microbe_taxon_id","microbe_species_name",
                 "zarr_uri","collection_date","donor_age_years",
                 "replicate_number","viability_pct","rin_score"
@@ -221,7 +240,17 @@ def make_experiments(out:pathlib.Path, studies:List[str], genes:List[str]):
                 growth=random.choice(["monoculture","co-culture"])
                 stim_iri,stim_lbl,_=random.choice(STIMULI)
                 micro_tid,micro_name,*_=random.choice(MICROBES)
-                zarr=f"s3://synthetic/{exp}/{samp}.zarr"
+                
+                # build a generic URI, then ensure the store “exists” via fsspec
+                zarr_uri = f"{base_uri.rstrip('/')}/{ts(ts_format,tz)}/{exp}/{samp}.zarr"
+                # ensure Zarr store path exists
+                zfs, zroot = fsspec.core.url_to_fs(zarr_uri)
+                try:
+                    zfs.makedirs(zroot, exist_ok=True)
+                except AttributeError:
+                    pass
+
+
                 coll_date=(dt.date.today()-dt.timedelta(days=random.randint(0,180))).isoformat()
                 w.writerow([
                     samp,sid,
@@ -231,7 +260,7 @@ def make_experiments(out:pathlib.Path, studies:List[str], genes:List[str]):
                     growth,
                     stim_iri,stim_lbl,
                     micro_tid,micro_name,
-                    zarr,coll_date,
+                    zarr_uri,coll_date,
                     random.randint(20,65),            # donor age
                     random.randint(1,3),              # replicate
                     round(random.uniform(70,95),1),   # viability
@@ -239,18 +268,21 @@ def make_experiments(out:pathlib.Path, studies:List[str], genes:List[str]):
                 ])
                 # raw counts
                 counts=nb_counts(len(genes),RAW_COUNT_MEAN,RAW_COUNT_THETA)
-                with (out/f"{samp}_raw_counts.tsv").open("w",newline="") as cf:
+                raw_counts_path = f"{root}/{samp}_raw_counts.tsv"
+                with fs.open(raw_counts_path, "w", newline="") as cf:
                     cw=csv.writer(cf,delimiter="\t")
                     cw.writerow(["gene_id","count"])
                     cw.writerows(zip(genes,counts))
                 # link-tables
-                append(sm_link,[samp,micro_tid,round(random.uniform(0.1,30),2),
+                # TODO: fs, root might need to be one argument in the next three append instructions
+                append(fs, root, "sample_microbe.tsv", [samp,micro_tid,round(random.uniform(0.1,30),2),
                                 random.choice(["mgnify","literature","inferred"])])
-                append(ss_link,[samp,stim_iri,random.randint(1,48),
+                append(fs, root, "sample_stimulus.tsv", [samp,stim_iri,random.randint(1,48),
                                 random.choice(["IL6","NFkB","IFNγ"])])
         # Microbe–Stimulus edges (once per experiment)
-        mi=random.choice(MICROBES); st=random.choice(STIMULI)
-        append(ms_link,[mi[0],st[0],round(random.uniform(-1,1),3),
+        mi=random.choice(MICROBES);
+        st=random.choice(STIMULI)
+        append(fs, root, "microbe_stimulus.tsv", [mi[0],st[0],round(random.uniform(-1,1),3),
                         random.choice(["mgnify","literature","inferred"])])
 
 # ::::::::::::::::::::::::::::::::::::: MAIN :::::::::::::::::::::::::::::::
@@ -258,7 +290,6 @@ def make_experiments(out:pathlib.Path, studies:List[str], genes:List[str]):
 def main():
     ap=argparse.ArgumentParser(
         description="Generate synthetic TSVs and raw counts aligned with DW schema")
-    ap.add_argument("-o","--out_dir",type=pathlib.Path,help="output directory")
     ap.add_argument("-n","--num_experiments",type=int,default=1)
     ap.add_argument("--seed",type=int,help="random seed")
     ap.add_argument("--tz","--timezone",dest="tz",default=DEFAULT_TZ,
@@ -267,6 +298,11 @@ def main():
     ap.add_argument("--ts-format",default=TIMESTAMP_FMT,
                     help="strftime() format for the run folder timestamp "
                          "(default: %(default)s)")
+    ap.add_argument("--config",      default="config.yml",
+                    help="YAML config with base_uri, tz, ts_format")
+    ap.add_argument("-o","--out_dir",type=pathlib.Path,help="output directory which is prefixed by <base-uri>")
+    ap.add_argument("-b","--base-uri",    dest="base_uri", default=None,
+                    help="Base URI for all outputs (file://, s3://, gs://…)") 
     args=ap.parse_args()
     
     if args.seed is not None:
@@ -274,23 +310,31 @@ def main():
     else:
         random.seed(time.time_ns()&0xFFFF_FFFF)
 
-    # Create a per-run sub-folder named by timestamp (experiment-ID/date)
-    base_dir = args.out_dir.resolve()
-    # ts() is already defined above → YYYYMMDD-HHMMSS
-    base=args.out_dir.resolve()
-    out = base / ts(args.ts_format, args.tz)   # per-run, TZ-aware folder
-    out.mkdir(parents=True, exist_ok=True)
+    cfg  = load_config(args.config)
 
-    genes=mk_gene_catalog(out,GENES_PER_RUN)
+    # Merge CLI > config > defaults
+    base_uri   = args.base_uri   or cfg.get("base_uri")      or DEFAULT_BASE_URI
+    tz         = args.tz         or cfg.get("tz")            or DEFAULT_TZ
+    ts_format  = args.ts_format  or cfg.get("ts_format")     or TIMESTAMP_FMT
+
+    # Build a per-run root URI
+    stamp     = ts(ts_format, tz)
+    run_uri   = f"{base_uri.rstrip('/')}/{stamp}"
+    fs, root  = fsspec.core.url_to_fs(run_uri)
+    # ensure the directory exists (local: mkdir, remote: noop or bucket check)
+    try: fs.makedirs(root, exist_ok=True)
+    except AttributeError: pass
+
+    genes=genes = mk_gene_catalog(fs, root, GENES_PER_RUN)
     mk_taxa_catalog(out)
     mk_microbe_catalog(out)
     mk_stimulus_catalog(out)
     mk_ontology_catalog(out)
-    studies=mk_study_catalog(out,args.num_experiments)
-    init_link_files(out)
-    make_experiments(out,studies,genes)
+    studies = mk_study_catalog(fs, root, args.num_experiments)
+    init_link_files(fs, root)
+    make_experiments(fs, root, studies, genes, base_uri=base_uri, tz=tz, ts_format=ts_format)
 
-    print(f"✔  Synthetic data written to {out}")
+    print(f"✔  Synthetic data written to {run_uri}")
 
 if __name__=="__main__":
     main()

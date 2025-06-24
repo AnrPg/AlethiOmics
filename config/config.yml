@@ -1,0 +1,11 @@
+# config.yml
+
+# Base URI for Zarr output. Can be file://, s3://, gs://, etc.
+base_uri: file://./raw_data/synthetic_runs
+
+# Time-zone and timestamp-format for run folders & logs
+tz: Europe/Athens
+ts_format: "%Y%m%d-%H%M%S"
+
+# Date-format for logger
+log_datefmt: "%Y-%m-%d at %H:%M:%S"

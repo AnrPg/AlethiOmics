@@ -14,7 +14,7 @@ from zoneinfo import ZoneInfo
 
 _FMT = "%(asctime)s [%(levelname)s] %(name)s: %(message)s"
 # Default date-format & time-zone (overridable by caller)
-_DATE_FMT = "%Y-%m-%d %H:%M:%S"
+_DATE_FMT = "%Y-%m-%d at %H:%M:%S"
 _TZ       = "Europe/Athens"
 
 def configure_logging(

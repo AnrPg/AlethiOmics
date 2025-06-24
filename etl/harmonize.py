@@ -4,7 +4,7 @@
 etl.harmonize
 -------------
 Takes `(table_name, batch_of_dicts)` from `etl.extract.Extractor`,
-applies the transform pipeline declared in *mapping.yml*, and returns a
+applies the transform pipeline declared in *mapping_catalogue.yml*, and returns a
 new list of dicts whose keys exactly match the MySQL column names.
 
 Design notes
