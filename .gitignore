@@ -7,4 +7,5 @@ __pycache__/
 .ipynb_checkpoints/
 environment.yml
 raw_data/
-test/data
+.config/sensitive_config.yml
+.config/age/key.txt

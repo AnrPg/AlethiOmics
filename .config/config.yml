@@ -9,3 +9,6 @@ ts_format: "%Y%m%d-%H%M%S"
 
 # Date-format for logger
 log_datefmt: "%Y-%m-%d at %H:%M:%S"
+
+# File with mapping to DB tables/columns
+db_mapping: ".config/mapping_catalogue.yml"

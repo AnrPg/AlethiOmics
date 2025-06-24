@@ -82,6 +82,26 @@ def _run_synthetic_generator(
         logger.error("STDERR:\n%s", e.stderr)
         raise
 
+def load_config(path: Path) -> dict:
+    """
+    If `path` ends in .age, run `age --decrypt` (using $AGE_IDENTITY or default).
+    Otherwise load plaintext YAML.
+    """
+    data = None
+    if path.suffix == ".age":
+        # determine identity file
+        identity = os.environ.get("AGE_IDENTITY")  # e.g. /home/user/key.txt
+        cmd = ["age", "--decrypt", str(path)]
+        if identity:
+            cmd += ["--identity", identity]
+        # decrypt into memory
+        proc = subprocess.run(cmd, check=True, stdout=subprocess.PIPE)
+        data = proc.stdout.decode()
+    else:
+        data = path.read_text()
+    return yaml.safe_load(data) or {}
+
+
 # ───────────────────────────────────────────────────────────────────────────
 #  Main driver
 # ───────────────────────────────────────────────────────────────────────────
@@ -93,6 +113,12 @@ def main() -> None:
         "--config", type=Path, default=Path("config.yml"),
         help="YAML config file (keys: base_uri, tz, ts_format, log_datefmt)"
     )
+    ap.add_argument(
+        "--sensitive-config", type=Path,
+        default=Path(".config/sensitive_config.yml.age"),
+        help="Path to encrypted sensitive YAML (age‐encrypted)"
+    )
+
 
     ap.add_argument(
         "--data-dir",
@@ -158,39 +184,61 @@ def main() -> None:
     )
     
     # MySQL / SSH credentials --------------------------------------------------
-    ap.add_argument("--ssh-host", default="devanr.tenant-a9.svc.cluster.local")
-    ap.add_argument("--ssh-user", default="anr")
-    ap.add_argument(
-        "--ssh-key-path",
-        default="/home/rodochrousbisbiki/.ssh/id_ed25519",
-        help="Private key for the bastion/edge node.",
-    )
-    ap.add_argument("--remote-host", default="127.0.0.1")
-    ap.add_argument("--remote-port", type=int, default=3306)
-
-    ap.add_argument("--mysql-user", default=os.getenv("MYSQL_USER", "MasterLogariasmos"))
-    ap.add_argument("--mysql-password", default=os.getenv("MYSQL_PASS", "1234"))
-    ap.add_argument("--mysql-db", default=os.getenv("MYSQL_DB", "alethiomics_live"))
-
-    ap.add_argument(
-        "--mapping-yaml", default="mapping_catalogue.yml",
-        help="Column-mapping file for the Harmonizer.",
-    )
     
+    ap.add_argument("--ssh-host", default=None, help="Bastion SSH host (overrides sensitive-config)")
+    ap.add_argument("--ssh-user", default=None, help="Bastion SSH user")
+    ap.add_argument("--ssh-key-path", default=None, help="Private key for the bastion/edge node")
+    ap.add_argument("--remote-host", default=None, help="Remote DB host (via bastion)")
+    ap.add_argument("--remote-port", type=int, default=None, help="Remote DB port")
+    ap.add_argument("--mysql-user", default=None, help="MySQL user")
+    ap.add_argument("--mysql-password", default=None, help="MySQL password")
+    ap.add_argument("--mysql-db", default=None, help="MySQL database name")
+    ap.add_argument("--mapping-yaml", default=None, help="Column-mapping file (overrides public config db_mapping)")
+
     args = ap.parse_args()
 
+    # ─────────── load public config ──────────────────────────────────────
+    
     # --- Load YAML config and fill in any CLI‐unspecified values ---
+    public_cfg = {}
     if args.config.exists():
-        cfg = yaml.safe_load(args.config.read_text()) or {}
-    else:
-        cfg = {}
+        public_cfg = yaml.safe_load(args.config.read_text()) or {}
+    
+    # Fallback: pull every value from CLI args, else via YAML i.e. public_cfg.get(...), otherwise set to default values if possible
+    args.tz            = args.tz            or public_cfg.get("tz")           or "Europe/Athens"
+    args.ts_format     = args.ts_format     or public_cfg.get("ts_format")    or "%Y%m%d-%H%M%S"
+    args.log_datefmt   = args.log_datefmt   or public_cfg.get("log_datefmt")  or "%Y-%m-%d at %H:%M:%S"
+    args.base_uri      = args.base_uri      or public_cfg.get("base_uri")     or "file://./raw_data/synthetic_runs"
+    args.mapping_yaml  = args.mapping_yaml  or public_cfg.get("db_mapping")   or "./.config/mapping_catalogue.yml"
 
-    # Fallback: take CLI if set, else YAML, else the module default
-    args.tz            = args.tz            or cfg.get("tz")           or "Europe/Athens"
-    args.ts_format     = args.ts_format     or cfg.get("ts_format")    or "%Y%m%d-%H%M%S"
-    args.log_datefmt   = args.log_datefmt   or cfg.get("log_datefmt")  or "%Y-%m-%d at %H:%M:%S"
-    args.base_uri      = args.base_uri      or cfg.get("base_uri")     or "file://./raw_data/synthetic_runs"
- 
+    # ─────────── decrypt & load sensitive config ─────────────────────────
+    
+    sensitive_cfg = {}
+    sc_path = args.sensitive_config
+    if sc_path.suffix == ".age":
+        cmd = ["age", "--decrypt", str(sc_path)]
+        # allow pointing at your private key
+        if env_id := os.environ.get("AGE_IDENTITY"):
+            cmd += ["--identity", env_id]
+        out = subprocess.run(cmd, check=True, stdout=subprocess.PIPE)
+        sensitive_cfg = yaml.safe_load(out.stdout.decode()) or {}
+    elif sc_path.exists():
+        sensitive_cfg = yaml.safe_load(sc_path.read_text()) or {}
+
+    # ─────────── populate args from CLI > sensitive ──────────────
+    # SSH
+    args.ssh_host      = args.ssh_host      or sensitive_cfg.get("ssh_host")
+    args.ssh_user      = args.ssh_user      or sensitive_cfg.get("ssh_user")
+    args.ssh_key_path  = args.ssh_key_path  or sensitive_cfg.get("ssh_key_path")
+    args.remote_host   = args.remote_host   or sensitive_cfg.get("remote_host")
+    args.remote_port   = args.remote_port   or sensitive_cfg.get("remote_port")
+
+    # MySQL
+    args.mysql_user     = args.mysql_user     or sensitive_cfg.get("mysql_user")
+    args.mysql_password = args.mysql_password or sensitive_cfg.get("mysql_password")
+    args.mysql_db       = args.mysql_db       or sensitive_cfg.get("mysql_db")
+
+    # ----------------------------------------------------------------------------------------
 
     # 1️⃣  Logging: console + rotating file
     ts = datetime.now().strftime("%Y%m%d_%H%M%S")

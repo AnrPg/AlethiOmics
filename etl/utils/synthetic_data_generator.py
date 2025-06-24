@@ -15,6 +15,7 @@
 
 from __future__ import annotations
 import os
+import subprocess
 import fsspec, yaml
 import argparse, csv, datetime as dt, pathlib, random, string, sys, time
 from typing import List, Dict, Tuple
@@ -93,11 +94,25 @@ def nb_counts(n:int, mean:int, theta:int)->np.ndarray:
     r=theta; p=r/(r+mean)
     return np.random.negative_binomial(r,p,size=n)
 
-def load_config(path):
-    try:
-        return yaml.safe_load(open(path)) or {}
-    except FileNotFoundError:
-        return {}
+def load_config(path: Path) -> dict:
+    """
+    If `path` ends in .age, run `age --decrypt` (using $AGE_IDENTITY or default).
+    Otherwise load plaintext YAML.
+    """
+    data = None
+    if path.suffix == ".age":
+        # determine identity file
+        identity = os.environ.get("AGE_IDENTITY")  # e.g. /home/user/key.pub or /.config/key.txt or whatever...
+        cmd = ["age", "--decrypt", str(path)]
+        if identity:
+            cmd += ["--identity", identity]
+        # decrypt into memory
+        proc = subprocess.run(cmd, check=True, stdout=subprocess.PIPE)
+        data = proc.stdout.decode()
+    else:
+        data = path.read_text()
+    return yaml.safe_load(data) or {}
+
 
 # :::::::::::::::::::::::::::::::::: CATALOGS :::::::::::::::::::::::::::::::
 

@@ -10,6 +10,10 @@ setup(
     version="0.1.0",
     # discover only real packages under etl/, wh/, visualization/, etc.
     packages=find_packages(),
+    include_package_data=True,
+    package_data={
+        "": ["sensitive_config.yml.age", "config.yml"],
+    },
     # tell it about your one-off main.py
     py_modules=["main"],
     python_requires=">=3.8",

@@ -1,5 +1,5 @@
 # --------------------------------------------------------------------------
-#  config/mapping_catalogue.yml   — “Complete” v3 for Gut-Brain Organoid DW
+#  .config/mapping_catalogue.yml   — “Complete” v3 for Gut-Brain Organoid DW
 # --------------------------------------------------------------------------
 version: 4
 columns:
