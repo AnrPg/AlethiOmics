@@ -187,7 +187,7 @@ def _genes_from_zarr(zarr_dir: pathlib.Path) -> List[str]:
         genes = [g.decode() if isinstance(g, bytes) else str(g) for g in grp["var"]["_index"][:]]
     else:
         # Fallback: any 1‑D array called gene_ids / genes / names, etc.
-        for candidate in ["gene_ids", "genes", "names"]:
+        for candidate in ["gene_ids", "genes", "names", "feature_name"]:
             if candidate in grp:
                 genes = [g.decode() if isinstance(g, bytes) else str(g) for g in grp[candidate][:]]
                 break

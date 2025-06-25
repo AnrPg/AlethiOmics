@@ -23,6 +23,7 @@ import numpy as np
 from zoneinfo import ZoneInfo
 from typing import List, Dict, Tuple
 import numpy as np
+import zarr
 
 # ::::::::::::::::::::::::::::::::::::::: GLOBALS :::::::::::::::::::::::::::
 DEFAULT_TZ        = "Europe/Athens"
@@ -83,6 +84,9 @@ TAXA: List[Tuple[int,str,str]] = [
 
 # ::::::::::::::::::::::::::::::::::::::: HELPERS :::::::::::::::::::::::::::
 
+# Helper: IRI for *Homo sapiens* – used by Genes rows -----------------------
+HUMAN_TAXON_IRI = next(t[0] for t in TAXA if t[0].endswith("9606"))
+
 def ts(fmt: str = TIMESTAMP_FMT, tz: str = DEFAULT_TZ) -> str:
     """
     Return a timestamp string in the requested *fmt* and *tz* (IANA name).
@@ -108,6 +112,9 @@ def make_date_pool(n_dates: int, start: dt.date, end: dt.date) -> List[dt.date]:
     return [dt.date.fromordinal(random.randint(start_ord, end_ord)).isoformat()
             for _ in range(n_dates)]
 
+def _harmonise_gene_name(name: str) -> str:
+    """Drop ENSG version or strip whitespace – very light touch for demo."""
+    return name.split(".")[0].strip()
 
 def load_config(path: pathlib.Path) -> dict:
     """
@@ -128,28 +135,90 @@ def load_config(path: pathlib.Path) -> dict:
         data = path.read_text()
     return yaml.safe_load(data) or {}
 
+def _genes_from_zarr(zarr_dir: pathlib.Path) -> List[str]:
+    """Try to infer gene list from the first *.zarr found inside *zarr_dir*."""
+    if zarr is None:
+        raise RuntimeError("zarr not installed – cannot extract genes from .zarr")
+
+    zarr_paths = sorted(zarr_dir.glob("*.zarr"))
+    if not zarr_paths:
+        raise FileNotFoundError(f"No .zarr store found in {zarr_dir}")
+
+    gpath = zarr_paths[0]
+    grp = zarr.open_group(str(gpath), mode="r")
+
+    # Common AnnData layout: /var/_index (1‑D string array)
+    if "var" in grp and "_index" in grp["var"]:
+        genes = [g.decode() if isinstance(g, bytes) else str(g) for g in grp["var"]["_index"][:]]
+    else:
+        # Fallback: any 1‑D array called gene_ids / genes / names, etc.
+        for candidate in ["gene_ids", "genes", "names", "feature_name"]:
+            if candidate in grp:
+                genes = [g.decode() if isinstance(g, bytes) else str(g) for g in grp[candidate][:]]
+                break
+        else:
+            raise RuntimeError("Could not locate gene list inside .zarr store.")
+    return [_harmonise_gene_name(g) for g in genes]
+
 
 # :::::::::::::::::::::::::::::::::: CATALOGS :::::::::::::::::::::::::::::::
 
-def mk_gene_catalog(fs, root:str, n:int) -> List[str]:
-    genes = [f"ENSG{str(i).zfill(11)}" for i in random.sample(range(1,30000), n)]
-    path = f"{root}/gene_catalog.tsv"
-    with fs.open(path, "w", newline="") as fh:
+def mk_gene_catalog(fs, root:str, n:int = GENES_PER_RUN, *, zarr_dir: str | None = None,) -> List[str]:
+    
+    if zarr_dir:
+        genes_in = _genes_from_zarr(pathlib.Path(zarr_dir))
+        n = len(genes_in)
+    else:
+        genes_in = []  # will fabricate below
+        
+    out_path = f"{root}/gene_catalog.tsv"
+    genes_out: List[str] = []
+
+    with fs.open(out_path, "w", newline="") as fh:
         w = csv.writer(fh, delimiter="\t")
-        w.writerow([
-            "gene_accession","gene_name","species_taxon_iri",
-            "gene_length_bp","gc_content","pathway_iris","go_terms"
-        ])
-        for gid in genes:
-            w.writerow([
-                gid,
-                f"Gene{gid[-4:]}",
-                9606,
-                random.randint(500,200000),
-                round(random.uniform(35,65),2),
-                "[]","[]"
-            ])
-    return genes
+        w.writerow(
+            [
+                "gene_accession",
+                "gene_name",
+                "species_taxon_iri",
+                "gene_length_bp",
+                "gc_content_pct",
+                "pathway_iri",
+                "go_terms",
+            ]
+        )
+
+        if genes_in:
+            for idx, gname in enumerate(genes_in, 1):
+                gid = f"ENSG{idx:011d}"
+                w.writerow(
+                    [
+                        gid,
+                        gname,
+                        HUMAN_TAXON_IRI,  # <- FK to Taxa
+                        random.randint(500, 200_000),
+                        round(random.uniform(35, 65), 2),
+                        "KEGG:hsa" + str(random.randint(1000, 9999)),
+                        "|".join([f"GO:{random.randint(1000000, 9999999)}" for _ in range(3)]),
+                    ]
+                )
+                genes_out.append(gid)
+        else:
+            # fallback synthetic catalogue
+            genes_out = [f"ENSG{str(i).zfill(11)}" for i in random.sample(range(1, 30_000), n)]
+            for gid in genes_out:
+                w.writerow(
+                    [
+                        gid,
+                        f"Gene{gid[-4:]}",
+                        HUMAN_TAXON_IRI,
+                        random.randint(500, 200_000),
+                        round(random.uniform(35, 65), 2),
+                        "KEGG:hsa" + str(random.randint(1000, 9999)),
+                        "|".join([f"GO:{random.randint(1000000, 9999999)}" for _ in range(3)]),
+                    ]
+                )
+    return genes_out
 
 
 def mk_taxa_catalog(fs, root:str) -> List[str]:
