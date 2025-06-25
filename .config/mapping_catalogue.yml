@@ -28,7 +28,7 @@ columns:
   # 2) Stimuli
   # ─────────────────────────────────────────────────────────────────────────
   stimulus_entry:
-    regex: "(CHEBI:\\d+|EFO:\\d+|none)"
+    regex: "(CHEBI:\\d+|EFO:\\d+|PR:\\d+|none)"
     transforms:
       - canonical_iri              # CURIE → full IRI
       - fetch_stimulus_metadata    # → {iri, label, class_hint,
