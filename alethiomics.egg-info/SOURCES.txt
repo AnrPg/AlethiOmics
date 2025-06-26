@@ -17,7 +17,6 @@ etl/utils/__init__.py
 etl/utils/log.py
 etl/utils/preprocessing.py
 etl/utils/synthetic_data_generator.py
-etl/utils/synthetic_data_generator_v2.py
 familiarizing/__init__.py
 familiarizing/convert_to_zarr.py
 familiarizing/data_familiarizing.py

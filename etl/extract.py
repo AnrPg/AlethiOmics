@@ -106,15 +106,19 @@ class Extractor:
         """
         Yield `(table_name, batch)` where *batch* is a list of row-dicts.
         """
-        for fpath in self._select_files():
+        files = self._select_files()
+        LOGGER.debug("iter_batches: %d files selected (mode=%s)", len(files), self.mode)
+        for fpath in files:
             table = _table_for(fpath.name)
             if table is None:
                 LOGGER.debug("Skipping unrecognised file %s", fpath)
                 continue
 
             LOGGER.info("⏳  Extracting %s → %s", fpath.name, table)
-            for batch in self._read_file(fpath, table):
+            for i, batch in enumerate(self._read_file(fpath, table), start=1):
+                LOGGER.debug("  yielding batch %d of %d rows from %s", i, len(batch), fpath.name)
                 yield table, batch
+
             LOGGER.info("✅  Finished %s", fpath.name)
 
     # ────────────────────────────────────────────────────────────────────
@@ -122,6 +126,8 @@ class Extractor:
     # ────────────────────────────────────────────────────────────────────
     def _select_files(self) -> List[pathlib.Path]:
         all_files = sorted(self.data_dir.rglob("*.tsv"))
+        LOGGER.debug("_select_files: found %d TSV files under %s", len(all_files), self.data_dir)
+
         if self.mode == "all":
             return all_files
         if self.mode == "metadata":
@@ -139,7 +145,9 @@ class Extractor:
         Stream *path* and yield lists of size ≤ `self.batch_size`.
         A `sample_id` field is injected for raw-counts rows.
         """
+        LOGGER.debug("_read_file: opening %s for table %s", path, table)
         with path.open(newline="") as fh:
+
             reader = csv.DictReader(fh, delimiter="\t")
             batch: List[Dict] = []
             sample_id = None
@@ -149,15 +157,21 @@ class Extractor:
                 sample_id = path.stem.replace("_raw_counts", "")
 
             for row in reader:
+                # count each row read
+                if len(batch) == 0:
+                    LOGGER.debug("  _read_file: starting new batch for %s", path.name)
                 if table == "RawCounts":
                     row = {"sample_id": sample_id, **row}  # prepend FK
 
                 batch.append(row)
                 if len(batch) >= self.batch_size:
+                    LOGGER.debug("  _read_file: batch full (%d rows), yielding", len(batch))
                     yield batch
                     batch = []
             if batch:
+                LOGGER.debug("  _read_file: final batch (%d rows), yielding", len(batch))
                 yield batch
+
 
 
 # ───────────────────────────────────────────────────────────────────────────

@@ -38,11 +38,13 @@ import threading
 from collections import defaultdict
 from contextlib import contextmanager
 from pathlib import Path
+import time
 from typing import Dict, Iterable, List, Sequence, Tuple
 
 import mysql.connector
 from mysql.connector import pooling
 
+CONNECTION_TIMEOUT=10 # TODO: get this value from public config file
 LOGGER = logging.getLogger(__name__)
 logging.basicConfig(
     level=logging.INFO,
@@ -84,9 +86,12 @@ class MySQLLoader:
         self._stats: Dict[str, int] = defaultdict(int)
 
         # connection pool
+        LOGGER.debug(f"→ creating MySQLConnectionPool with:\nhost:\t{host}\nport:\t{port}\ndatabase:\t{database}\nuser:\t{user}\npassword:\t{password}\npool_size:\t{pool_size}\nbatch_size:\t{batch_size}\nparallel_workers:\t{parallel_workers}\nautocommit:\t{autocommit}\n")
+        start = time.perf_counter()
         self._pool = pooling.MySQLConnectionPool(
             pool_name="etl_pool",
-            pool_size=pool_size,
+            connection_timeout=CONNECTION_TIMEOUT,
+            pool_size=max(1, parallel_workers),
             host=host,
             port=port,
             database=database,
@@ -95,6 +100,7 @@ class MySQLLoader:
             charset="utf8mb4",
             autocommit=autocommit,  # we manage commit() ourselves
         )
+        LOGGER.debug("→ pool created in %.2fs", time.perf_counter() - start)
 
         # Work‑queue & threads
         self._q: queue.Queue[Tuple[str, List[Dict]]] = queue.Queue()

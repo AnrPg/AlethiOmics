@@ -23,11 +23,14 @@ from __future__ import annotations
 
 import argparse
 import os
+import socket
 import subprocess
 import sys
 from datetime import datetime
 from pathlib import Path
+import time
 from typing import List
+from tqdm import tqdm
 import yaml
 
 from sshtunnel import SSHTunnelForwarder
@@ -90,10 +93,11 @@ def load_config(path: Path) -> dict:
     data = None
     if path.suffix == ".age":
         # determine identity file
-        identity = os.environ.get("AGE_IDENTITY")  # e.g. /home/user/key.txt
-        cmd = ["age", "--decrypt", str(path)]
+        identity = os.environ.get("AGE_IDENTITY")  # e.g. /home/user/key.pub or /.config/key.txt or whatever...
+        cmd = ["age"]
         if identity:
             cmd += ["--identity", identity]
+        cmd += ["--decrypt", str(path)]
         # decrypt into memory
         proc = subprocess.run(cmd, check=True, stdout=subprocess.PIPE)
         data = proc.stdout.decode()
@@ -101,6 +105,17 @@ def load_config(path: Path) -> dict:
         data = path.read_text()
     return yaml.safe_load(data) or {}
 
+def wait_for_port(host: str, port: int, timeout: float = 30.0, interval: float = 1.0):
+    """Poll until host:port accepts connections, or exit with error."""
+    deadline = time.time() + timeout
+    while True:
+        try:
+            with socket.create_connection((host, port), timeout=interval):
+                return
+        except OSError:
+            if time.time() > deadline:
+                sys.exit(f"ERROR: {host}:{port} not available after {timeout}s")
+            time.sleep(interval)
 
 # ───────────────────────────────────────────────────────────────────────────
 #  Main driver
@@ -216,10 +231,11 @@ def main() -> None:
     sensitive_cfg = {}
     sc_path = args.sensitive_config
     if sc_path.suffix == ".age":
-        cmd = ["age", "--decrypt", str(sc_path)]
+        cmd = ["age"]
         # allow pointing at your private key
         if env_id := os.environ.get("AGE_IDENTITY"):
             cmd += ["--identity", env_id]
+        cmd += ["--decrypt", str(sc_path)]
         out = subprocess.run(cmd, check=True, stdout=subprocess.PIPE)
         sensitive_cfg = yaml.safe_load(out.stdout.decode()) or {}
     elif sc_path.exists():
@@ -227,16 +243,16 @@ def main() -> None:
 
     # ─────────── populate args from CLI > sensitive ──────────────
     # SSH
-    args.ssh_host      = args.ssh_host      or sensitive_cfg.get("ssh_host")
-    args.ssh_user      = args.ssh_user      or sensitive_cfg.get("ssh_user")
-    args.ssh_key_path  = args.ssh_key_path  or sensitive_cfg.get("ssh_key_path")
-    args.remote_host   = args.remote_host   or sensitive_cfg.get("remote_host")
-    args.remote_port   = args.remote_port   or sensitive_cfg.get("remote_port")
+    args.ssh_host      = args.ssh_host      or sensitive_cfg['db'].get("ssh_host")
+    args.ssh_user      = args.ssh_user      or sensitive_cfg['db'].get("ssh_user")
+    args.ssh_key_path  = args.ssh_key_path  or sensitive_cfg['db'].get("ssh_key_path")
+    args.remote_host   = args.remote_host   or sensitive_cfg['db'].get("remote_host")
+    args.remote_port   = args.remote_port   or sensitive_cfg['db'].get("remote_port")
 
     # MySQL
-    args.mysql_user     = args.mysql_user     or sensitive_cfg.get("mysql_user")
-    args.mysql_password = args.mysql_password or sensitive_cfg.get("mysql_password")
-    args.mysql_db       = args.mysql_db       or sensitive_cfg.get("mysql_db")
+    args.mysql_user     = args.mysql_user     or sensitive_cfg['db'].get("mysql_user")
+    args.mysql_password = args.mysql_password or str(sensitive_cfg['db'].get("mysql_password"))
+    args.mysql_db       = args.mysql_db       or sensitive_cfg['db'].get("mysql_db")
 
     # ----------------------------------------------------------------------------------------
 
@@ -252,6 +268,7 @@ def main() -> None:
 
     # 2️⃣  Synthetic data (optional)
     if args.use_synthetic:
+        start = time.perf_counter()
         if data_dir.exists():
             logger.warning("Overwriting existing synthetic folder %s", data_dir)
         # Debug: show how args are being passed through
@@ -267,13 +284,20 @@ def main() -> None:
         args.tz,
         args.ts_format,
         args.base_uri,
-    )
+        )
+        elapsed = time.perf_counter() - start
+        logger.info(f"✅ Synthetic generation took {elapsed:.2f}s")
+
 
 
     if not data_dir.exists():
         logger.error("Data directory %s does not exist – aborting.", data_dir)
         sys.exit(1)
-
+        
+    if not args.ssh_host or not args.remote_host or not args.ssh_user or not args.ssh_key_path:
+        logger.error("Missing SSH configuration: --ssh-host, --ssh-user, --ssh-key-path, and --remote-host must all be set.")
+        sys.exit(1)
+            
     # 3️⃣  SSH tunnel → cluster MySQL
     logger.info("🔐  Opening SSH tunnel %s → %s:%s",
                 args.ssh_host, args.remote_host, args.remote_port)
@@ -286,11 +310,17 @@ def main() -> None:
     )
     tunnel.start()
     local_port = tunnel.local_bind_port
+    wait_for_port("127.0.0.1", local_port, timeout=20)
     logger.info("🛡️   Tunnel established on localhost:%s", local_port)
+    logger.info("✅  Port is open, proceeding to MySQLLoader()")
 
     # 4️⃣  Instantiate ETL stages
+    print("\t\t$$$$$$$ 1 $$$$$$")
     extractor = Extractor(data_dir, mode=args.mode, batch_size=args.batch_size)
+    print("\t\t$$$$$$$ 2 $$$$$$")
     harmonizer = Harmonizer(args.mapping_yaml)
+    print("\t\t$$$$$$$ 3 $$$$$$")
+    socket.setdefaulttimeout(10)   # give up after 10 s
     loader = MySQLLoader(
         host="127.0.0.1",
         port=local_port,
@@ -300,16 +330,53 @@ def main() -> None:
         batch_size=args.batch_size,
         parallel_workers=4,
     )
+    print("\t\t$$$$$$$ 4 $$$$$$")
 
     # 5️⃣  Stream pipeline
-    row_total = 0
+    total_rows = 0
+    batch_count = 0
+    start_pipeline = time.perf_counter()
+
     try:
-        for table, batch in extractor.iter_batches():
+        for table, batch in tqdm(extractor.iter_batches(), desc="ETL batches", unit="batch"):
+
+            batch_count += 1
+
+            t0 = time.perf_counter()
             harmonised = harmonizer.apply(table, batch)
+            t1 = time.perf_counter()
             loader.enqueue(table, harmonised)
+            t2 = time.perf_counter()
             row_total += len(harmonised)
+            
+            tqdm.write(
+                f"Batch {batch_count} ({table}): "
+                f"{len(batch)} rows → "
+                f"harmonize {(t1-t0)*1000:.2f} ms → "
+                f"enqueue {(t2-t1)*1000:.2f} ms"
+            )
+            logger.debug(
+                "Batch %d (%s): extract %d rows → harmonize %.2fms → enqueue %.2fms",
+                batch_count, table, len(batch),
+                (t1-t0)*1000, (t2-t1)*1000
+            )
+            total_rows += len(batch)
+
+
+         # Flush to the database
+        t_flush_start = time.perf_counter()
         stats = loader.flush()
-        logger.info("🎉  ETL finished – %d rows processed.", row_total)
+        t_flush_end = time.perf_counter()
+        logger.info(
+            "🔄 Loader.flush() took %.2fms, inserted: %s",
+            (t_flush_end - t_flush_start)*1000, stats
+        )
+
+        elapsed_pipeline = time.perf_counter() - start_pipeline
+        logger.info(
+            "🎉 ETL complete: %d batches, %d rows in %.2fs",
+            batch_count, total_rows, elapsed_pipeline
+        )
         logger.info("📊  Insert summary: %s", stats)
     finally:
         tunnel.stop()
