@@ -7,7 +7,7 @@ def _parse_requirements(fname="requirements.txt"):
 
 setup(
     name="alethiomics",
-    version="0.1.0",
+    version="1.0.0",
     # discover only real packages under etl/, wh/, visualization/, etc.
     packages=find_packages(),
     include_package_data=True,
