@@ -34,7 +34,9 @@ def configure_logging(
     for h in list(root.handlers):
         root.removeHandler(h)
 
-        root.setLevel(level)
+        #  NOT: root.setLevel(level)
+        # We want *all* messages to flow through root, but only filter at handler level:
+        root.setLevel(logging.DEBUG)
 
         # Build a formatter that renders *asctime* in the requested TZ
         tzinfo = ZoneInfo(tz)
@@ -53,8 +55,8 @@ def configure_logging(
 
     # File
     fh = logging.FileHandler(log_file)
-    fh.setLevel(level)
-    ch.setFormatter(fmt)
+    fh.setLevel(logging.DEBUG)         # file always captures DEBUG+
+    fh.setFormatter(fmt)
     root.addHandler(fh)
 
 
