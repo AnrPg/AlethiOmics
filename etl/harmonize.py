@@ -56,9 +56,22 @@ def _safe_json(url: str) -> dict | None:
         return None
 
 
-# ------------------------------------------------------------------------ #
-#  Genes – MyGene.info  → Ensembl REST  → stub                            #
-# ------------------------------------------------------------------------ #
+# ------------------------------------------------------------------------- #
+#  Genes – MyGene.info  → Ensembl REST  → stub                              #
+# ------------------------------------------------------------------------- #
+
+def stub_fetch_gene_metadata(g: str) -> Dict[str, Any]:
+    return {
+        "gene_accession": g,      
+        "gene_name": f"Gene{g[-4:]}",
+        "species_taxon_iri": 9606,   
+        "gene_length_bp": random.randint(500, 200_000),      
+        "gc_content": _rand_gc(),          
+        "pathway_iri": "KEGG:hsa" + str(random.randint(1000, 9999)),         
+        "go_terms": "|".join([f"GO:{random.randint(1000000, 9999999)}" for _ in range(3)])
+    }
+
+
 def fetch_gene_metadata(gene_accession: str) -> Dict[str, Any]:
     g = strip_version(gene_accession)
 
