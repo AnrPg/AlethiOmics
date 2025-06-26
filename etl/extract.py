@@ -116,7 +116,7 @@ class Extractor:
 
             LOGGER.info("⏳  Extracting %s → %s", fpath.name, table)
             for batch in self._read_file(fpath, table):
-                LOGGER.debug("  yielding batchof %d rows from %s", len(batch), fpath.name)
+                LOGGER.debug("  yielding batch of %d rows from %s", len(batch), fpath.name)
                 yield table, batch
 
             LOGGER.info("✅  Finished %s", fpath.name)

@@ -309,6 +309,7 @@ def main() -> None:
         local_bind_address=("127.0.0.1",),
     )
     tunnel.start()
+    tunnel._get_transport().set_keepalive(30)
     local_port = tunnel.local_bind_port
     wait_for_port("127.0.0.1", local_port, timeout=20)
     logger.info("🛡️   Tunnel established on localhost:%s", local_port)
@@ -317,7 +318,7 @@ def main() -> None:
     # 4️⃣  Instantiate ETL stages
     extractor = Extractor(data_dir, mode=args.mode, batch_size=args.batch_size)
     harmonizer = Harmonizer(args.mapping_yaml)
-    socket.setdefaulttimeout(10)   # give up after 10 s
+    # socket.setdefaulttimeout(10)   # give up after 10 s
     loader = MySQLLoader(
         host="127.0.0.1",
         port=local_port,
@@ -325,7 +326,7 @@ def main() -> None:
         user=args.mysql_user,
         password=args.mysql_password,
         batch_size=args.batch_size,
-        parallel_workers=4,
+        parallel_workers=4
     )
 
     # 5️⃣  Stream pipeline
