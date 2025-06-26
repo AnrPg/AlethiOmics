@@ -347,7 +347,7 @@ def main() -> None:
             t1 = time.perf_counter()
             loader.enqueue(table, harmonised)
             t2 = time.perf_counter()
-            row_total += len(harmonised)
+            total_rows   += len(harmonised)
             
             tqdm.write(
                 f"Batch {batch_count} ({table}): "

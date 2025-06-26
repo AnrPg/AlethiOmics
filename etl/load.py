@@ -85,22 +85,17 @@ class MySQLLoader:
         self._column_cache: Dict[str, List[str]] = {}
         self._stats: Dict[str, int] = defaultdict(int)
 
-        # connection pool
-        LOGGER.debug(f"→ creating MySQLConnectionPool with:\nhost:\t{host}\nport:\t{port}\ndatabase:\t{database}\nuser:\t{user}\npassword:\t{password}\npool_size:\t{pool_size}\nbatch_size:\t{batch_size}\nparallel_workers:\t{parallel_workers}\nautocommit:\t{autocommit}\n")
-        start = time.perf_counter()
-        self._pool = pooling.MySQLConnectionPool(
-            pool_name="etl_pool",
-            connection_timeout=CONNECTION_TIMEOUT,
-            pool_size=max(1, parallel_workers),
+        self._db_config = dict(
             host=host,
             port=port,
             database=database,
             user=user,
             password=password,
             charset="utf8mb4",
-            autocommit=autocommit,  # we manage commit() ourselves
+            connection_timeout=CONNECTION_TIMEOUT,
+            autocommit=autocommit,
         )
-        LOGGER.debug("→ pool created in %.2fs", time.perf_counter() - start)
+        self._pool = None
 
         # Work‑queue & threads
         self._q: queue.Queue[Tuple[str, List[Dict]]] = queue.Queue()
@@ -156,7 +151,7 @@ class MySQLLoader:
         sql = f"INSERT INTO {table} ({', '.join(keys)}) VALUES ({placeholders})"
         values = [tuple(row.get(k) for k in keys) for row in rows]
 
-        conn = self._pool.get_connection()
+        conn = mysql.connector.connect(**self._db_config)
         try:
             with self._tx(conn):
                 cur = conn.cursor()
@@ -174,7 +169,7 @@ class MySQLLoader:
         if table in self._column_cache:
             return self._column_cache[table]
 
-        conn = self._pool.get_connection()
+        conn = mysql.connector.connect(**self._db_config)
         try:
             cur = conn.cursor()
             cur.execute(
