@@ -11,18 +11,20 @@ columns:
     regex: "(ENS[A-Z]*G\\d{5,}(?:\\.\\d+)?)"
     transforms:
       - strip_version              # ENSG00000139618.15 → ENSG00000139618
-      - fetch_gene_metadata        # → {gene_accession, gene_name,
+      - stub_fetch_gene_metadata   # <-- a mock, no‐network stub here
+      # - fetch_gene_metadata        # → {gene_accession, gene_name,
                                    #    species_taxon_id, gene_length_bp,
                                    #    gc_content_pct, pathway_iris, go_terms}
     target_table: Genes
     target_columns:
-      - gene_accession            # VARCHAR(20) PK
-      - gene_name                 # VARCHAR(120)
-      - species_taxon_id          # INT (should be 9606)
-      - gene_length_bp            # INT
-      - gc_content_pct            # DECIMAL
-      - pathway_iris              # JSON / TEXT
-      - go_terms                  # JSON / TEXT
+      - id                  # INT UNSIGNED
+      - gene_accession      # VARCHAR(20)
+      - gene_name           # VARCHAR(120)
+      - species_taxon_iri   # VARCHAR(255)
+      - gene_length_bp      # INT UNSIGNED
+      - gc_content          # DECIMAL(5,2)
+      - pathway_iri         # VARCHAR(255)
+      - go_terms            # TEXT
 
   # ─────────────────────────────────────────────────────────────────────────
   # 2) Stimuli
@@ -40,7 +42,7 @@ columns:
       - iri                       # VARCHAR(255) PK
       - label                     # VARCHAR(120)
       - class_hint                # VARCHAR(40)
-      - chemical_formula          # VARCHAR(255)
+      - chem_formula              # VARCHAR(255)
       - smiles                    # TEXT
       - molecular_weight          # DECIMAL
       - default_dose              # DECIMAL
@@ -61,14 +63,20 @@ columns:
                                    #    prevalence_pct}
     target_table: Microbes
     target_columns:
-      - taxon_id                  # INT PK
-      - species_name              # VARCHAR(120)
+      - id                        # INT PK
+      - taxon_id                  # VARCHAR(255)
       - strain_name               # VARCHAR(120)
+      - culture_collection        # VARCHAR(80)
       - genome_size_bp            # BIGINT
-      - gc_content_pct            # DECIMAL
-      - oxygen_requirement        # ENUM('aerobe','anaerobe','facultative')
-      - relative_abundance_pct    # DECIMAL
-      - prevalence_pct            # DECIMAL
+      - genome_assembly_accession # VARCHAR(30)     
+      - genome_size_bp            # BIGINT 
+      - oxygen_requirement        # ENUM('aerobe','anaerobe','facultative') 
+      - habitat                   # VARCHAR(80)     
+      - optimal_growth_temp       # DECIMAL(4,1)    
+      - doubling_time             # DECIMAL(5,2)    
+      - metabolic_profile_iri     # VARCHAR(255)
+      - abundance_index           # DECIMAL(8,4)
+      - prevalence                # INT UNSIGNED
 
   # ─────────────────────────────────────────────────────────────────────────
   # 4) Taxa (metadata for ANY taxon used elsewhere)
@@ -85,10 +93,12 @@ columns:
     target_table: Taxa
     target_columns:
       - id                        # INT PK
-      - kingdom                   # VARCHAR(60)
-      - rank                      # VARCHAR(60)
-      - gc_content_pct            # DECIMAL
-      - genome_length_bp          # BIGINT
+      - iri                       # VARCHAR(255)
+      - species_name              # VARCHAR(255)
+      - kingdom                   # ENUM('Bacteria','Eukaryota','Archaea')
+      - ranking                   # VARCHAR(60)
+      - gc_content                # DECIMAL
+      - genome_length             # BIGINT
       - habitat                   # VARCHAR(255)
       - pathogenicity             # ENUM('pathogen','commensal','opportunist')
 
@@ -103,12 +113,13 @@ columns:
                                      #    definition, synonyms, version}
     target_table: OntologyTerms
     target_columns:
+      - id                        # INT
       - iri                       # VARCHAR(255) PK
       - label                     # VARCHAR(120)
-      - ontology                  # VARCHAR(50)
-      - definition                # TEXT
+      - ontology                  # VARCHAR(80)
+      - term_definition           # TEXT
       - synonyms                  # JSON / TEXT
-      - version                   # VARCHAR(20)
+      - onto_version              # VARCHAR(20)
 
   # ─────────────────────────────────────────────────────────────────────────
   # 6) Studies
@@ -122,11 +133,12 @@ columns:
                                     #    num_samples, contact_email}
     target_table: Studies
     target_columns:
-      - study_id                  # VARCHAR(40) PK
+      - id                        # INT PK
+      - iri                       # VARCHAR(255) 
       - title                     # VARCHAR(255)
       - source_repo               # ENUM('ArrayExpress','GEO','LOCAL')
       - publication_date          # DATE
-      - study_type                # VARCHAR(60)
+      - study_type                # ENUM('transcriptomic','proteomic','multiomic')
       - num_samples               # INT
       - contact_email             # VARCHAR(120)
 
@@ -140,23 +152,19 @@ columns:
       - fetch_sample_metadata       # → full dict below
     target_table: Samples
     target_columns:
-      - sample_id                 # VARCHAR(40) PK
-      - study_id                  # VARCHAR(40) FK
-      - cell_type_iri             # VARCHAR(255) FK → OntologyTerms
-      - cell_type_label           # VARCHAR(120)
-      - tissue_iri                # VARCHAR(255) FK → OntologyTerms
-      - tissue_label              # VARCHAR(120)
-      - organism_iri              # VARCHAR(255) FK → Taxa
-      - organism_label            # VARCHAR(120)
-      - growth_condition          # VARCHAR(120)
-      - stimulus_iri              # VARCHAR(255) FK → Stimuli
-      - microbe_taxon_id          # INT FK → Microbes
-      - zarr_uri                  # VARCHAR(255)
-      - collection_date           # DATE
-      - donor_age_years           # INT
-      - replicate_number          # INT
-      - viability_pct             # DECIMAL
-      - rin_score                 # DECIMAL
+      - id                 #INT UNSIGNED 
+      - iri                #VARCHAR(255) 
+      - study_iri          #VARCHAR(255)
+      - cell_type_iri      #VARCHAR(255)
+      - tissue_iri         #VARCHAR(255)
+      - organism_iri       #VARCHAR(255)
+      - growth_condition   #VARCHAR(120) 
+      - raw_counts_uri     #VARCHAR(255) 
+      - collection_date    #DATE         
+      - donor_age_years    #INT UNSIGNED 
+      - replicate_number   #INT UNSIGNED 
+      - viability_pct      #DECIMAL(5,2) 
+      - rin_score          #DECIMAL(5,3) 
 
   # ─────────────────────────────────────────────────────────────────────────
   # 8) Link-tables
@@ -168,10 +176,13 @@ columns:
                                       #    relative_abundance_pct, evidence}
     target_table: SampleMicrobe
     target_columns:
-      - sample_id
-      - microbe_taxon_id
-      - relative_abundance_pct
-      - evidence                  # ENUM('mgnify','literature','inferred')
+      - id           # INT UNSIGNED 
+      - sample_id    # INT UNSIGNED 
+      - microbe_id   # INT UNSIGNED 
+      - evidence     # ENUM('mgnify','literature','inferred') DEFAULT 'mgnify',
+
+  -- Research-centric metadata:
+  relative_abundance DECIMAL(10,6) NULL COMMENT 'Relative abundance in sample',
 
   sample_stimulus_link:
     regex: "LINK_SS:SAMP[A-Z0-9]{8},(CHEBI:\\d+|EFO:\\d+),[0-9]+\\.?[0-9]*,[A-Za-z0-9_]+"
@@ -180,10 +191,11 @@ columns:
                                        #    exposure_time_hr, response_marker}
     target_table: SampleStimulus
     target_columns:
-      - sample_id
-      - stimulus_iri
-      - exposure_time_hr          # DECIMAL
-      - response_marker          # VARCHAR(60)
+      - id           # INT UNSIGNED
+      - sample_id    # INT UNSIGNED
+      - stimulus_id  # INT UNSIGNED
+      - exposure_time_hr  # DECIMAL(5,2) 
+      - response_marker   # VARCHAR(120) 
 
   microbe_stimulus_link:
     regex: "NCBITaxon:\\d+.*(CHEBI:\\d+|EFO:\\d+),[0-9]+\\.?[0-9]*,[a-z]+"
@@ -192,10 +204,11 @@ columns:
                                         #    interaction_score, evidence}
     target_table: MicrobeStimulus
     target_columns:
-      - microbe_taxon_id
-      - stimulus_iri
-      - interaction_score         # DECIMAL
-      - evidence                  # ENUM('mgnify','literature','inferred')
+      - id           # INT UNSIGNED 
+      - microbe_id   # INT UNSIGNED 
+      - stimulus_id  # INT UNSIGNED 
+      - evidence     # ENUM('mgnify','literature','inferred') 
+      - interaction_score # DECIMAL(5,3) 
 
   # ─────────────────────────────────────────────────────────────────────────
   # 9) Expression statistics
@@ -208,10 +221,12 @@ columns:
                                        #    raw_count, significance}
     target_table: ExpressionStats
     target_columns:
-      - sample_id
-      - gene_accession
-      - log2_fc                   # DECIMAL
-      - p_value                   # DECIMAL
-      - base_mean                 # DECIMAL
-      - raw_count                 # BIGINT
-      - significance              # ENUM('Low','Moderate','High')
+      - expr_id        # BIGINT UNSIGNED
+      - sample_id      # INT UNSIGNED   
+      - gene_id        # INT UNSIGNED   
+      - log2_fc        # DECIMAL(10,4)  
+      - p_value        # DECIMAL(10,4)  
+      - significance   # ENUM('Low','Moderate','High')
+      - adjusted_pval  # DECIMAL(10,4)   
+      - base_mean      # DECIMAL(12,3)   
+      - counts         # BIGINT UNSIGNED
