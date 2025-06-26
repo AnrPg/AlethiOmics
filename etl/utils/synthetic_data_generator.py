@@ -394,11 +394,12 @@ def make_experiments(
                 stimulus_id=random.randint(0,len(STIMULI))            
                 
                 # build a generic URI, then ensure the store “exists” via fsspec
-                raw_counts_uri = f"{base_uri.rstrip('/')}/{ts(ts_format,tz)}/{exp}/{samp}.zarr"
-                # ensure raw_counts_uri (Zarr or TSV) store path exists
-                zfs, zroot = fsspec.core.url_to_fs(raw_counts_uri)
+                raw_counts_uri = f"{root}/{samp}_raw_counts.tsv"
+                # # ensure raw_counts_uri (Zarr or TSV) store path exists
+                rc_fs, rc_path = fsspec.core.url_to_fs(raw_counts_uri)
+                parent = os.path.dirname(rc_path)
                 try:
-                    zfs.makedirs(zroot, exist_ok=True)
+                    rc_fs.makedirs(parent, exist_ok=True)
                 except AttributeError:
                     pass
 
@@ -421,8 +422,7 @@ def make_experiments(
                 ])
                 # Raw counts for this sample
                 counts=nb_counts(len(genes),RAW_COUNT_MEAN,RAW_COUNT_THETA)
-                raw_counts_path = f"{root}/{samp}_raw_counts.tsv"
-                with fs.open(raw_counts_path, "w", newline="") as cf:
+                with fs.open(raw_counts_uri, "w", newline="") as cf:
                     cw=csv.writer(cf,delimiter="\t")
                     cw.writerow(["gene_id","count"])
                     cw.writerows(zip(genes,counts))

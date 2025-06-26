@@ -315,11 +315,8 @@ def main() -> None:
     logger.info("✅  Port is open, proceeding to MySQLLoader()")
 
     # 4️⃣  Instantiate ETL stages
-    print("\t\t$$$$$$$ 1 $$$$$$")
     extractor = Extractor(data_dir, mode=args.mode, batch_size=args.batch_size)
-    print("\t\t$$$$$$$ 2 $$$$$$")
     harmonizer = Harmonizer(args.mapping_yaml)
-    print("\t\t$$$$$$$ 3 $$$$$$")
     socket.setdefaulttimeout(10)   # give up after 10 s
     loader = MySQLLoader(
         host="127.0.0.1",
@@ -330,7 +327,6 @@ def main() -> None:
         batch_size=args.batch_size,
         parallel_workers=4,
     )
-    print("\t\t$$$$$$$ 4 $$$$$$")
 
     # 5️⃣  Stream pipeline
     total_rows = 0
