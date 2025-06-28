@@ -19,6 +19,7 @@ Design notes
 from __future__ import annotations
 
 import json
+import logging
 import random
 import re
 from datetime import date
@@ -37,8 +38,106 @@ from etl.utils.preprocessing import (
     extract_sample_id,
 )
 
+logger = logging.getLogger(__name__)
+
 def _rand_gc() -> float:
     return round(random.uniform(30.0, 65.0), 2)
+
+# ──────────────────────────────────────────────────────────────────────────
+#  Dumb fetchers that return mock data - for speed and debug reasons
+# ──────────────────────────────────────────────────────────────────────────
+
+def stub_fetch_gene_metadata(g: str) -> Dict[str, Any]:
+    return {
+        "gene_accession": g,      
+        "gene_name": f"Gene{g[-4:]}",
+        "species_taxon_iri": 9606,   
+        "gene_length_bp": random.randint(500, 200_000),      
+        "gc_content": _rand_gc(),          
+        "pathway_iri": "KEGG:hsa" + str(random.randint(1000, 9999)),         
+        "go_terms": "|".join([f"GO:{random.randint(1000000, 9999999)}" for _ in range(3)])
+    }
+
+def stub_fetch_stimulus_metadata(iri: str) -> dict:
+    label = iri.split("/")[-1]
+    return {
+        "iri": iri,
+        "label": label,
+        "class_hint": random.choice(["SCFA","cytokine","hormone","metabolite"]),
+        "chem_formula": random.choice(["C4H8O2","C2H5NO2",""],),
+        "smiles": random.choice(["CCC(=O)O","C(C(=O)O)N",""],),
+        "molecular_weight": round(random.uniform(50, 600), 2),
+        "default_dose": round(random.uniform(0.1, 10.0), 4),
+        "dose_unit": random.choice(["mM","µg/mL","µM"]),
+    }
+
+def stub_fetch_microbe_metadata(taxon_id: int) -> dict:
+    return {
+        "taxon_id": taxon_id,
+        "strain_name": f"Strain_{taxon_id}",
+        "culture_collection": f"DSMZ:{random.randint(1000,9999)}",
+        "genome_size_bp": random.randint(1_500_000, 7_000_000),
+        "genome_assembly_accession": f"GCF_{random.randint(1_000_000,9_999_999)}.{random.randint(1,9)}",
+        "oxygen_requirement": random.choice(["aerobe","anaerobe","facultative"]),
+        "habitat": random.choice(["intestine","soil","skin","oral cavity"]),
+        "optimal_growth_temp": round(random.uniform(20.0, 45.0), 1),
+        "doubling_time": round(random.uniform(0.2, 4.0), 2),
+        "metabolic_profile_iri": f"KEGG:map{random.randint(9000,9999)}",
+        "abundance_index": round(random.uniform(0.01, 100.0), 4),
+        "prevalence": random.randint(1, 100),
+    }
+
+def stub_fetch_taxon_metadata(id: int) -> dict:
+    return {
+        "iri": f"NCBITaxon:{id}",
+        "species_name": f"Species_{id}",
+        "kingdom": random.choice(["Bacteria","Eukaryota","Archaea"]),
+        "ranking": random.choice(["species","genus","family"]),
+        "gc_content": _rand_gc(),
+        "genome_length": random.randint(2_000_000, 8_000_000),
+        "habitat": random.choice(["intestine","marine","soil","skin"]),
+        "pathogenicity": random.choice(["pathogen","commensal","opportunist"]),
+    }
+
+def stub_fetch_ontology_term_metadata(iri: str) -> dict:
+    label = iri.split("/")[-1]
+    onto = "CL" if iri.startswith("CL_") else "UBERON"
+
+    return {
+        "iri": iri,
+        "label": label,
+        "ontology": onto,
+        "term_definition": f"Definition of {label}",
+        "synonyms": json.dumps([f"{label}_syn{n}" for n in range(2)]),
+        "onto_version": "2025-06",
+    }
+
+def stub_fetch_study_metadata(study_id: str) -> dict:
+    return {
+        "iri": study_id,
+        "title": f"Synthetic Study {study_id}",
+        "source_repo": random.choice(["ArrayExpress","GEO","LOCAL"]),
+        "publication_date": date.today().isoformat(),
+        "study_type": random.choice(["transcriptomic","proteomic","multiomic"]),
+        "num_samples": random.randint(5, 200),
+        "contact_email": f"{study_id.lower()}@example.org",
+    }
+
+def stub_fetch_sample_metadata(sample_id: str) -> dict:
+    return {
+        "iri": sample_id,
+        "study_iri": f"LOCAL-{random.randint(1000,9999)}",
+        "cell_type_iri": random.choice(["CL_0000127","CL_0000540","CL_0001050"]),
+        "tissue_iri": random.choice(["UBERON_0000955","UBERON_0002108"]),
+        "organism_iri": "NCBITaxon:9606",
+        "growth_condition": random.choice(["monoculture","co-culture","unknown"]),
+        "raw_counts_uri": f"s3://bucket/{sample_id}_raw_counts.tsv",
+        "collection_date": date.today().isoformat(),
+        "donor_age_years": random.randint(18,80),
+        "replicate_number": random.randint(1,3),
+        "viability_pct": round(random.uniform(50,100),2),
+        "rin_score": round(random.uniform(5.0,10.0),3),
+    }
 
 # ──────────────────────────────────────────────────────────────────────────
 #  Real-world fetchers with graceful fallback
@@ -59,17 +158,6 @@ def _safe_json(url: str) -> dict | None:
 # ------------------------------------------------------------------------- #
 #  Genes – MyGene.info  → Ensembl REST  → stub                              #
 # ------------------------------------------------------------------------- #
-
-def stub_fetch_gene_metadata(g: str) -> Dict[str, Any]:
-    return {
-        "gene_accession": g,      
-        "gene_name": f"Gene{g[-4:]}",
-        "species_taxon_iri": 9606,   
-        "gene_length_bp": random.randint(500, 200_000),      
-        "gc_content": _rand_gc(),          
-        "pathway_iri": "KEGG:hsa" + str(random.randint(1000, 9999)),         
-        "go_terms": "|".join([f"GO:{random.randint(1000000, 9999999)}" for _ in range(3)])
-    }
 
 
 def fetch_gene_metadata(gene_accession: str) -> Dict[str, Any]:
@@ -433,6 +521,13 @@ _TRANSFORM_REGISTRY: Dict[str, Callable[..., Any]] = {
     "parse_sample_stimulus_record": parse_sample_stimulus_record,
     "parse_microbe_stimulus_record": parse_microbe_stimulus_record,
     "parse_expression_stat_record": parse_expression_stat_record,
+    "stub_fetch_gene_metadata": stub_fetch_gene_metadata,
+    "stub_fetch_stimulus_metadata": stub_fetch_stimulus_metadata,
+    "stub_fetch_microbe_metadata": stub_fetch_microbe_metadata,
+    "stub_fetch_taxon_metadata": stub_fetch_taxon_metadata,
+    "stub_fetch_ontology_term_metadata": stub_fetch_ontology_term_metadata,
+    "stub_fetch_study_metadata": stub_fetch_study_metadata,
+    "stub_fetch_sample_metadata": stub_fetch_sample_metadata
 }
 
 # -------------------------------------------------------------------------
@@ -483,11 +578,13 @@ class Harmonizer:
         rules = self._table_rules[table]
         harmonised: List[Dict] = []
 
-        for row in rows:
+        for i, row in enumerate(rows):
+            # logger.debug(f"ROW {i}: starting harmonization for row id={row.get('sample_id', '<no id>')}")
             new_row = dict(row)  # shallow copy
 
             # Run every rule on every original value in the input row
             for val in list(row.values()):
+                # logger.debug(f"ROW {i}:   examining value={val!r}")
                 if not isinstance(val, str):
                     continue
                 for rule in rules:
@@ -496,6 +593,7 @@ class Harmonizer:
                     payload = val
                     # Sequentially apply transforms
                     for tf in rule["transforms"]:
+                        logger.debug(f'ROW {i}: applying transform "{str(tf)}" of harmonization on row: {payload}')
                         payload = tf(payload)
                     # payload may be a dict (metadata expansion) or scalar
                     if isinstance(payload, dict):
@@ -510,6 +608,12 @@ class Harmonizer:
                             )
 
             harmonised.append(new_row)
+            logger.debug(f"ROW {i}: finished harmonization → {new_row}")
+
+            # TODO:
+            # 1) Why now it stalls at "Extracting taxa_catalog.tsv → Taxa"
+            # 2) align tsv file's columns with harmonization keys in return object and loader to DB
+            # 3) fix comments at mapping_catalogue.yml about return objects in every fetcher transform
 
         return harmonised
 

@@ -33,7 +33,7 @@ columns:
     regex: "(CHEBI:\\d+|EFO:\\d+|PR:\\d+|none)"
     transforms:
       - canonical_iri              # CURIE → full IRI
-      - fetch_stimulus_metadata    # → {iri, label, class_hint,
+      - stub_fetch_stimulus_metadata    # → {iri, label, class_hint,
                                    #    chemical_formula, smiles,
                                    #    molecular_weight, default_dose,
                                    #    dose_unit}
@@ -55,7 +55,7 @@ columns:
     regex: "NCBITaxon:\\d+"
     transforms:
       - fetch_from_ncbi_taxon      # CURIE → taxon_id (INT)
-      - fetch_microbe_metadata     # → {taxon_id, species_name,
+      - stub_fetch_microbe_metadata     # → {taxon_id, species_name,
                                    #    strain_name, genome_size_bp,
                                    #    gc_content_pct,
                                    #    oxygen_requirement,
@@ -86,7 +86,7 @@ columns:
     transforms:
       - canonical_iri
       - fetch_taxon_numeric_id     # IRI → id (INT)
-      - fetch_taxon_metadata       # → {id, kingdom, rank,
+      - stub_fetch_taxon_metadata       # → {id, kingdom, rank,
                                    #    gc_content_pct,
                                    #    genome_length_bp,
                                    #    habitat, pathogenicity}
@@ -109,8 +109,8 @@ columns:
     regex: "(CL_\\d{7}|UBERON_\\d{7}|EFO_\\d+)"
     transforms:
       - canonical_iri
-      - fetch_ontology_term_metadata  # → {iri, label, ontology,
-                                     #    definition, synonyms, version}
+      - stub_fetch_ontology_term_metadata  # → {iri, label, ontology,
+                                           #    definition, synonyms, version}
     target_table: OntologyTerms
     target_columns:
       - id                        # INT
@@ -128,7 +128,7 @@ columns:
     regex: "(E-MTAB-\\d+|GSE\\d+|LOCAL-[A-Za-z0-9_-]+)"
     transforms:
       - normalize_study_accession
-      - fetch_study_metadata        # → {study_id, title, source_repo,
+      - stub_fetch_study_metadata        # → {study_id, title, source_repo,
                                     #    publication_date, study_type,
                                     #    num_samples, contact_email}
     target_table: Studies
@@ -149,7 +149,7 @@ columns:
     regex: "(SAMP[A-Z0-9]{8})"
     transforms:
       - extract_sample_id
-      - fetch_sample_metadata       # → full dict below
+      - stub_fetch_sample_metadata       # → full dict below
     target_table: Samples
     target_columns:
       - id                 #INT UNSIGNED 
@@ -176,13 +176,11 @@ columns:
                                       #    relative_abundance_pct, evidence}
     target_table: SampleMicrobe
     target_columns:
-      - id           # INT UNSIGNED 
-      - sample_id    # INT UNSIGNED 
-      - microbe_id   # INT UNSIGNED 
-      - evidence     # ENUM('mgnify','literature','inferred') DEFAULT 'mgnify',
-
-  -- Research-centric metadata:
-  relative_abundance DECIMAL(10,6) NULL COMMENT 'Relative abundance in sample',
+      - id                  # INT UNSIGNED 
+      - sample_id           # INT UNSIGNED 
+      - microbe_id          # INT UNSIGNED 
+      - evidence            # ENUM('mgnify','literature','inferred') DEFAULT 'mgnify'
+      - relative_abundance  # DECIMAL(10,6)
 
   sample_stimulus_link:
     regex: "LINK_SS:SAMP[A-Z0-9]{8},(CHEBI:\\d+|EFO:\\d+),[0-9]+\\.?[0-9]*,[A-Za-z0-9_]+"
