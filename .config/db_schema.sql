@@ -6,7 +6,6 @@
 --------------------------------------------------------------------------------------
 --------------------------------------------------------------------------------------
 
-
 -- 1) Core reference tables
 
 CREATE TABLE Stimuli (
@@ -62,7 +61,7 @@ CREATE TABLE Studies (
   id            INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
   iri           VARCHAR(255)      NOT NULL UNIQUE,  
   title         VARCHAR(255)      NOT NULL,
-  source_repo   ENUM('ArrayExpress','CELLxGENE') NOT NULL,
+  source_repo   ENUM('ArrayExpress','CELLxGENE','NCBI GEO') NOT NULL,
 
   -- Research-centric metadata:
   publication_date DATE           NULL COMMENT 'Date published',
@@ -79,7 +78,7 @@ CREATE TABLE Studies (
 
 CREATE TABLE Microbes (
   id                        INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-  taxon_iri                  INT UNSIGNED NOT NULL,
+  taxon_iri                 VARCHAR(255) 	NOT NULL,
   strain_name               VARCHAR(120)    NULL,
   culture_collection        VARCHAR(80)     NULL,
   genome_assembly_accession VARCHAR(30)     NULL,
@@ -104,7 +103,7 @@ CREATE TABLE Genes (
   id                  INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
   gene_accession      VARCHAR(20)      NOT NULL, 
   gene_name           VARCHAR(120)     NOT NULL,
-  species_taxon_iri    INT UNSIGNED     NOT NULL,
+  species_taxon_iri   VARCHAR(255)     NOT NULL,
   -- Research-centric metadata:
   gene_length_bp      INT UNSIGNED     NULL COMMENT 'Length of gene in bp',
   gc_content          DECIMAL(5,2)     NULL COMMENT '% GC in coding region',
@@ -112,9 +111,9 @@ CREATE TABLE Genes (
   go_terms            TEXT             NULL COMMENT 'Pipe-separated GO IDs',
 
   FOREIGN KEY (species_taxon_iri) REFERENCES Taxa(iri) ON DELETE RESTRICT,
-  UNIQUE KEY uq_gene_acc_taxon (gene_accession, species_taxon_id),
+  UNIQUE KEY uq_gene_acc_taxon (gene_accession, species_taxon_iri),
   KEY idx_genes_acc    (gene_accession),
-  KEY idx_genes_taxon  (species_taxon_id)
+  KEY idx_genes_taxon  (species_taxon_iri)
 );
 
 
@@ -123,10 +122,10 @@ CREATE TABLE Genes (
 CREATE TABLE Samples (
   id                 INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
   iri                VARCHAR(255)      NOT NULL UNIQUE,   
-  study_iri           INT UNSIGNED      NOT NULL,
-  cell_type_iri       INT UNSIGNED      NOT NULL,
-  tissue_iri          INT UNSIGNED      NOT NULL,
-  organism_iri        INT UNSIGNED      NOT NULL,
+  study_iri           VARCHAR(255)      NOT NULL,
+  cell_type_iri       VARCHAR(255)      NOT NULL,
+  tissue_iri          VARCHAR(255)      NOT NULL,
+  organism_iri        VARCHAR(255)      NOT NULL,
   growth_condition   VARCHAR(120)      NOT NULL,          
   raw_counts_uri     VARCHAR(255)      NOT NULL,
 
@@ -230,7 +229,9 @@ CREATE TABLE ActivityLog (
   user_name   VARCHAR(60),
   table_name  VARCHAR(60),
   action      ENUM('INSERT','UPDATE','DELETE'),
-  action_ts   TIMESTAMP       DEFAULT CURRENT_TIMESTAMP
+  old_row  JSON NULL,
+  new_row  JSON NULL,
+  action_ts   TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
 CREATE TABLE staging_kv (
