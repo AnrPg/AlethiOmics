@@ -55,6 +55,20 @@ _TABLE_MAP: List[Tuple[str, str]] = [
     ("_raw_counts.tsv",         "RawCounts"),      # special table (not in DB)
 ]
 
+# enforce FK-safe load order
+TABLE_PRIORITY = {
+    "Stimuli":           1,
+    "Taxa":              2,
+    "OntologyTerms":     3,
+    "Studies":           4,
+    "Microbes":          5,
+    "Genes":             6,
+    "Samples":           7,
+    "ExpressionStats":   8,
+    "SampleMicrobe":     9,
+    "SampleStimulus":    9,
+    "MicrobeStimulus":   9,
+}
 
 def _table_for(fname: str) -> str | None:
     """Return the warehouse table indicated by *fname*, or None if unknown."""
@@ -107,6 +121,10 @@ class Extractor:
         Yield `(table_name, batch)` where *batch* is a list of row-dicts.
         """
         files = self._select_files()
+        # sort by our explicit table-dependency order
+        files.sort(key=lambda p: TABLE_PRIORITY.get(_table_for(p.name) or "", 100))
+ 
+
         LOGGER.debug("iter_batches: %d files selected (mode=%s)", len(files), self.mode)
         for fpath in files:
             table = _table_for(fpath.name)
