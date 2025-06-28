@@ -297,6 +297,8 @@ def main() -> None:
     if not args.ssh_host or not args.remote_host or not args.ssh_user or not args.ssh_key_path:
         logger.error("Missing SSH configuration: --ssh-host, --ssh-user, --ssh-key-path, and --remote-host must all be set.")
         sys.exit(1)
+        
+    socket.setdefaulttimeout(10)   # give up after 10 s
             
     # 3️⃣  SSH tunnel → cluster MySQL
     logger.info("🔐  Opening SSH tunnel %s → %s:%s",
@@ -306,7 +308,7 @@ def main() -> None:
         ssh_username=args.ssh_user,
         ssh_pkey=args.ssh_key_path,
         remote_bind_address=(args.remote_host, args.remote_port),
-        local_bind_address=("127.0.0.1",),
+        local_bind_address=("127.0.0.1", 0),
     )
     tunnel.start()
     tunnel._get_transport().set_keepalive(30)
@@ -318,7 +320,7 @@ def main() -> None:
     # 4️⃣  Instantiate ETL stages
     extractor = Extractor(data_dir, mode=args.mode, batch_size=args.batch_size)
     harmonizer = Harmonizer(args.mapping_yaml)
-    # socket.setdefaulttimeout(10)   # give up after 10 s
+    # time.sleep(1)
     loader = MySQLLoader(
         host="127.0.0.1",
         port=local_port,
@@ -342,25 +344,42 @@ def main() -> None:
             t0 = time.perf_counter()
             harmonised = harmonizer.apply(table, batch)
             t1 = time.perf_counter()
-            loader.enqueue(table, harmonised)
-            t2 = time.perf_counter()
+            if table != "RawCounts":
+                loader.enqueue(table, harmonised)
+                t2 = time.perf_counter()
+                logger.debug(
+                    "Batch %d (%s): extract %d rows → harmonize %.2fms → enqueue %.2fms",
+                    batch_count, table, len(batch),
+                    (t1-t0)*1000, (t2-t1)*1000
+                )
+            else:
+                logger.debug(
+                "Batch %d (%s): extract %d rows → harmonize %.2fms", # TODO: export locally harmonized raw_counts → enqueue %.2fms",
+                batch_count, table, len(batch),
+                (t1-t0)*1000 #, (t2-t1)*1000
+            )
             total_rows   += len(harmonised)
             
-            tqdm.write(
-                f"Batch {batch_count} ({table}): "
-                f"{len(batch)} rows → "
-                f"harmonize {(t1-t0)*1000:.2f} ms → "
-                f"enqueue {(t2-t1)*1000:.2f} ms"
-            )
-            logger.debug(
-                "Batch %d (%s): extract %d rows → harmonize %.2fms → enqueue %.2fms",
-                batch_count, table, len(batch),
-                (t1-t0)*1000, (t2-t1)*1000
-            )
+            # tqdm.write(
+            #     f"Batch {batch_count} ({table}): "
+            #     f"{len(batch)} rows → "
+            #     f"harmonize {(t1-t0)*1000:.2f} ms → "
+            #     f"enqueue {(t2-t1)*1000:.2f} ms"
+            # )
             total_rows += len(batch)
 
 
          # Flush to the database
+        logger.info(f"📥 Flushing data into live DB...")
+        # logger.debug(
+        #     "Loader config: host=%s port=%s db=%s user=%s batch_size=%d workers=%d",
+        #     loader._db_config["host"],
+        #     loader._db_config["port"],
+        #     loader._db_config["database"],
+        #     loader._db_config["user"],
+        #     loader.batch_size,
+        #     loader.parallel_workers,
+        # )
         t_flush_start = time.perf_counter()
         stats = loader.flush()
         t_flush_end = time.perf_counter()

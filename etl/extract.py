@@ -113,6 +113,9 @@ class Extractor:
             if table is None:
                 LOGGER.debug("Skipping unrecognised file %s", fpath)
                 continue
+            # if table in ("RawCounts",):
+            #     LOGGER.debug("Skipping raw counts file %s", fpath)
+            #     continue
 
             LOGGER.info("⏳  Extracting %s → %s", fpath.name, table)
             for batch in self._read_file(fpath, table):
