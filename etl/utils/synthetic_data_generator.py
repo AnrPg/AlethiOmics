@@ -14,6 +14,7 @@
 # ────────────────────────────────────────────────────────────────────────────
 
 from __future__ import annotations
+import json
 import os
 import subprocess
 import fsspec, yaml
@@ -296,7 +297,7 @@ def mk_ontology_catalog(fs, root:str) -> List[str]:
         w.writerow(["iri","label","ontology","term_definition","synonyms","onto_version"])
         for iri,lbl in CELL_TYPES+TISSUES:
             ont="CL" if iri.startswith("CL") else "UBERON"
-            w.writerow([iri,lbl,ont,"","","", "2025-06"])
+            w.writerow([iri,lbl,ont,f"Definition of {lbl}",json.dumps([f"{lbl}_syn{n}" for n in range(2)]), "2025-06"])
             out.append(iri)
     return out
 
@@ -336,9 +337,9 @@ def mk_study_catalog(fs, root:str, n_exp:int)->List[str]:
 def init_link_files(fs, root:str) -> None:
     headers = {
         # TODO: check header names are correct
-        "sample_microbe.tsv":    "sample_id\tmicrobe_taxon_id\trelative_abundance_pct\tevidence\n",
-        "sample_stimulus.tsv":   "sample_id\tstimulus_iri\texposure_time_hr\tresponse_marker\n",
-        "microbe_stimulus.tsv":  "microbe_taxon_id\tstimulus_iri\tinteraction_score\tevidence\n",
+        "sample_microbe.tsv":    "sample_id\tmicrobe_id\tevidence\trelative_abundance\n",
+        "sample_stimulus.tsv":   "sample_id\tstimulus_id\texposure_time_hr\tresponse_marker\n",
+        "microbe_stimulus.tsv":  "microbe_id\tstimulus_id\tevidence\tinteraction_score\n",
     }
     for fname, hdr in headers.items():
         path = f"{root}/{fname}"
@@ -383,7 +384,7 @@ def make_experiments(
                 "collection_date","donor_age_years",
                 "replicate_number","viability_pct","rin_score"
             ])
-            for _ in range(SAMPLES_PER_EXP):
+            for sample_id in range(SAMPLES_PER_EXP):
                 samp=rnd_id("SAMP",8)
                 logger.debug("  writing sample %s for %s", samp, sid)
                 cell_iri,_=random.choice(CELL_TYPES)
@@ -427,12 +428,13 @@ def make_experiments(
                     cw.writerow(["gene_id","count"])
                     cw.writerows(zip(genes,counts))
                 # link-tables
-                append(fs, root, "sample_microbe.tsv", [samp,microbe_tid,random.choice(["mgnify","literature","inferred"]),round(random.uniform(0.01,300),4)])
-                append(fs, root, "sample_stimulus.tsv", [samp,stimulus_id,round(random.uniform(1,24*10),1),random.choice(RESPONSE_MARKERS),])
+                append(fs, root, "sample_microbe.tsv", [sample_id,random.randint(0,len(MICROBES)),random.choice(["mgnify","literature","inferred"]),round(random.uniform(0.01,300),4)])
+                append(fs, root, "sample_stimulus.tsv", [sample_id,random.randint(0,len(STIMULI)),round(random.uniform(1,24*10),1),random.choice(RESPONSE_MARKERS),])
         # Microbe–Stimulus edges (once per experiment)
         logger.debug("  appending microbe_stimulus for %s", sid)
         microbe_tid=random.randint(0,len(MICROBES))
         stimulus_id=random.randint(0,len(STIMULI))
+
         append(fs, root, "microbe_stimulus.tsv", [microbe_tid,stimulus_id,random.choice(["mgnify","literature","inferred"]),round(random.uniform(-30,40),3)])
 
 # ::::::::::::::::::::::::::::::::::::: MAIN :::::::::::::::::::::::::::::::
