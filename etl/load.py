@@ -30,6 +30,7 @@ A CLI wrapper is provided for ad‑hoc testing::
 from __future__ import annotations
 
 import argparse
+from concurrent.futures import ThreadPoolExecutor
 import json
 import logging
 import os
@@ -41,6 +42,7 @@ from pathlib import Path
 import time
 from typing import Dict, Iterable, List, Sequence, Tuple
 
+import concurrent
 import mysql.connector
 from mysql.connector import pooling
 
@@ -75,11 +77,17 @@ class MySQLLoader:
         database: str = "gutbrain_dw",
         user: str = "root",
         password: str | None = None,
-        pool_size: int = 8,
+        # pool_size: int = 4,
         batch_size: int = 1_000,
         parallel_workers: int = 4,
         autocommit: bool = False,
     ) -> None:
+        
+        LOGGER.debug(
+            "Initializing MySQLLoader(host=%s, port=%s, db=%s, user=%s, batch_size=%d, workers=%d, autocommit=%s)",
+            host, port, database, user, batch_size, parallel_workers, autocommit
+        )
+
         self.batch_size = min(batch_size, self._MAX_BATCH)
         self.parallel_workers = max(1, parallel_workers)
         self._column_cache: Dict[str, List[str]] = {}
@@ -87,16 +95,30 @@ class MySQLLoader:
 
         self._db_config = dict(
             host=host,
-            port=port,
+            port=3306, # TODO: check why this fixed the problems with the database and parametrize it!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
             database=database,
             user=user,
             password=password,
             charset="utf8mb4",
-            connection_timeout=CONNECTION_TIMEOUT,
+            connection_timeout=CONNECTION_TIMEOUT, # seconds to establish TCP + handshake
             autocommit=autocommit,
         )
-        self._pool = None
-
+        # connection pool
+        # self._pool_args = dict( #mysql.connector.pooling.MySQLConnectionPool
+        #     pool_name="etl_pool",
+        #     pool_size=1,
+        #     host=host,
+        #     port=port,
+        #     database=database,
+        #     user=user,
+        #     password=password,
+        #     charset="utf8mb4",
+        #     connection_timeout=CONNECTION_TIMEOUT,
+        #     autocommit=autocommit,
+        # )
+        # self._pool = None
+        LOGGER.debug("Database config set: %s", self._db_config)
+        
         # Work‑queue & threads
         self._q: queue.Queue[Tuple[str, List[Dict]]] = queue.Queue()
         self._threads: List[threading.Thread] = []
@@ -105,10 +127,17 @@ class MySQLLoader:
             t.daemon = True
             t.start()
             self._threads.append(t)
+            LOGGER.debug("Started worker thread: %s", t.name)
 
     # ------------------------------------------------------------------
     # Public API
     # ------------------------------------------------------------------
+    
+    # def _get_pool(self):
+    #     if self._pool is None:
+    #         self._pool = pooling.MySQLConnectionPool(**self._pool_args)
+    #     return self._pool
+
     def enqueue(self, table: str, rows: List[Dict]) -> None:
         """Put a `(table, rows)` job into the queue (returns immediately)."""
         if not rows:
@@ -116,32 +145,64 @@ class MySQLLoader:
         LOGGER.debug("Queued %d rows → %s", len(rows), table)
         # Chop huge payloads to respect _MAX_BATCH
         for i in range(0, len(rows), self.batch_size):
-            self._q.put((table, rows[i : i + self.batch_size]))
+            batch = rows[i : i + self.batch_size]
+            LOGGER.debug(f" enqueue: putting batch of {len(batch)} rows → {table}")
+            self._q.put((table, batch))
 
     def flush(self) -> Dict[str, int]:
         """Block until the queue empties, then return insert statistics."""
+        LOGGER.debug(" flush: waiting for all enqueued batches to finish…")
+        LOGGER.debug(f">>> flush: unfinished tasks -> {self._q.unfinished_tasks}")
         self._q.join()  # wait for tasks
+        LOGGER.debug(f" flush: done. insert statistics: {dict(self._stats)}")
         return dict(self._stats)
 
     # ------------------------------------------------------------------
     # Worker loop
     # ------------------------------------------------------------------
     def _worker(self) -> None:
+        # while True:
+        #     LOGGER.debug("Queue size before get(): %d", self._q.qsize())
+        #     table, rows = self._q.get()
+        #     LOGGER.debug(f" worker: [{threading.current_thread().name}] picked up {len(rows)} rows → {table}")
+        #     try:
+        #         # run the batch insert with a hard timeout
+        #         with concurrent.futures.ThreadPoolExecutor(max_workers=1) as pool:
+        #             fut = pool.submit(self._insert_batch, table, rows)
+        #             inserted = fut.result(timeout=30)   # bail out after 30s
+        #         self._stats[table] += inserted
+
+        #         LOGGER.debug(f" worker: [{threading.current_thread().name}] inserted {inserted} rows into {table}")
+        #     except Exception as exc:
+        #         LOGGER.exception("‼️  Failed batch (%s rows) → %s: %s", len(rows), table, exc)
+        #     finally:
+        #         self._q.task_done()
+        #         LOGGER.debug("Queue size after task_done(): %d", self._q.qsize())
         while True:
             table, rows = self._q.get()
             try:
-                inserted = self._insert_batch(table, rows)
+                with ThreadPoolExecutor(max_workers=1) as pool:
+                    fut = pool.submit(self._insert_batch, table, rows)
+                    inserted = fut.result(timeout=30)   # bail after 30s
                 self._stats[table] += inserted
+            except TimeoutError:
+                LOGGER.error("⏱  Insert batch timed out: %s rows → %s", len(rows), table)
             except Exception as exc:
                 LOGGER.exception("‼️  Failed batch (%s rows) → %s: %s", len(rows), table, exc)
             finally:
                 self._q.task_done()
+
 
     # ------------------------------------------------------------------
     # SQL helpers
     # ------------------------------------------------------------------
     def _insert_batch(self, table: str, rows: List[Dict]) -> int:
         """Insert a batch; returns affected row‑count (committed)."""
+        
+        LOGGER.debug(f" _insert_batch: [{threading.current_thread().name}] _insert_batch START → {len(rows)} rows into {table}")
+        start = time.time()
+
+
         cols = self._table_columns(table)
         keys = sorted({k for row in rows for k in row.keys() if k in cols})
         if not keys:
@@ -152,15 +213,29 @@ class MySQLLoader:
         values = [tuple(row.get(k) for k in keys) for row in rows]
 
         conn = mysql.connector.connect(**self._db_config)
+        # pool = self._get_pool()
+        # conn = pool.get_connection()
+        # conn = self._pool.get_connection()
+
+
         try:
             with self._tx(conn):
                 cur = conn.cursor()
                 cur.executemany(sql, values)
                 affected = cur.rowcount
             LOGGER.debug("✅  %s ← %d rows (cols=%d)", table, affected, len(keys))
-            return affected
+            LOGGER.debug(f" _insert_batch: [{threading.current_thread().name}] _insert_batch COMMIT for {table} ({len(rows)} rows) in {time.time()-start:.2f}s")
         finally:
             conn.close()
+
+        return len(rows)
+        # # ── STUBBED INSERT FOR DEBUG ───────────────────────────────
+        # import time
+        # LOGGER.debug(f" \t\t!!!!_insert_batch: [{threading.current_thread().name}] sleeping instead of inserting {len(rows)} rows into {table}")
+        # time.sleep(0.01)
+        # return len(rows)
+        # # ── END STUB ───────────────────────────────────────────────
+
 
     # ------------------------------------------------------------------
     # Caching
@@ -170,6 +245,10 @@ class MySQLLoader:
             return self._column_cache[table]
 
         conn = mysql.connector.connect(**self._db_config)
+        # pool = self._get_pool()
+        # conn = pool.get_connection()
+        # conn = self._pool.get_connection()
+        
         try:
             cur = conn.cursor()
             cur.execute(
