@@ -141,6 +141,11 @@ def main() -> None:
         help="Directory with raw *.tsv/*.zarr files (created if --use-synthetic)",
     )
     ap.add_argument(
+        "--zarr-dir",
+        default="",
+        help="Directory with raw *.zarr files (created if --use-synthetic)",
+    )
+    ap.add_argument(
         "--batch-size",
         type=int,
         default=1_000,
@@ -256,7 +261,7 @@ def main() -> None:
 
     # ----------------------------------------------------------------------------------------
 
-    # 1️⃣  Logging: console + rotating file
+    # Logging: console + rotating file
     ts = datetime.now().strftime("%Y%m%d_%H%M%S")
     log_path = Path("logs") / f"pipeline_{ts}.log"
     log_path.parent.mkdir(exist_ok=True)
@@ -266,41 +271,7 @@ def main() -> None:
 
     data_dir = Path(args.data_dir).expanduser().resolve()
 
-    # 2️⃣  Synthetic data (optional)
-    if args.use_synthetic:
-        start = time.perf_counter()
-        if data_dir.exists():
-            logger.warning("Overwriting existing synthetic folder %s", data_dir)
-        # Debug: show how args are being passed through
-        logger.debug("synthetic-params: %r", args.synthetic_params)
-        logger.debug("num_experiments: %d, seed: %d, out_dir: %s",
-                     args.num_experiments, args.seed, args.out_dir)
-        _run_synthetic_generator(
-        data_dir,
-        args.synthetic_params or [],
-        args.num_experiments,
-        args.seed,
-        args.out_dir,
-        args.tz,
-        args.ts_format,
-        args.base_uri,
-        )
-        elapsed = time.perf_counter() - start
-        logger.info(f"✅ Synthetic generation took {elapsed:.2f}s")
-
-
-
-    if not data_dir.exists():
-        logger.error("Data directory %s does not exist – aborting.", data_dir)
-        sys.exit(1)
-        
-    if not args.ssh_host or not args.remote_host or not args.ssh_user or not args.ssh_key_path:
-        logger.error("Missing SSH configuration: --ssh-host, --ssh-user, --ssh-key-path, and --remote-host must all be set.")
-        sys.exit(1)
-        
-    socket.setdefaulttimeout(10)   # give up after 10 s
-            
-    # 3️⃣  SSH tunnel → cluster MySQL
+    #  SSH tunnel → cluster MySQL
     logger.info("🔐  Opening SSH tunnel %s → %s:%s",
                 args.ssh_host, args.remote_host, args.remote_port)
     tunnel = SSHTunnelForwarder(
@@ -316,10 +287,6 @@ def main() -> None:
     wait_for_port("127.0.0.1", local_port, timeout=20)
     logger.info("🛡️   Tunnel established on localhost:%s", local_port)
     logger.info("✅  Port is open, proceeding to MySQLLoader()")
-
-    # 4️⃣  Instantiate ETL stages
-    extractor = Extractor(data_dir, mode=args.mode, batch_size=args.batch_size)
-    harmonizer = Harmonizer(args.mapping_yaml)
     # time.sleep(1)
     loader = MySQLLoader(
         host="127.0.0.1",
@@ -331,7 +298,50 @@ def main() -> None:
         parallel_workers=1
     )
 
-    # 5️⃣  Stream pipeline
+    #  Synthetic data (optional)
+    if args.use_synthetic:
+        start = time.perf_counter()
+        if data_dir.exists():
+            logger.warning("Overwriting existing synthetic folder %s", data_dir)
+        # Debug: show how args are being passed through
+        logger.debug("synthetic-params: %r", args.synthetic_params)
+        logger.debug("num_experiments: %d, seed: %d, out_dir: %s",
+                     args.num_experiments, args.seed, args.out_dir)
+        
+        # grab one live connection from the loader’s pool
+        conn = loader.get_connection()   # mysql.connector.Connection
+        try:
+            from etl.utils.synthetic_data_generator import run_synthetic
+ 
+            run_synthetic(conn,
+                          data_dir=data_dir,
+                          num_experiments=args.num_experiments,
+                          seed=args.seed,
+                          out_dir=args.out_dir,
+                          tz=args.tz,
+                          ts_format=args.ts_format,
+                          base_uri=args.base_uri,
+                          zarr_dir=args.zarr_dir)
+        finally:
+            conn.close()
+        elapsed = time.perf_counter() - start
+        logger.info(f"✅ Synthetic generation took {elapsed:.2f}s")
+
+    if not data_dir.exists():
+        logger.error("Data directory %s does not exist – aborting.", data_dir)
+        sys.exit(1)
+        
+    if not args.ssh_host or not args.remote_host or not args.ssh_user or not args.ssh_key_path:
+        logger.error("Missing SSH configuration: --ssh-host, --ssh-user, --ssh-key-path, and --remote-host must all be set.")
+        sys.exit(1)
+        
+    socket.setdefaulttimeout(10)   # give up after 10 s
+            
+    #  Instantiate ETL stages
+    extractor = Extractor(data_dir, mode=args.mode, batch_size=args.batch_size)
+    harmonizer = Harmonizer(args.mapping_yaml)
+
+    # Stream pipeline
     total_rows = 0
     batch_count = 0
     start_pipeline = time.perf_counter()
