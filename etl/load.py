@@ -132,6 +132,12 @@ class MySQLLoader:
             self._threads.append(t)
             LOGGER.debug("Started worker thread: %s", t.name)
 
+    def get_connection(self) -> mysql.connector.Connection:
+            """
+            Return a fresh MySQLConnection using the loader’s config dict.
+            """
+            return mysql.connector.connect(**self._db_config)
+
     # ------------------------------------------------------------------
     # Public API
     # ------------------------------------------------------------------
@@ -199,7 +205,7 @@ class MySQLLoader:
             raise ValueError(f"None of the provided columns match target table '{table}'.")
 
         placeholders = ", ".join(["%s"] * len(keys))
-        sql = f"INSERT INTO {table} ({', '.join(keys)}) VALUES ({placeholders})"
+        sql = f"INSERT IGNORE INTO {table} ({', '.join(keys)}) VALUES ({placeholders})"
         values = [tuple(row.get(k) for k in keys) for row in rows]
 
         LOGGER.debug("  samples keys to insert: %r", keys)
@@ -212,7 +218,7 @@ class MySQLLoader:
         def _retry_loop():
             nonlocal affected
             for attempt in range(1, max_retries + 1):
-                conn = mysql.connector.connect(**self._db_config)
+                conn = self.get_connection()
                 try:
                     with self._tx(conn):
                         cur = conn.cursor()
@@ -273,12 +279,15 @@ class MySQLLoader:
                     break
                 finally:
                     conn.close()
+            
         if table == "Samples":
             with _samples_lock:
                 _retry_loop()
         else:
             _retry_loop()
-            
+    
+        return affected
+    
         # # ── STUBBED INSERT FOR DEBUG ───────────────────────────────
         # import time
         # LOGGER.debug(f" \t\t!!!!_insert_batch: [{threading.current_thread().name}] sleeping instead of inserting {len(rows)} rows into {table}")
@@ -295,7 +304,7 @@ class MySQLLoader:
         if table in self._column_cache:
             return self._column_cache[table]
 
-        conn = mysql.connector.connect(**self._db_config)
+        conn = self.get_connection()
         # pool = self._get_pool()
         # conn = pool.get_connection() # or conn = self._pool.get_connection()
         
