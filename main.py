@@ -328,7 +328,7 @@ def main() -> None:
         user=args.mysql_user,
         password=args.mysql_password,
         batch_size=args.batch_size,
-        parallel_workers=4
+        parallel_workers=1
     )
 
     # 5️⃣  Stream pipeline
