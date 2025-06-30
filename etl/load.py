@@ -31,10 +31,13 @@ from __future__ import annotations
 
 import argparse
 from concurrent.futures import ThreadPoolExecutor
+from errno import errorcode
 import json
 import logging
 import os
 import queue
+import re
+from sqlite3 import IntegrityError
 import threading
 from collections import defaultdict
 from contextlib import contextmanager
@@ -52,7 +55,7 @@ logging.basicConfig(
     level=logging.INFO,
     format="%(asctime)s [%(levelname)s] %(threadName)s %(name)s: %(message)s",
 )
-
+_samples_lock = threading.Lock()
 # ---------------------------------------------------------------------------
 # Helper – resolve ENV/CLI credentials
 # ---------------------------------------------------------------------------
@@ -146,7 +149,7 @@ class MySQLLoader:
         # Chop huge payloads to respect _MAX_BATCH
         for i in range(0, len(rows), self.batch_size):
             batch = rows[i : i + self.batch_size]
-            LOGGER.debug(f" enqueue: putting batch of {len(batch)} rows → {table}")
+            LOGGER.debug(f" enqueue: putting batch of {len(batch)} rows → {table}\n\t{batch}")
             self._q.put((table, batch))
 
     def flush(self) -> Dict[str, int]:
@@ -161,47 +164,34 @@ class MySQLLoader:
     # Worker loop
     # ------------------------------------------------------------------
     def _worker(self) -> None:
-        # while True:
-        #     LOGGER.debug("Queue size before get(): %d", self._q.qsize())
-        #     table, rows = self._q.get()
-        #     LOGGER.debug(f" worker: [{threading.current_thread().name}] picked up {len(rows)} rows → {table}")
-        #     try:
-        #         # run the batch insert with a hard timeout
-        #         with concurrent.futures.ThreadPoolExecutor(max_workers=1) as pool:
-        #             fut = pool.submit(self._insert_batch, table, rows)
-        #             inserted = fut.result(timeout=30)   # bail out after 30s
-        #         self._stats[table] += inserted
-
-        #         LOGGER.debug(f" worker: [{threading.current_thread().name}] inserted {inserted} rows into {table}")
-        #     except Exception as exc:
-        #         LOGGER.exception("‼️  Failed batch (%s rows) → %s: %s", len(rows), table, exc)
-        #     finally:
-        #         self._q.task_done()
-        #         LOGGER.debug("Queue size after task_done(): %d", self._q.qsize())
         while True:
+            LOGGER.debug("Queue size before get(): %d", self._q.qsize())
             table, rows = self._q.get()
+            LOGGER.debug(f" worker: [{threading.current_thread().name}] picked up {len(rows)} rows → {table}")
             try:
-                with ThreadPoolExecutor(max_workers=1) as pool:
+                # run the batch insert with a hard timeout
+                with concurrent.futures.ThreadPoolExecutor(max_workers=1) as pool:
                     fut = pool.submit(self._insert_batch, table, rows)
-                    inserted = fut.result(timeout=30)   # bail after 30s
+                    inserted = fut.result(timeout=30)   # bail out after 30s
                 self._stats[table] += inserted
+
+                LOGGER.debug(f" worker: [{threading.current_thread().name}] inserted {inserted} rows into {table}")
             except TimeoutError:
                 LOGGER.error("⏱  Insert batch timed out: %s rows → %s", len(rows), table)
             except Exception as exc:
                 LOGGER.exception("‼️  Failed batch (%s rows) → %s: %s", len(rows), table, exc)
             finally:
                 self._q.task_done()
-
+                LOGGER.debug("Queue size after task_done(): %d", self._q.qsize())
 
     # ------------------------------------------------------------------
     # SQL helpers
     # ------------------------------------------------------------------
+
     def _insert_batch(self, table: str, rows: List[Dict]) -> int:
-        """Insert a batch; returns affected row‑count (committed)."""
-        
+        """Insert a batch; returns affected row-count (committed)."""
         LOGGER.debug(f" _insert_batch: [{threading.current_thread().name}] _insert_batch START → {len(rows)} rows into {table}")
         start = time.time()
-
 
         cols = self._table_columns(table)
         keys = sorted({k for row in rows for k in row.keys() if k in cols})
@@ -212,23 +202,83 @@ class MySQLLoader:
         sql = f"INSERT INTO {table} ({', '.join(keys)}) VALUES ({placeholders})"
         values = [tuple(row.get(k) for k in keys) for row in rows]
 
-        conn = mysql.connector.connect(**self._db_config)
-        # pool = self._get_pool()
-        # conn = pool.get_connection()
-        # conn = self._pool.get_connection()
+        LOGGER.debug("  samples keys to insert: %r", keys)
+        LOGGER.debug("  samples values: %r", values)
 
 
-        try:
-            with self._tx(conn):
-                cur = conn.cursor()
-                cur.executemany(sql, values)
-                affected = cur.rowcount
-            LOGGER.debug("✅  %s ← %d rows (cols=%d)", table, affected, len(keys))
-            LOGGER.debug(f" _insert_batch: [{threading.current_thread().name}] _insert_batch COMMIT for {table} ({len(rows)} rows) in {time.time()-start:.2f}s")
-        finally:
-            conn.close()
+        affected = 0
+        max_retries = 3
 
-        return len(rows)
+        def _retry_loop():
+            nonlocal affected
+            for attempt in range(1, max_retries + 1):
+                conn = mysql.connector.connect(**self._db_config)
+                try:
+                    with self._tx(conn):
+                        cur = conn.cursor()
+                        # Insert per-row to catch duplicates
+                        inserted_this_tx = 0
+                        for vals in values:
+                            try:
+                                cur.execute(sql, vals)
+                                # count only actual inserts
+                                if cur.rowcount:
+                                    inserted_this_tx += 1
+                            except IntegrityError as e:
+                                # existing duplicate logic
+                                if e.errno == errorcode.ER_DUP_ENTRY:
+                                    m = re.search(r"Duplicate entry '(.+)' for key '(.+)'", e.msg)
+                                    if m:
+                                        dup_val, dup_key = m.groups()
+                                        LOGGER.warning(
+                                            "[%s] duplicate key %r=%r on row %s — skipping",
+                                            table, dup_key, dup_val, vals
+                                        )
+                                    else:
+                                        LOGGER.warning(
+                                            "[%s] duplicate entry error on row %s: %s — skipping",
+                                            table, vals, e.msg
+                                        )
+                                    continue
+                                else:
+                                    raise
+                        affected = inserted_this_tx
+                    LOGGER.debug(" %s ← %d rows (cols=%d)", table, affected, len(keys))
+                    LOGGER.debug(f" _insert_batch: [{threading.current_thread().name}] _insert_batch COMMIT for {table} ({len(rows)} rows) in {time.time()-start:.2f}s")
+                    # only break if we inserted at least one row or this was last attempt
+                    # for Studies we don’t expect 100% new rows every batch,
+                    # so treat zero-rows as success and stop retrying
+                    if table == "Studies":
+                        break
+                    # for all other tables, break on real progress or final attempt
+                    if inserted_this_tx > 0 or attempt == max_retries:
+                        break  # success or give up after last retry
+                    # otherwise, treat as deadlock-like and retry
+                    raise mysql.connector.Error(
+                        f"Deadlock-like: 0 rows on attempt {attempt}, retrying",
+                        errno=1213
+                    )
+                except mysql.connector.Error as err:
+                    # Deadlock: try again
+                    if err.errno == 1213 and attempt < max_retries:
+                        wait = 0.1 * attempt
+                        LOGGER.warning(
+                            "Deadlock on %s (attempt %d/%d), retrying after %.2fs",
+                            table, attempt, max_retries, wait
+                        )
+                        time.sleep(wait)
+                        continue
+                    # other errors or max retries reached
+                    LOGGER.error(f"DB error inserting into {table}:\nrows attempted to be inserted -> {values}\n for columns -> {', '.join(keys)}\nError:\t{err}")
+                    break
+                finally:
+                    conn.close()
+        if table == "Samples":
+            with _samples_lock:
+                _retry_loop()
+        else:
+            _retry_loop()
+            
         # # ── STUBBED INSERT FOR DEBUG ───────────────────────────────
         # import time
         # LOGGER.debug(f" \t\t!!!!_insert_batch: [{threading.current_thread().name}] sleeping instead of inserting {len(rows)} rows into {table}")
@@ -240,14 +290,14 @@ class MySQLLoader:
     # ------------------------------------------------------------------
     # Caching
     # ------------------------------------------------------------------
+    
     def _table_columns(self, table: str) -> List[str]:
         if table in self._column_cache:
             return self._column_cache[table]
 
         conn = mysql.connector.connect(**self._db_config)
         # pool = self._get_pool()
-        # conn = pool.get_connection()
-        # conn = self._pool.get_connection()
+        # conn = pool.get_connection() # or conn = self._pool.get_connection()
         
         try:
             cur = conn.cursor()
