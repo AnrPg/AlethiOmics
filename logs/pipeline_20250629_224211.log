@@ -1,0 +1,1059 @@
+2025-06-30 01:42:11 [INFO] __main__: 🚀  ETL pipeline started
+2025-06-30 01:42:11 [WARNING] __main__: Overwriting existing synthetic folder /home/anr/apps/AlethiOmics/raw_data
+2025-06-30 01:42:11 [DEBUG] __main__: synthetic-params: None
+2025-06-30 01:42:11 [DEBUG] __main__: num_experiments: 8, seed: 20250624, out_dir: raw_data/synthetic_runs
+2025-06-30 01:42:11 [DEBUG] __main__: cwd: /home/anr/apps/AlethiOmics
+2025-06-30 01:42:11 [DEBUG] __main__: sys.path: ['/home/anr/apps/AlethiOmics', '/opt/anaconda3/envs/alethiomics/lib/python310.zip', '/opt/anaconda3/envs/alethiomics/lib/python3.10', '/opt/anaconda3/envs/alethiomics/lib/python3.10/lib-dynload', '/opt/anaconda3/envs/alethiomics/lib/python3.10/site-packages']
+2025-06-30 01:42:11 [INFO] __main__: 🧪  Running synthetic generator: /opt/anaconda3/envs/alethiomics/bin/python3 -m etl.utils.synthetic_data_generator --num_experiments 8 --seed 20250624 --out_dir raw_data/synthetic_runs --tz Europe/Athens --ts-format %Y%m%d-%H%M%S --base-uri file://./raw_data/synthetic_runs
+2025-06-30 01:42:11 [INFO] __main__: ✅ Synthetic generation took 0.37s
+2025-06-30 01:42:11 [INFO] __main__: 🔐  Opening SSH tunnel devanr.tenant-a9.svc.cluster.local → 127.0.0.1:3306
+2025-06-30 01:42:11 [DEBUG] paramiko.transport: starting thread (client mode): 0x2933ccd0
+2025-06-30 01:42:11 [DEBUG] paramiko.transport: Local version/idstring: SSH-2.0-paramiko_3.5.1
+2025-06-30 01:42:11 [DEBUG] paramiko.transport: Remote version/idstring: SSH-2.0-OpenSSH_8.9p1 Ubuntu-3ubuntu0.13
+2025-06-30 01:42:11 [INFO] paramiko.transport: Connected (version 2.0, client OpenSSH_8.9p1)
+2025-06-30 01:42:11 [DEBUG] paramiko.transport: === Key exchange possibilities ===
+2025-06-30 01:42:11 [DEBUG] paramiko.transport: kex algos: curve25519-sha256, curve25519-sha256@libssh.org, ecdh-sha2-nistp256, ecdh-sha2-nistp384, ecdh-sha2-nistp521, sntrup761x25519-sha512@openssh.com, diffie-hellman-group-exchange-sha256, diffie-hellman-group16-sha512, diffie-hellman-group18-sha512, diffie-hellman-group14-sha256, kex-strict-s-v00@openssh.com
+2025-06-30 01:42:11 [DEBUG] paramiko.transport: server key: rsa-sha2-512, rsa-sha2-256, ecdsa-sha2-nistp256, ssh-ed25519
+2025-06-30 01:42:11 [DEBUG] paramiko.transport: client encrypt: chacha20-poly1305@openssh.com, aes128-ctr, aes192-ctr, aes256-ctr, aes128-gcm@openssh.com, aes256-gcm@openssh.com
+2025-06-30 01:42:11 [DEBUG] paramiko.transport: server encrypt: chacha20-poly1305@openssh.com, aes128-ctr, aes192-ctr, aes256-ctr, aes128-gcm@openssh.com, aes256-gcm@openssh.com
+2025-06-30 01:42:11 [DEBUG] paramiko.transport: client mac: umac-64-etm@openssh.com, umac-128-etm@openssh.com, hmac-sha2-256-etm@openssh.com, hmac-sha2-512-etm@openssh.com, hmac-sha1-etm@openssh.com, umac-64@openssh.com, umac-128@openssh.com, hmac-sha2-256, hmac-sha2-512, hmac-sha1
+2025-06-30 01:42:11 [DEBUG] paramiko.transport: server mac: umac-64-etm@openssh.com, umac-128-etm@openssh.com, hmac-sha2-256-etm@openssh.com, hmac-sha2-512-etm@openssh.com, hmac-sha1-etm@openssh.com, umac-64@openssh.com, umac-128@openssh.com, hmac-sha2-256, hmac-sha2-512, hmac-sha1
+2025-06-30 01:42:11 [DEBUG] paramiko.transport: client compress: none, zlib@openssh.com
+2025-06-30 01:42:11 [DEBUG] paramiko.transport: server compress: none, zlib@openssh.com
+2025-06-30 01:42:11 [DEBUG] paramiko.transport: client lang: <none>
+2025-06-30 01:42:11 [DEBUG] paramiko.transport: server lang: <none>
+2025-06-30 01:42:11 [DEBUG] paramiko.transport: kex follows: False
+2025-06-30 01:42:11 [DEBUG] paramiko.transport: === Key exchange agreements ===
+2025-06-30 01:42:11 [DEBUG] paramiko.transport: Strict kex mode: True
+2025-06-30 01:42:11 [DEBUG] paramiko.transport: Kex: curve25519-sha256@libssh.org
+2025-06-30 01:42:11 [DEBUG] paramiko.transport: HostKey: ssh-ed25519
+2025-06-30 01:42:11 [DEBUG] paramiko.transport: Cipher: aes128-ctr
+2025-06-30 01:42:11 [DEBUG] paramiko.transport: MAC: hmac-sha2-256
+2025-06-30 01:42:11 [DEBUG] paramiko.transport: Compression: none
+2025-06-30 01:42:11 [DEBUG] paramiko.transport: === End of kex handshake ===
+2025-06-30 01:42:11 [DEBUG] paramiko.transport: Resetting outbound seqno after NEWKEYS due to strict mode
+2025-06-30 01:42:11 [DEBUG] paramiko.transport: kex engine KexCurve25519 specified hash_algo <built-in function openssl_sha256>
+2025-06-30 01:42:11 [DEBUG] paramiko.transport: Switch to new keys ...
+2025-06-30 01:42:11 [DEBUG] paramiko.transport: Resetting inbound seqno after NEWKEYS due to strict mode
+2025-06-30 01:42:11 [DEBUG] paramiko.transport: Got EXT_INFO: {'server-sig-algs': b'ssh-ed25519,sk-ssh-ed25519@openssh.com,ssh-rsa,rsa-sha2-256,rsa-sha2-512,ssh-dss,ecdsa-sha2-nistp256,ecdsa-sha2-nistp384,ecdsa-sha2-nistp521,sk-ecdsa-sha2-nistp256@openssh.com,webauthn-sk-ecdsa-sha2-nistp256@openssh.com', 'publickey-hostbound@openssh.com': b'0'}
+2025-06-30 01:42:11 [DEBUG] paramiko.transport: Attempting public-key auth...
+2025-06-30 01:42:11 [DEBUG] paramiko.transport: userauth is OK
+2025-06-30 01:42:11 [INFO] paramiko.transport: Authentication (publickey) successful!
+2025-06-30 01:42:11 [INFO] __main__: 🛡️   Tunnel established on localhost:42061
+2025-06-30 01:42:11 [DEBUG] paramiko.transport: [chan 0] Max packet in: 32768 bytes
+2025-06-30 01:42:11 [INFO] __main__: ✅  Port is open, proceeding to MySQLLoader()
+2025-06-30 01:42:11 [DEBUG] paramiko.transport: Received global request "hostkeys-00@openssh.com"
+2025-06-30 01:42:11 [DEBUG] paramiko.transport: Rejecting "hostkeys-00@openssh.com" global request from server.
+2025-06-30 01:42:11 [DEBUG] etl.load: Initializing MySQLLoader(host=127.0.0.1, port=42061, db=alethiomics_live, user=MasterLogariasmos, batch_size=4, workers=1, autocommit=False)
+2025-06-30 01:42:11 [DEBUG] paramiko.transport: Debug msg: b'/home/anr/.ssh/authorized_keys:2: key options: agent-forwarding port-forwarding pty user-rc x11-forwarding'
+2025-06-30 01:42:11 [DEBUG] etl.load: Database config set: {'host': '127.0.0.1', 'port': 3306, 'database': 'alethiomics_live', 'user': 'MasterLogariasmos', 'password': '1234', 'charset': 'utf8mb4', 'connection_timeout': 10, 'autocommit': False}
+2025-06-30 01:42:11 [DEBUG] etl.load: Queue size before get(): 0
+2025-06-30 01:42:11 [DEBUG] etl.load: Started worker thread: loader‑1
+2025-06-30 01:42:11 [DEBUG] paramiko.transport: [chan 0] Max packet out: 32768 bytes
+2025-06-30 01:42:11 [DEBUG] paramiko.transport: Secsh channel 0 opened.
+2025-06-30 01:42:11 [DEBUG] paramiko.transport: [chan 0] EOF sent (0)
+2025-06-30 01:42:11 [DEBUG] paramiko.transport: [chan 0] EOF received (0)
+2025-06-30 01:42:14 [DEBUG] etl.extract: iter_batches: 21 files selected (mode=metadata)
+2025-06-30 01:42:14 [INFO] etl.extract: ⏳  Extracting stimulus_catalog.tsv → Stimuli
+2025-06-30 01:42:14 [DEBUG] etl.extract: _read_file: opening /home/anr/apps/AlethiOmics/raw_data/synthetic_runs/20250630-014211/stimulus_catalog.tsv for table Stimuli
+2025-06-30 01:42:14 [DEBUG] etl.extract:   _read_file: starting new batch for stimulus_catalog.tsv
+2025-06-30 01:42:14 [DEBUG] etl.extract:   _read_file: batch full (4 rows), yielding
+2025-06-30 01:42:14 [DEBUG] etl.extract:   yielding batch of 4 rows from stimulus_catalog.tsv
+2025-06-30 01:42:14 [DEBUG] etl.harmonize: ROW 0: finished harmonization → {'iri': 'CHEBI_17968', 'label': 'butyrate', 'class_hint': 'SCFA', 'chem_formula': 'C4H7O2-', 'smiles': 'CCCC(=O)[O-]', 'molecular_weight': '110.09', 'default_dose': '10', 'dose_unit': 'mM'}
+2025-06-30 01:42:14 [DEBUG] etl.harmonize: ROW 1: finished harmonization → {'iri': 'CHEBI_17272', 'label': 'propionate', 'class_hint': 'SCFA', 'chem_formula': 'C3H5O2-', 'smiles': 'CCC(=O)[O-]', 'molecular_weight': '73.07', 'default_dose': '10', 'dose_unit': 'mM'}
+2025-06-30 01:42:14 [DEBUG] etl.harmonize: ROW 2: finished harmonization → {'iri': 'CHEBI_30089', 'label': 'acetate', 'class_hint': 'SCFA', 'chem_formula': 'C2H3O2–', 'smiles': 'CC(=O)[O-]', 'molecular_weight': '59.04', 'default_dose': '10', 'dose_unit': 'mM'}
+2025-06-30 01:42:14 [DEBUG] etl.harmonize: ROW 3: finished harmonization → {'iri': 'CHEBI_16865', 'label': 'gamma-aminobutyric acid', 'class_hint': 'neurotransmitter', 'chem_formula': 'C4H9NO2', 'smiles': 'NCCCC(=O)O', 'molecular_weight': '103.12', 'default_dose': '1', 'dose_unit': 'mM'}
+2025-06-30 01:42:14 [DEBUG] etl.load: Queued 4 rows → Stimuli
+2025-06-30 01:42:14 [DEBUG] etl.load:  enqueue: putting batch of 4 rows → Stimuli
+	[{'iri': 'CHEBI_17968', 'label': 'butyrate', 'class_hint': 'SCFA', 'chem_formula': 'C4H7O2-', 'smiles': 'CCCC(=O)[O-]', 'molecular_weight': '110.09', 'default_dose': '10', 'dose_unit': 'mM'}, {'iri': 'CHEBI_17272', 'label': 'propionate', 'class_hint': 'SCFA', 'chem_formula': 'C3H5O2-', 'smiles': 'CCC(=O)[O-]', 'molecular_weight': '73.07', 'default_dose': '10', 'dose_unit': 'mM'}, {'iri': 'CHEBI_30089', 'label': 'acetate', 'class_hint': 'SCFA', 'chem_formula': 'C2H3O2–', 'smiles': 'CC(=O)[O-]', 'molecular_weight': '59.04', 'default_dose': '10', 'dose_unit': 'mM'}, {'iri': 'CHEBI_16865', 'label': 'gamma-aminobutyric acid', 'class_hint': 'neurotransmitter', 'chem_formula': 'C4H9NO2', 'smiles': 'NCCCC(=O)O', 'molecular_weight': '103.12', 'default_dose': '1', 'dose_unit': 'mM'}]
+2025-06-30 01:42:14 [DEBUG] __main__: Batch 1 (Stimuli): extract 4 rows → harmonize 0.22ms → enqueue 0.11ms
+2025-06-30 01:42:14 [DEBUG] etl.load:  worker: [loader‑1] picked up 4 rows → Stimuli
+2025-06-30 01:42:14 [DEBUG] etl.extract:   _read_file: starting new batch for stimulus_catalog.tsv
+2025-06-30 01:42:14 [DEBUG] etl.extract:   _read_file: final batch (1 rows), yielding
+2025-06-30 01:42:14 [DEBUG] etl.extract:   yielding batch of 1 rows from stimulus_catalog.tsv
+2025-06-30 01:42:14 [DEBUG] etl.load:  _insert_batch: [ThreadPoolExecutor-0_0] _insert_batch START → 4 rows into Stimuli
+2025-06-30 01:42:14 [DEBUG] etl.harmonize: ROW 0: finished harmonization → {'iri': 'PR_000026791', 'label': 'tumour necrosis factor-alpha', 'class_hint': 'cytokine', 'chem_formula': '', 'smiles': '', 'molecular_weight': '17.3', 'default_dose': '0.1', 'dose_unit': 'mM'}
+2025-06-30 01:42:14 [DEBUG] etl.load: Queued 1 rows → Stimuli
+2025-06-30 01:42:14 [DEBUG] etl.load:  enqueue: putting batch of 1 rows → Stimuli
+	[{'iri': 'PR_000026791', 'label': 'tumour necrosis factor-alpha', 'class_hint': 'cytokine', 'chem_formula': '', 'smiles': '', 'molecular_weight': '17.3', 'default_dose': '0.1', 'dose_unit': 'mM'}]
+2025-06-30 01:42:14 [DEBUG] __main__: Batch 2 (Stimuli): extract 1 rows → harmonize 0.35ms → enqueue 0.32ms
+2025-06-30 01:42:14 [INFO] etl.extract: ✅  Finished stimulus_catalog.tsv
+2025-06-30 01:42:14 [INFO] etl.extract: ⏳  Extracting taxa_catalog.tsv → Taxa
+2025-06-30 01:42:14 [DEBUG] etl.extract: _read_file: opening /home/anr/apps/AlethiOmics/raw_data/synthetic_runs/20250630-014211/taxa_catalog.tsv for table Taxa
+2025-06-30 01:42:14 [DEBUG] etl.extract:   _read_file: starting new batch for taxa_catalog.tsv
+2025-06-30 01:42:14 [DEBUG] etl.extract:   _read_file: batch full (4 rows), yielding
+2025-06-30 01:42:14 [DEBUG] etl.extract:   yielding batch of 4 rows from taxa_catalog.tsv
+2025-06-30 01:42:14 [DEBUG] etl.harmonize: ROW 0: finished harmonization → {'iri': 'NCBITaxon_9606', 'species_name': 'Homo sapiens', 'kingdom': 'Eukaryota', 'ranking': 'Species', 'gc_content': '44.98', 'genome_length': '3260772', 'habitat': 'human body', 'pathogenicity': 'commensal'}
+2025-06-30 01:42:14 [DEBUG] etl.harmonize: ROW 1: finished harmonization → {'iri': 'NCBITaxon_226186', 'species_name': 'B. thetaiotaomicron', 'kingdom': 'Bacteria', 'ranking': 'Species', 'gc_content': '36.76', 'genome_length': '5087486', 'habitat': 'intestine', 'pathogenicity': 'pathogen'}
+2025-06-30 01:42:14 [DEBUG] etl.harmonize: ROW 2: finished harmonization → {'iri': 'NCBITaxon_1351', 'species_name': 'E. faecalis', 'kingdom': 'Bacteria', 'ranking': 'Species', 'gc_content': '48.17', 'genome_length': '5123702', 'habitat': 'intestine', 'pathogenicity': 'commensal'}
+2025-06-30 01:42:14 [DEBUG] etl.harmonize: ROW 3: finished harmonization → {'iri': 'NCBITaxon_562', 'species_name': 'E. coli', 'kingdom': 'Bacteria', 'ranking': 'Species', 'gc_content': '38.6', 'genome_length': '4148227', 'habitat': 'intestine', 'pathogenicity': 'opportunist'}
+2025-06-30 01:42:14 [DEBUG] etl.load: Queued 4 rows → Taxa
+2025-06-30 01:42:14 [DEBUG] etl.load:  enqueue: putting batch of 4 rows → Taxa
+	[{'iri': 'NCBITaxon_9606', 'species_name': 'Homo sapiens', 'kingdom': 'Eukaryota', 'ranking': 'Species', 'gc_content': '44.98', 'genome_length': '3260772', 'habitat': 'human body', 'pathogenicity': 'commensal'}, {'iri': 'NCBITaxon_226186', 'species_name': 'B. thetaiotaomicron', 'kingdom': 'Bacteria', 'ranking': 'Species', 'gc_content': '36.76', 'genome_length': '5087486', 'habitat': 'intestine', 'pathogenicity': 'pathogen'}, {'iri': 'NCBITaxon_1351', 'species_name': 'E. faecalis', 'kingdom': 'Bacteria', 'ranking': 'Species', 'gc_content': '48.17', 'genome_length': '5123702', 'habitat': 'intestine', 'pathogenicity': 'commensal'}, {'iri': 'NCBITaxon_562', 'species_name': 'E. coli', 'kingdom': 'Bacteria', 'ranking': 'Species', 'gc_content': '38.6', 'genome_length': '4148227', 'habitat': 'intestine', 'pathogenicity': 'opportunist'}]
+2025-06-30 01:42:14 [DEBUG] __main__: Batch 3 (Taxa): extract 4 rows → harmonize 0.23ms → enqueue 0.12ms
+2025-06-30 01:42:14 [DEBUG] etl.extract:   _read_file: starting new batch for taxa_catalog.tsv
+2025-06-30 01:42:14 [DEBUG] etl.extract:   _read_file: batch full (4 rows), yielding
+2025-06-30 01:42:14 [DEBUG] etl.extract:   yielding batch of 4 rows from taxa_catalog.tsv
+2025-06-30 01:42:14 [DEBUG] etl.harmonize: ROW 0: finished harmonization → {'iri': 'NCBITaxon_47715', 'species_name': 'L. rhamnosus', 'kingdom': 'Bacteria', 'ranking': 'Species', 'gc_content': '57.91', 'genome_length': '3019144', 'habitat': 'intestine', 'pathogenicity': 'opportunist'}
+2025-06-30 01:42:14 [DEBUG] etl.harmonize: ROW 1: finished harmonization → {'iri': 'NCBITaxon_853', 'species_name': 'F. prausnitzii', 'kingdom': 'Bacteria', 'ranking': 'Species', 'gc_content': '39.13', 'genome_length': '4498961', 'habitat': 'intestine', 'pathogenicity': 'pathogen'}
+2025-06-30 01:42:14 [DEBUG] etl.harmonize: ROW 2: finished harmonization → {'iri': 'NCBITaxon_226186', 'species_name': 'Bt-VPI5482', 'kingdom': 'Bacteria', 'ranking': 'Strain', 'gc_content': '59.32', 'genome_length': '2007434', 'habitat': 'intestine', 'pathogenicity': 'pathogen'}
+2025-06-30 01:42:14 [DEBUG] etl.harmonize: ROW 3: finished harmonization → {'iri': 'NCBITaxon_474186', 'species_name': 'Ef-OG1RF', 'kingdom': 'Bacteria', 'ranking': 'Strain', 'gc_content': '40.61', 'genome_length': '3105455', 'habitat': 'intestine', 'pathogenicity': 'pathogen'}
+2025-06-30 01:42:14 [DEBUG] etl.load: Queued 4 rows → Taxa
+2025-06-30 01:42:14 [DEBUG] etl.load:  enqueue: putting batch of 4 rows → Taxa
+	[{'iri': 'NCBITaxon_47715', 'species_name': 'L. rhamnosus', 'kingdom': 'Bacteria', 'ranking': 'Species', 'gc_content': '57.91', 'genome_length': '3019144', 'habitat': 'intestine', 'pathogenicity': 'opportunist'}, {'iri': 'NCBITaxon_853', 'species_name': 'F. prausnitzii', 'kingdom': 'Bacteria', 'ranking': 'Species', 'gc_content': '39.13', 'genome_length': '4498961', 'habitat': 'intestine', 'pathogenicity': 'pathogen'}, {'iri': 'NCBITaxon_226186', 'species_name': 'Bt-VPI5482', 'kingdom': 'Bacteria', 'ranking': 'Strain', 'gc_content': '59.32', 'genome_length': '2007434', 'habitat': 'intestine', 'pathogenicity': 'pathogen'}, {'iri': 'NCBITaxon_474186', 'species_name': 'Ef-OG1RF', 'kingdom': 'Bacteria', 'ranking': 'Strain', 'gc_content': '40.61', 'genome_length': '3105455', 'habitat': 'intestine', 'pathogenicity': 'pathogen'}]
+2025-06-30 01:42:14 [DEBUG] __main__: Batch 4 (Taxa): extract 4 rows → harmonize 0.20ms → enqueue 0.13ms
+2025-06-30 01:42:14 [DEBUG] etl.extract:   _read_file: starting new batch for taxa_catalog.tsv
+2025-06-30 01:42:14 [DEBUG] etl.extract:   _read_file: final batch (3 rows), yielding
+2025-06-30 01:42:14 [DEBUG] etl.extract:   yielding batch of 3 rows from taxa_catalog.tsv
+2025-06-30 01:42:14 [DEBUG] etl.harmonize: ROW 0: finished harmonization → {'iri': 'NCBITaxon_83333', 'species_name': 'Ecoli-K12', 'kingdom': 'Bacteria', 'ranking': 'Strain', 'gc_content': '47.08', 'genome_length': '3084074', 'habitat': 'intestine', 'pathogenicity': 'pathogen'}
+2025-06-30 01:42:14 [DEBUG] etl.harmonize: ROW 1: finished harmonization → {'iri': 'NCBITaxon_568703', 'species_name': 'LGG', 'kingdom': 'Bacteria', 'ranking': 'Strain', 'gc_content': '55.09', 'genome_length': '4908882', 'habitat': 'intestine', 'pathogenicity': 'opportunist'}
+2025-06-30 01:42:14 [DEBUG] etl.harmonize: ROW 2: finished harmonization → {'iri': 'NCBITaxon_853', 'species_name': 'Fp-A2-165', 'kingdom': 'Bacteria', 'ranking': 'Strain', 'gc_content': '55.97', 'genome_length': '4400720', 'habitat': 'intestine', 'pathogenicity': 'commensal'}
+2025-06-30 01:42:14 [DEBUG] etl.load: Queued 3 rows → Taxa
+2025-06-30 01:42:14 [DEBUG] etl.load:  enqueue: putting batch of 3 rows → Taxa
+	[{'iri': 'NCBITaxon_83333', 'species_name': 'Ecoli-K12', 'kingdom': 'Bacteria', 'ranking': 'Strain', 'gc_content': '47.08', 'genome_length': '3084074', 'habitat': 'intestine', 'pathogenicity': 'pathogen'}, {'iri': 'NCBITaxon_568703', 'species_name': 'LGG', 'kingdom': 'Bacteria', 'ranking': 'Strain', 'gc_content': '55.09', 'genome_length': '4908882', 'habitat': 'intestine', 'pathogenicity': 'opportunist'}, {'iri': 'NCBITaxon_853', 'species_name': 'Fp-A2-165', 'kingdom': 'Bacteria', 'ranking': 'Strain', 'gc_content': '55.97', 'genome_length': '4400720', 'habitat': 'intestine', 'pathogenicity': 'commensal'}]
+2025-06-30 01:42:14 [DEBUG] __main__: Batch 5 (Taxa): extract 3 rows → harmonize 0.17ms → enqueue 0.07ms
+2025-06-30 01:42:14 [INFO] etl.extract: ✅  Finished taxa_catalog.tsv
+2025-06-30 01:42:14 [INFO] etl.extract: ⏳  Extracting ontology_terms.tsv → OntologyTerms
+2025-06-30 01:42:14 [DEBUG] etl.extract: _read_file: opening /home/anr/apps/AlethiOmics/raw_data/synthetic_runs/20250630-014211/ontology_terms.tsv for table OntologyTerms
+2025-06-30 01:42:14 [DEBUG] etl.extract:   _read_file: starting new batch for ontology_terms.tsv
+2025-06-30 01:42:14 [DEBUG] etl.extract:   _read_file: batch full (4 rows), yielding
+2025-06-30 01:42:14 [DEBUG] etl.extract:   yielding batch of 4 rows from ontology_terms.tsv
+2025-06-30 01:42:14 [DEBUG] etl.harmonize: ROW 0: applying transform "['canonical_iri']" of harmonization on row: CL_0000127
+2025-06-30 01:42:14 [DEBUG] etl.harmonize: ROW 0: applying transform "['stub_fetch_ontology_term_metadata']" of harmonization on row: http://purl.obolibrary.org/obo/CL_0000127
+2025-06-30 01:42:14 [DEBUG] etl.harmonize: ROW 0: finished harmonization → {'iri': 'CL_0000127', 'label': 'astrocyte', 'ontology': 'CL', 'term_definition': 'Definition of astrocyte', 'synonyms': '["astrocyte_syn0", "astrocyte_syn1"]', 'onto_version': '2025-06'}
+2025-06-30 01:42:14 [DEBUG] etl.harmonize: ROW 1: applying transform "['canonical_iri']" of harmonization on row: CL_0000540
+2025-06-30 01:42:14 [DEBUG] etl.harmonize: ROW 1: applying transform "['stub_fetch_ontology_term_metadata']" of harmonization on row: http://purl.obolibrary.org/obo/CL_0000540
+2025-06-30 01:42:14 [DEBUG] etl.harmonize: ROW 1: finished harmonization → {'iri': 'CL_0000540', 'label': 'microglial cell', 'ontology': 'CL', 'term_definition': 'Definition of microglial cell', 'synonyms': '["microglial cell_syn0", "microglial cell_syn1"]', 'onto_version': '2025-06'}
+2025-06-30 01:42:14 [DEBUG] etl.harmonize: ROW 2: applying transform "['canonical_iri']" of harmonization on row: CL_0001050
+2025-06-30 01:42:14 [DEBUG] etl.harmonize: ROW 2: applying transform "['stub_fetch_ontology_term_metadata']" of harmonization on row: http://purl.obolibrary.org/obo/CL_0001050
+2025-06-30 01:42:14 [DEBUG] etl.harmonize: ROW 2: finished harmonization → {'iri': 'CL_0001050', 'label': 'enterocyte', 'ontology': 'CL', 'term_definition': 'Definition of enterocyte', 'synonyms': '["enterocyte_syn0", "enterocyte_syn1"]', 'onto_version': '2025-06'}
+2025-06-30 01:42:14 [DEBUG] etl.harmonize: ROW 3: applying transform "['canonical_iri']" of harmonization on row: CL_0002608
+2025-06-30 01:42:14 [DEBUG] etl.harmonize: ROW 3: applying transform "['stub_fetch_ontology_term_metadata']" of harmonization on row: http://purl.obolibrary.org/obo/CL_0002608
+2025-06-30 01:42:14 [DEBUG] etl.harmonize: ROW 3: finished harmonization → {'iri': 'CL_0002608', 'label': 'intestinal tuft cell', 'ontology': 'CL', 'term_definition': 'Definition of intestinal tuft cell', 'synonyms': '["intestinal tuft cell_syn0", "intestinal tuft cell_syn1"]', 'onto_version': '2025-06'}
+2025-06-30 01:42:14 [DEBUG] etl.load: Queued 4 rows → OntologyTerms
+2025-06-30 01:42:14 [DEBUG] etl.load:  enqueue: putting batch of 4 rows → OntologyTerms
+	[{'iri': 'CL_0000127', 'label': 'astrocyte', 'ontology': 'CL', 'term_definition': 'Definition of astrocyte', 'synonyms': '["astrocyte_syn0", "astrocyte_syn1"]', 'onto_version': '2025-06'}, {'iri': 'CL_0000540', 'label': 'microglial cell', 'ontology': 'CL', 'term_definition': 'Definition of microglial cell', 'synonyms': '["microglial cell_syn0", "microglial cell_syn1"]', 'onto_version': '2025-06'}, {'iri': 'CL_0001050', 'label': 'enterocyte', 'ontology': 'CL', 'term_definition': 'Definition of enterocyte', 'synonyms': '["enterocyte_syn0", "enterocyte_syn1"]', 'onto_version': '2025-06'}, {'iri': 'CL_0002608', 'label': 'intestinal tuft cell', 'ontology': 'CL', 'term_definition': 'Definition of intestinal tuft cell', 'synonyms': '["intestinal tuft cell_syn0", "intestinal tuft cell_syn1"]', 'onto_version': '2025-06'}]
+2025-06-30 01:42:14 [DEBUG] __main__: Batch 6 (OntologyTerms): extract 4 rows → harmonize 0.40ms → enqueue 0.07ms
+2025-06-30 01:42:14 [DEBUG] etl.extract:   _read_file: starting new batch for ontology_terms.tsv
+2025-06-30 01:42:14 [DEBUG] etl.extract:   _read_file: batch full (4 rows), yielding
+2025-06-30 01:42:14 [DEBUG] etl.extract:   yielding batch of 4 rows from ontology_terms.tsv
+2025-06-30 01:42:14 [DEBUG] etl.harmonize: ROW 0: applying transform "['canonical_iri']" of harmonization on row: CL_0000091
+2025-06-30 01:42:14 [DEBUG] etl.harmonize: ROW 0: applying transform "['stub_fetch_ontology_term_metadata']" of harmonization on row: http://purl.obolibrary.org/obo/CL_0000091
+2025-06-30 01:42:14 [DEBUG] etl.harmonize: ROW 0: finished harmonization → {'iri': 'CL_0000091', 'label': 'brain endothelial cell', 'ontology': 'CL', 'term_definition': 'Definition of brain endothelial cell', 'synonyms': '["brain endothelial cell_syn0", "brain endothelial cell_syn1"]', 'onto_version': '2025-06'}
+2025-06-30 01:42:14 [DEBUG] etl.harmonize: ROW 1: applying transform "['canonical_iri']" of harmonization on row: CL_0000679
+2025-06-30 01:42:14 [DEBUG] etl.harmonize: ROW 1: applying transform "['stub_fetch_ontology_term_metadata']" of harmonization on row: http://purl.obolibrary.org/obo/CL_0000679
+2025-06-30 01:42:14 [DEBUG] etl.harmonize: ROW 1: finished harmonization → {'iri': 'CL_0000679', 'label': 'dopaminergic neuron', 'ontology': 'CL', 'term_definition': 'Definition of dopaminergic neuron', 'synonyms': '["dopaminergic neuron_syn0", "dopaminergic neuron_syn1"]', 'onto_version': '2025-06'}
+2025-06-30 01:42:14 [DEBUG] etl.harmonize: ROW 2: applying transform "['canonical_iri']" of harmonization on row: CL_0000584
+2025-06-30 01:42:14 [DEBUG] etl.harmonize: ROW 2: applying transform "['stub_fetch_ontology_term_metadata']" of harmonization on row: http://purl.obolibrary.org/obo/CL_0000584
+2025-06-30 01:42:14 [DEBUG] etl.harmonize: ROW 2: finished harmonization → {'iri': 'CL_0000584', 'label': 'GABAergic interneuron', 'ontology': 'CL', 'term_definition': 'Definition of GABAergic interneuron', 'synonyms': '["GABAergic interneuron_syn0", "GABAergic interneuron_syn1"]', 'onto_version': '2025-06'}
+2025-06-30 01:42:14 [DEBUG] etl.harmonize: ROW 3: applying transform "['canonical_iri']" of harmonization on row: UBERON_0001155
+2025-06-30 01:42:14 [DEBUG] etl.harmonize: ROW 3: applying transform "['stub_fetch_ontology_term_metadata']" of harmonization on row: http://purl.obolibrary.org/obo/UBERON_0001155
+2025-06-30 01:42:14 [DEBUG] etl.harmonize: ROW 3: finished harmonization → {'iri': 'UBERON_0001155', 'label': 'colon', 'ontology': 'UBERON', 'term_definition': 'Definition of colon', 'synonyms': '["colon_syn0", "colon_syn1"]', 'onto_version': '2025-06'}
+2025-06-30 01:42:14 [DEBUG] etl.load: Queued 4 rows → OntologyTerms
+2025-06-30 01:42:14 [DEBUG] etl.load:  enqueue: putting batch of 4 rows → OntologyTerms
+	[{'iri': 'CL_0000091', 'label': 'brain endothelial cell', 'ontology': 'CL', 'term_definition': 'Definition of brain endothelial cell', 'synonyms': '["brain endothelial cell_syn0", "brain endothelial cell_syn1"]', 'onto_version': '2025-06'}, {'iri': 'CL_0000679', 'label': 'dopaminergic neuron', 'ontology': 'CL', 'term_definition': 'Definition of dopaminergic neuron', 'synonyms': '["dopaminergic neuron_syn0", "dopaminergic neuron_syn1"]', 'onto_version': '2025-06'}, {'iri': 'CL_0000584', 'label': 'GABAergic interneuron', 'ontology': 'CL', 'term_definition': 'Definition of GABAergic interneuron', 'synonyms': '["GABAergic interneuron_syn0", "GABAergic interneuron_syn1"]', 'onto_version': '2025-06'}, {'iri': 'UBERON_0001155', 'label': 'colon', 'ontology': 'UBERON', 'term_definition': 'Definition of colon', 'synonyms': '["colon_syn0", "colon_syn1"]', 'onto_version': '2025-06'}]
+2025-06-30 01:42:14 [DEBUG] __main__: Batch 7 (OntologyTerms): extract 4 rows → harmonize 0.56ms → enqueue 0.09ms
+2025-06-30 01:42:14 [DEBUG] etl.extract:   _read_file: starting new batch for ontology_terms.tsv
+2025-06-30 01:42:14 [DEBUG] etl.extract:   _read_file: final batch (2 rows), yielding
+2025-06-30 01:42:14 [DEBUG] etl.extract:   yielding batch of 2 rows from ontology_terms.tsv
+2025-06-30 01:42:14 [DEBUG] etl.harmonize: ROW 0: applying transform "['canonical_iri']" of harmonization on row: UBERON_0002108
+2025-06-30 01:42:14 [DEBUG] etl.harmonize: ROW 0: applying transform "['stub_fetch_ontology_term_metadata']" of harmonization on row: http://purl.obolibrary.org/obo/UBERON_0002108
+2025-06-30 01:42:14 [DEBUG] etl.harmonize: ROW 0: finished harmonization → {'iri': 'UBERON_0002108', 'label': 'small intestine', 'ontology': 'UBERON', 'term_definition': 'Definition of small intestine', 'synonyms': '["small intestine_syn0", "small intestine_syn1"]', 'onto_version': '2025-06'}
+2025-06-30 01:42:14 [DEBUG] etl.harmonize: ROW 1: applying transform "['canonical_iri']" of harmonization on row: UBERON_0000955
+2025-06-30 01:42:14 [DEBUG] etl.harmonize: ROW 1: applying transform "['stub_fetch_ontology_term_metadata']" of harmonization on row: http://purl.obolibrary.org/obo/UBERON_0000955
+2025-06-30 01:42:14 [DEBUG] etl.harmonize: ROW 1: finished harmonization → {'iri': 'UBERON_0000955', 'label': 'brain', 'ontology': 'UBERON', 'term_definition': 'Definition of brain', 'synonyms': '["brain_syn0", "brain_syn1"]', 'onto_version': '2025-06'}
+2025-06-30 01:42:14 [DEBUG] etl.load: Queued 2 rows → OntologyTerms
+2025-06-30 01:42:14 [DEBUG] etl.load:  enqueue: putting batch of 2 rows → OntologyTerms
+	[{'iri': 'UBERON_0002108', 'label': 'small intestine', 'ontology': 'UBERON', 'term_definition': 'Definition of small intestine', 'synonyms': '["small intestine_syn0", "small intestine_syn1"]', 'onto_version': '2025-06'}, {'iri': 'UBERON_0000955', 'label': 'brain', 'ontology': 'UBERON', 'term_definition': 'Definition of brain', 'synonyms': '["brain_syn0", "brain_syn1"]', 'onto_version': '2025-06'}]
+2025-06-30 01:42:14 [DEBUG] __main__: Batch 8 (OntologyTerms): extract 2 rows → harmonize 0.19ms → enqueue 0.06ms
+2025-06-30 01:42:14 [INFO] etl.extract: ✅  Finished ontology_terms.tsv
+2025-06-30 01:42:14 [INFO] etl.extract: ⏳  Extracting study_catalog.tsv → Studies
+2025-06-30 01:42:14 [DEBUG] etl.extract: _read_file: opening /home/anr/apps/AlethiOmics/raw_data/synthetic_runs/20250630-014211/study_catalog.tsv for table Studies
+2025-06-30 01:42:14 [DEBUG] etl.extract:   _read_file: starting new batch for study_catalog.tsv
+2025-06-30 01:42:14 [DEBUG] etl.extract:   _read_file: batch full (4 rows), yielding
+2025-06-30 01:42:14 [DEBUG] etl.extract:   yielding batch of 4 rows from study_catalog.tsv
+2025-06-30 01:42:14 [DEBUG] etl.harmonize: ROW 0: applying transform "['normalize_study_accession']" of harmonization on row: E-MTAB-84764
+2025-06-30 01:42:14 [DEBUG] etl.harmonize: ROW 0: applying transform "['stub_fetch_study_metadata']" of harmonization on row: E-MTAB-84764
+2025-06-30 01:42:14 [DEBUG] etl.harmonize: ROW 0: finished harmonization → {'iri': 'E-MTAB-84764', 'title': 'Synthetic gut-brain experiment E-MTAB-84764', 'source_repo': 'ArrayExpress', 'publication_date': '2020-11-29', 'study_type': 'transcriptomic', 'num_samples': '5', 'contact_email': 'e-mtab-84764@example.org'}
+2025-06-30 01:42:14 [DEBUG] etl.harmonize: ROW 1: applying transform "['normalize_study_accession']" of harmonization on row: E-MTAB-92724
+2025-06-30 01:42:14 [DEBUG] etl.harmonize: ROW 1: applying transform "['stub_fetch_study_metadata']" of harmonization on row: E-MTAB-92724
+2025-06-30 01:42:14 [DEBUG] etl.harmonize: ROW 1: finished harmonization → {'iri': 'E-MTAB-92724', 'title': 'Synthetic gut-brain experiment E-MTAB-92724', 'source_repo': 'NCBI GEO', 'publication_date': '2011-07-13', 'study_type': 'proteomic', 'num_samples': '5', 'contact_email': 'e-mtab-92724@example.org'}
+2025-06-30 01:42:14 [DEBUG] etl.harmonize: ROW 2: applying transform "['normalize_study_accession']" of harmonization on row: E-MTAB-25623
+2025-06-30 01:42:14 [DEBUG] etl.harmonize: ROW 2: applying transform "['stub_fetch_study_metadata']" of harmonization on row: E-MTAB-25623
+2025-06-30 01:42:14 [DEBUG] etl.harmonize: ROW 2: finished harmonization → {'iri': 'E-MTAB-25623', 'title': 'Synthetic gut-brain experiment E-MTAB-25623', 'source_repo': 'LOCAL', 'publication_date': '2018-01-22', 'study_type': 'transcriptomic', 'num_samples': '5', 'contact_email': 'e-mtab-25623@example.org'}
+2025-06-30 01:42:14 [DEBUG] etl.harmonize: ROW 3: applying transform "['normalize_study_accession']" of harmonization on row: E-MTAB-48186
+2025-06-30 01:42:14 [DEBUG] etl.harmonize: ROW 3: applying transform "['stub_fetch_study_metadata']" of harmonization on row: E-MTAB-48186
+2025-06-30 01:42:14 [DEBUG] etl.harmonize: ROW 3: finished harmonization → {'iri': 'E-MTAB-48186', 'title': 'Synthetic gut-brain experiment E-MTAB-48186', 'source_repo': 'NCBI GEO', 'publication_date': '2022-09-23', 'study_type': 'transcriptomic', 'num_samples': '5', 'contact_email': 'e-mtab-48186@example.org'}
+2025-06-30 01:42:14 [DEBUG] etl.load: Queued 4 rows → Studies
+2025-06-30 01:42:14 [DEBUG] etl.load:  enqueue: putting batch of 4 rows → Studies
+	[{'iri': 'E-MTAB-84764', 'title': 'Synthetic gut-brain experiment E-MTAB-84764', 'source_repo': 'ArrayExpress', 'publication_date': '2020-11-29', 'study_type': 'transcriptomic', 'num_samples': '5', 'contact_email': 'e-mtab-84764@example.org'}, {'iri': 'E-MTAB-92724', 'title': 'Synthetic gut-brain experiment E-MTAB-92724', 'source_repo': 'NCBI GEO', 'publication_date': '2011-07-13', 'study_type': 'proteomic', 'num_samples': '5', 'contact_email': 'e-mtab-92724@example.org'}, {'iri': 'E-MTAB-25623', 'title': 'Synthetic gut-brain experiment E-MTAB-25623', 'source_repo': 'LOCAL', 'publication_date': '2018-01-22', 'study_type': 'transcriptomic', 'num_samples': '5', 'contact_email': 'e-mtab-25623@example.org'}, {'iri': 'E-MTAB-48186', 'title': 'Synthetic gut-brain experiment E-MTAB-48186', 'source_repo': 'NCBI GEO', 'publication_date': '2022-09-23', 'study_type': 'transcriptomic', 'num_samples': '5', 'contact_email': 'e-mtab-48186@example.org'}]
+2025-06-30 01:42:14 [DEBUG] __main__: Batch 9 (Studies): extract 4 rows → harmonize 0.52ms → enqueue 0.07ms
+2025-06-30 01:42:14 [DEBUG] etl.extract:   _read_file: starting new batch for study_catalog.tsv
+2025-06-30 01:42:14 [DEBUG] etl.extract:   _read_file: batch full (4 rows), yielding
+2025-06-30 01:42:14 [DEBUG] etl.extract:   yielding batch of 4 rows from study_catalog.tsv
+2025-06-30 01:42:14 [DEBUG] etl.harmonize: ROW 0: applying transform "['normalize_study_accession']" of harmonization on row: E-MTAB-77361
+2025-06-30 01:42:14 [DEBUG] etl.harmonize: ROW 0: applying transform "['stub_fetch_study_metadata']" of harmonization on row: E-MTAB-77361
+2025-06-30 01:42:14 [DEBUG] etl.harmonize: ROW 0: finished harmonization → {'iri': 'E-MTAB-77361', 'title': 'Synthetic gut-brain experiment E-MTAB-77361', 'source_repo': 'ArrayExpress', 'publication_date': '2020-05-07', 'study_type': 'multiomic', 'num_samples': '5', 'contact_email': 'e-mtab-77361@example.org'}
+2025-06-30 01:42:14 [DEBUG] etl.harmonize: ROW 1: applying transform "['normalize_study_accession']" of harmonization on row: E-MTAB-41503
+2025-06-30 01:42:14 [DEBUG] etl.harmonize: ROW 1: applying transform "['stub_fetch_study_metadata']" of harmonization on row: E-MTAB-41503
+2025-06-30 01:42:14 [DEBUG] etl.harmonize: ROW 1: finished harmonization → {'iri': 'E-MTAB-41503', 'title': 'Synthetic gut-brain experiment E-MTAB-41503', 'source_repo': 'ArrayExpress', 'publication_date': '2013-10-27', 'study_type': 'multiomic', 'num_samples': '5', 'contact_email': 'e-mtab-41503@example.org'}
+2025-06-30 01:42:14 [DEBUG] etl.harmonize: ROW 2: applying transform "['normalize_study_accession']" of harmonization on row: E-MTAB-93598
+2025-06-30 01:42:14 [DEBUG] etl.harmonize: ROW 2: applying transform "['stub_fetch_study_metadata']" of harmonization on row: E-MTAB-93598
+2025-06-30 01:42:14 [DEBUG] etl.harmonize: ROW 2: finished harmonization → {'iri': 'E-MTAB-93598', 'title': 'Synthetic gut-brain experiment E-MTAB-93598', 'source_repo': 'NCBI GEO', 'publication_date': '2020-02-04', 'study_type': 'transcriptomic', 'num_samples': '5', 'contact_email': 'e-mtab-93598@example.org'}
+2025-06-30 01:42:14 [DEBUG] etl.harmonize: ROW 3: applying transform "['normalize_study_accession']" of harmonization on row: E-MTAB-63027
+2025-06-30 01:42:14 [DEBUG] etl.harmonize: ROW 3: applying transform "['stub_fetch_study_metadata']" of harmonization on row: E-MTAB-63027
+2025-06-30 01:42:14 [DEBUG] etl.harmonize: ROW 3: finished harmonization → {'iri': 'E-MTAB-63027', 'title': 'Synthetic gut-brain experiment E-MTAB-63027', 'source_repo': 'NCBI GEO', 'publication_date': '2022-09-23', 'study_type': 'multiomic', 'num_samples': '5', 'contact_email': 'e-mtab-63027@example.org'}
+2025-06-30 01:42:14 [DEBUG] etl.load: Queued 4 rows → Studies
+2025-06-30 01:42:14 [DEBUG] etl.load:  enqueue: putting batch of 4 rows → Studies
+	[{'iri': 'E-MTAB-77361', 'title': 'Synthetic gut-brain experiment E-MTAB-77361', 'source_repo': 'ArrayExpress', 'publication_date': '2020-05-07', 'study_type': 'multiomic', 'num_samples': '5', 'contact_email': 'e-mtab-77361@example.org'}, {'iri': 'E-MTAB-41503', 'title': 'Synthetic gut-brain experiment E-MTAB-41503', 'source_repo': 'ArrayExpress', 'publication_date': '2013-10-27', 'study_type': 'multiomic', 'num_samples': '5', 'contact_email': 'e-mtab-41503@example.org'}, {'iri': 'E-MTAB-93598', 'title': 'Synthetic gut-brain experiment E-MTAB-93598', 'source_repo': 'NCBI GEO', 'publication_date': '2020-02-04', 'study_type': 'transcriptomic', 'num_samples': '5', 'contact_email': 'e-mtab-93598@example.org'}, {'iri': 'E-MTAB-63027', 'title': 'Synthetic gut-brain experiment E-MTAB-63027', 'source_repo': 'NCBI GEO', 'publication_date': '2022-09-23', 'study_type': 'multiomic', 'num_samples': '5', 'contact_email': 'e-mtab-63027@example.org'}]
+2025-06-30 01:42:14 [DEBUG] __main__: Batch 10 (Studies): extract 4 rows → harmonize 0.61ms → enqueue 0.11ms
+2025-06-30 01:42:14 [INFO] etl.extract: ✅  Finished study_catalog.tsv
+2025-06-30 01:42:14 [INFO] etl.extract: ⏳  Extracting microbe_catalog.tsv → Microbes
+2025-06-30 01:42:14 [DEBUG] etl.extract: _read_file: opening /home/anr/apps/AlethiOmics/raw_data/synthetic_runs/20250630-014211/microbe_catalog.tsv for table Microbes
+2025-06-30 01:42:14 [DEBUG] etl.extract:   _read_file: starting new batch for microbe_catalog.tsv
+2025-06-30 01:42:14 [DEBUG] etl.extract:   _read_file: batch full (4 rows), yielding
+2025-06-30 01:42:14 [DEBUG] etl.extract:   yielding batch of 4 rows from microbe_catalog.tsv
+2025-06-30 01:42:14 [DEBUG] etl.harmonize: ROW 0: finished harmonization → {'taxon_iri': 'NCBITaxon_226186', 'strain_name': 'Bt-VPI5482', 'genome_size_bp': '4142527', 'oxygen_requirement': 'anaerobe', 'abundance_index': '9.5529', 'prevalence': '19', 'culture_collection': 'DSMZ:8307', 'genome_assembly_accession': 'GCF_1051635.5', 'habitat': 'oral cavity', 'optimal_growth_temp': '44.9', 'doubling_time': '0.38', 'metabolic_profile_iri': 'KEGG:map9805'}
+2025-06-30 01:42:14 [DEBUG] etl.harmonize: ROW 1: finished harmonization → {'taxon_iri': 'NCBITaxon_474186', 'strain_name': 'Ef-OG1RF', 'genome_size_bp': '4022332', 'oxygen_requirement': 'facultative', 'abundance_index': '76.9886', 'prevalence': '8', 'culture_collection': 'DSMZ:8978', 'genome_assembly_accession': 'GCF_4692385.6', 'habitat': 'skin', 'optimal_growth_temp': '44.8', 'doubling_time': '3.11', 'metabolic_profile_iri': 'KEGG:map9764'}
+2025-06-30 01:42:14 [DEBUG] etl.harmonize: ROW 2: finished harmonization → {'taxon_iri': 'NCBITaxon_83333', 'strain_name': 'Ecoli-K12', 'genome_size_bp': '3431489', 'oxygen_requirement': 'facultative', 'abundance_index': '87.7857', 'prevalence': '29', 'culture_collection': 'DSMZ:3692', 'genome_assembly_accession': 'GCF_7607074.1', 'habitat': 'soil', 'optimal_growth_temp': '41.0', 'doubling_time': '1.74', 'metabolic_profile_iri': 'KEGG:map9528'}
+2025-06-30 01:42:14 [DEBUG] etl.harmonize: ROW 3: finished harmonization → {'taxon_iri': 'NCBITaxon_568703', 'strain_name': 'LGG', 'genome_size_bp': '3055929', 'oxygen_requirement': 'anaerobe', 'abundance_index': '78.6356', 'prevalence': '57', 'culture_collection': 'DSMZ:8211', 'genome_assembly_accession': 'GCF_6206679.6', 'habitat': 'soil', 'optimal_growth_temp': '42.8', 'doubling_time': '0.91', 'metabolic_profile_iri': 'KEGG:map9047'}
+2025-06-30 01:42:14 [DEBUG] etl.load: Queued 4 rows → Microbes
+2025-06-30 01:42:14 [DEBUG] etl.load:  enqueue: putting batch of 4 rows → Microbes
+	[{'taxon_iri': 'NCBITaxon_226186', 'strain_name': 'Bt-VPI5482', 'genome_size_bp': '4142527', 'oxygen_requirement': 'anaerobe', 'abundance_index': '9.5529', 'prevalence': '19', 'culture_collection': 'DSMZ:8307', 'genome_assembly_accession': 'GCF_1051635.5', 'habitat': 'oral cavity', 'optimal_growth_temp': '44.9', 'doubling_time': '0.38', 'metabolic_profile_iri': 'KEGG:map9805'}, {'taxon_iri': 'NCBITaxon_474186', 'strain_name': 'Ef-OG1RF', 'genome_size_bp': '4022332', 'oxygen_requirement': 'facultative', 'abundance_index': '76.9886', 'prevalence': '8', 'culture_collection': 'DSMZ:8978', 'genome_assembly_accession': 'GCF_4692385.6', 'habitat': 'skin', 'optimal_growth_temp': '44.8', 'doubling_time': '3.11', 'metabolic_profile_iri': 'KEGG:map9764'}, {'taxon_iri': 'NCBITaxon_83333', 'strain_name': 'Ecoli-K12', 'genome_size_bp': '3431489', 'oxygen_requirement': 'facultative', 'abundance_index': '87.7857', 'prevalence': '29', 'culture_collection': 'DSMZ:3692', 'genome_assembly_accession': 'GCF_7607074.1', 'habitat': 'soil', 'optimal_growth_temp': '41.0', 'doubling_time': '1.74', 'metabolic_profile_iri': 'KEGG:map9528'}, {'taxon_iri': 'NCBITaxon_568703', 'strain_name': 'LGG', 'genome_size_bp': '3055929', 'oxygen_requirement': 'anaerobe', 'abundance_index': '78.6356', 'prevalence': '57', 'culture_collection': 'DSMZ:8211', 'genome_assembly_accession': 'GCF_6206679.6', 'habitat': 'soil', 'optimal_growth_temp': '42.8', 'doubling_time': '0.91', 'metabolic_profile_iri': 'KEGG:map9047'}]
+2025-06-30 01:42:14 [DEBUG] __main__: Batch 11 (Microbes): extract 4 rows → harmonize 0.33ms → enqueue 0.13ms
+2025-06-30 01:42:14 [DEBUG] etl.extract:   _read_file: starting new batch for microbe_catalog.tsv
+2025-06-30 01:42:14 [DEBUG] etl.extract:   _read_file: final batch (1 rows), yielding
+2025-06-30 01:42:14 [DEBUG] etl.extract:   yielding batch of 1 rows from microbe_catalog.tsv
+2025-06-30 01:42:14 [DEBUG] etl.harmonize: ROW 0: finished harmonization → {'taxon_iri': 'NCBITaxon_853', 'strain_name': 'Fp-A2-165', 'genome_size_bp': '3322315', 'oxygen_requirement': 'anaerobe', 'abundance_index': '70.2055', 'prevalence': '42', 'culture_collection': 'DSMZ:8022', 'genome_assembly_accession': 'GCF_6012661.5', 'habitat': 'oral cavity', 'optimal_growth_temp': '34.7', 'doubling_time': '2.07', 'metabolic_profile_iri': 'KEGG:map9045'}
+2025-06-30 01:42:14 [DEBUG] etl.load: Queued 1 rows → Microbes
+2025-06-30 01:42:14 [DEBUG] etl.load:  enqueue: putting batch of 1 rows → Microbes
+	[{'taxon_iri': 'NCBITaxon_853', 'strain_name': 'Fp-A2-165', 'genome_size_bp': '3322315', 'oxygen_requirement': 'anaerobe', 'abundance_index': '70.2055', 'prevalence': '42', 'culture_collection': 'DSMZ:8022', 'genome_assembly_accession': 'GCF_6012661.5', 'habitat': 'oral cavity', 'optimal_growth_temp': '34.7', 'doubling_time': '2.07', 'metabolic_profile_iri': 'KEGG:map9045'}]
+2025-06-30 01:42:14 [DEBUG] __main__: Batch 12 (Microbes): extract 1 rows → harmonize 0.10ms → enqueue 0.11ms
+2025-06-30 01:42:14 [INFO] etl.extract: ✅  Finished microbe_catalog.tsv
+2025-06-30 01:42:14 [INFO] etl.extract: ⏳  Extracting gene_catalog.tsv → Genes
+2025-06-30 01:42:14 [DEBUG] etl.extract: _read_file: opening /home/anr/apps/AlethiOmics/raw_data/synthetic_runs/20250630-014211/gene_catalog.tsv for table Genes
+2025-06-30 01:42:14 [DEBUG] etl.extract:   _read_file: starting new batch for gene_catalog.tsv
+2025-06-30 01:42:14 [DEBUG] etl.extract:   _read_file: batch full (4 rows), yielding
+2025-06-30 01:42:14 [DEBUG] etl.extract:   yielding batch of 4 rows from gene_catalog.tsv
+2025-06-30 01:42:14 [DEBUG] etl.harmonize: ROW 0: applying transform "['strip_version']" of harmonization on row: ENSG00000010761
+2025-06-30 01:42:14 [DEBUG] etl.harmonize: ROW 0: applying transform "['stub_fetch_gene_metadata']" of harmonization on row: ENSG00000010761
+2025-06-30 01:42:14 [DEBUG] etl.harmonize: ROW 0: finished harmonization → {'gene_accession': 'ENSG00000010761', 'gene_name': 'Gene0761', 'species_taxon_iri': 'NCBITaxon_9606', 'gene_length_bp': '3460', 'gc_content_pct': '39.24', 'pathway_iri': 'KEGG:hsa9572', 'go_terms': 'GO:9630881|GO:2850799|GO:6135344'}
+2025-06-30 01:42:14 [DEBUG] etl.harmonize: ROW 1: applying transform "['strip_version']" of harmonization on row: ENSG00000013250
+2025-06-30 01:42:14 [DEBUG] etl.harmonize: ROW 1: applying transform "['stub_fetch_gene_metadata']" of harmonization on row: ENSG00000013250
+2025-06-30 01:42:14 [DEBUG] etl.harmonize: ROW 1: finished harmonization → {'gene_accession': 'ENSG00000013250', 'gene_name': 'Gene3250', 'species_taxon_iri': 'NCBITaxon_9606', 'gene_length_bp': '80455', 'gc_content_pct': '36.21', 'pathway_iri': 'KEGG:hsa5616', 'go_terms': 'GO:9728567|GO:3020005|GO:6785372'}
+2025-06-30 01:42:14 [DEBUG] etl.harmonize: ROW 2: applying transform "['strip_version']" of harmonization on row: ENSG00000008766
+2025-06-30 01:42:14 [DEBUG] etl.harmonize: ROW 2: applying transform "['stub_fetch_gene_metadata']" of harmonization on row: ENSG00000008766
+2025-06-30 01:42:14 [DEBUG] etl.harmonize: ROW 2: finished harmonization → {'gene_accession': 'ENSG00000008766', 'gene_name': 'Gene8766', 'species_taxon_iri': 'NCBITaxon_9606', 'gene_length_bp': '177839', 'gc_content_pct': '49.05', 'pathway_iri': 'KEGG:hsa4178', 'go_terms': 'GO:4242883|GO:7348495|GO:6532783'}
+2025-06-30 01:42:14 [DEBUG] etl.harmonize: ROW 3: applying transform "['strip_version']" of harmonization on row: ENSG00000024815
+2025-06-30 01:42:14 [DEBUG] etl.harmonize: ROW 3: applying transform "['stub_fetch_gene_metadata']" of harmonization on row: ENSG00000024815
+2025-06-30 01:42:14 [DEBUG] etl.harmonize: ROW 3: finished harmonization → {'gene_accession': 'ENSG00000024815', 'gene_name': 'Gene4815', 'species_taxon_iri': 'NCBITaxon_9606', 'gene_length_bp': '159233', 'gc_content_pct': '48.89', 'pathway_iri': 'KEGG:hsa7871', 'go_terms': 'GO:2755968|GO:7112149|GO:6251898'}
+2025-06-30 01:42:14 [DEBUG] etl.load: Queued 4 rows → Genes
+2025-06-30 01:42:14 [DEBUG] etl.load:  enqueue: putting batch of 4 rows → Genes
+	[{'gene_accession': 'ENSG00000010761', 'gene_name': 'Gene0761', 'species_taxon_iri': 'NCBITaxon_9606', 'gene_length_bp': '3460', 'gc_content_pct': '39.24', 'pathway_iri': 'KEGG:hsa9572', 'go_terms': 'GO:9630881|GO:2850799|GO:6135344'}, {'gene_accession': 'ENSG00000013250', 'gene_name': 'Gene3250', 'species_taxon_iri': 'NCBITaxon_9606', 'gene_length_bp': '80455', 'gc_content_pct': '36.21', 'pathway_iri': 'KEGG:hsa5616', 'go_terms': 'GO:9728567|GO:3020005|GO:6785372'}, {'gene_accession': 'ENSG00000008766', 'gene_name': 'Gene8766', 'species_taxon_iri': 'NCBITaxon_9606', 'gene_length_bp': '177839', 'gc_content_pct': '49.05', 'pathway_iri': 'KEGG:hsa4178', 'go_terms': 'GO:4242883|GO:7348495|GO:6532783'}, {'gene_accession': 'ENSG00000024815', 'gene_name': 'Gene4815', 'species_taxon_iri': 'NCBITaxon_9606', 'gene_length_bp': '159233', 'gc_content_pct': '48.89', 'pathway_iri': 'KEGG:hsa7871', 'go_terms': 'GO:2755968|GO:7112149|GO:6251898'}]
+2025-06-30 01:42:14 [DEBUG] __main__: Batch 13 (Genes): extract 4 rows → harmonize 0.62ms → enqueue 0.12ms
+2025-06-30 01:42:14 [DEBUG] etl.extract:   _read_file: starting new batch for gene_catalog.tsv
+2025-06-30 01:42:14 [DEBUG] etl.extract:   _read_file: batch full (4 rows), yielding
+2025-06-30 01:42:14 [DEBUG] etl.extract:   yielding batch of 4 rows from gene_catalog.tsv
+2025-06-30 01:42:14 [DEBUG] etl.harmonize: ROW 0: applying transform "['strip_version']" of harmonization on row: ENSG00000019237
+2025-06-30 01:42:14 [DEBUG] etl.harmonize: ROW 0: applying transform "['stub_fetch_gene_metadata']" of harmonization on row: ENSG00000019237
+2025-06-30 01:42:14 [DEBUG] etl.harmonize: ROW 0: finished harmonization → {'gene_accession': 'ENSG00000019237', 'gene_name': 'Gene9237', 'species_taxon_iri': 'NCBITaxon_9606', 'gene_length_bp': '20521', 'gc_content_pct': '53.14', 'pathway_iri': 'KEGG:hsa4798', 'go_terms': 'GO:4252188|GO:1925759|GO:6945673'}
+2025-06-30 01:42:14 [DEBUG] etl.harmonize: ROW 1: applying transform "['strip_version']" of harmonization on row: ENSG00000019486
+2025-06-30 01:42:14 [DEBUG] etl.harmonize: ROW 1: applying transform "['stub_fetch_gene_metadata']" of harmonization on row: ENSG00000019486
+2025-06-30 01:42:14 [DEBUG] etl.harmonize: ROW 1: finished harmonization → {'gene_accession': 'ENSG00000019486', 'gene_name': 'Gene9486', 'species_taxon_iri': 'NCBITaxon_9606', 'gene_length_bp': '30414', 'gc_content_pct': '40.9', 'pathway_iri': 'KEGG:hsa7108', 'go_terms': 'GO:2248204|GO:3599420|GO:2803173'}
+2025-06-30 01:42:14 [DEBUG] etl.harmonize: ROW 2: applying transform "['strip_version']" of harmonization on row: ENSG00000010602
+2025-06-30 01:42:14 [DEBUG] etl.harmonize: ROW 2: applying transform "['stub_fetch_gene_metadata']" of harmonization on row: ENSG00000010602
+2025-06-30 01:42:14 [DEBUG] etl.harmonize: ROW 2: finished harmonization → {'gene_accession': 'ENSG00000010602', 'gene_name': 'Gene0602', 'species_taxon_iri': 'NCBITaxon_9606', 'gene_length_bp': '187833', 'gc_content_pct': '43.06', 'pathway_iri': 'KEGG:hsa8675', 'go_terms': 'GO:6980431|GO:6171429|GO:6555935'}
+2025-06-30 01:42:14 [DEBUG] etl.harmonize: ROW 3: applying transform "['strip_version']" of harmonization on row: ENSG00000005698
+2025-06-30 01:42:14 [DEBUG] etl.harmonize: ROW 3: applying transform "['stub_fetch_gene_metadata']" of harmonization on row: ENSG00000005698
+2025-06-30 01:42:14 [DEBUG] etl.harmonize: ROW 3: finished harmonization → {'gene_accession': 'ENSG00000005698', 'gene_name': 'Gene5698', 'species_taxon_iri': 'NCBITaxon_9606', 'gene_length_bp': '106495', 'gc_content_pct': '38.95', 'pathway_iri': 'KEGG:hsa2552', 'go_terms': 'GO:2015440|GO:8167063|GO:9122343'}
+2025-06-30 01:42:14 [DEBUG] etl.load: Queued 4 rows → Genes
+2025-06-30 01:42:14 [DEBUG] etl.load:  enqueue: putting batch of 4 rows → Genes
+	[{'gene_accession': 'ENSG00000019237', 'gene_name': 'Gene9237', 'species_taxon_iri': 'NCBITaxon_9606', 'gene_length_bp': '20521', 'gc_content_pct': '53.14', 'pathway_iri': 'KEGG:hsa4798', 'go_terms': 'GO:4252188|GO:1925759|GO:6945673'}, {'gene_accession': 'ENSG00000019486', 'gene_name': 'Gene9486', 'species_taxon_iri': 'NCBITaxon_9606', 'gene_length_bp': '30414', 'gc_content_pct': '40.9', 'pathway_iri': 'KEGG:hsa7108', 'go_terms': 'GO:2248204|GO:3599420|GO:2803173'}, {'gene_accession': 'ENSG00000010602', 'gene_name': 'Gene0602', 'species_taxon_iri': 'NCBITaxon_9606', 'gene_length_bp': '187833', 'gc_content_pct': '43.06', 'pathway_iri': 'KEGG:hsa8675', 'go_terms': 'GO:6980431|GO:6171429|GO:6555935'}, {'gene_accession': 'ENSG00000005698', 'gene_name': 'Gene5698', 'species_taxon_iri': 'NCBITaxon_9606', 'gene_length_bp': '106495', 'gc_content_pct': '38.95', 'pathway_iri': 'KEGG:hsa2552', 'go_terms': 'GO:2015440|GO:8167063|GO:9122343'}]
+2025-06-30 01:42:14 [DEBUG] __main__: Batch 14 (Genes): extract 4 rows → harmonize 0.65ms → enqueue 0.13ms
+2025-06-30 01:42:14 [DEBUG] etl.extract:   _read_file: starting new batch for gene_catalog.tsv
+2025-06-30 01:42:14 [DEBUG] etl.extract:   _read_file: final batch (2 rows), yielding
+2025-06-30 01:42:14 [DEBUG] etl.extract:   yielding batch of 2 rows from gene_catalog.tsv
+2025-06-30 01:42:14 [DEBUG] etl.harmonize: ROW 0: applying transform "['strip_version']" of harmonization on row: ENSG00000027028
+2025-06-30 01:42:14 [DEBUG] etl.harmonize: ROW 0: applying transform "['stub_fetch_gene_metadata']" of harmonization on row: ENSG00000027028
+2025-06-30 01:42:14 [DEBUG] etl.harmonize: ROW 0: finished harmonization → {'gene_accession': 'ENSG00000027028', 'gene_name': 'Gene7028', 'species_taxon_iri': 'NCBITaxon_9606', 'gene_length_bp': '141829', 'gc_content_pct': '63.59', 'pathway_iri': 'KEGG:hsa1851', 'go_terms': 'GO:2130176|GO:8034718|GO:2871899'}
+2025-06-30 01:42:14 [DEBUG] etl.harmonize: ROW 1: applying transform "['strip_version']" of harmonization on row: ENSG00000002523
+2025-06-30 01:42:14 [DEBUG] etl.harmonize: ROW 1: applying transform "['stub_fetch_gene_metadata']" of harmonization on row: ENSG00000002523
+2025-06-30 01:42:14 [DEBUG] etl.harmonize: ROW 1: finished harmonization → {'gene_accession': 'ENSG00000002523', 'gene_name': 'Gene2523', 'species_taxon_iri': 'NCBITaxon_9606', 'gene_length_bp': '164479', 'gc_content_pct': '55.34', 'pathway_iri': 'KEGG:hsa6401', 'go_terms': 'GO:8114285|GO:5297501|GO:9789294'}
+2025-06-30 01:42:14 [DEBUG] etl.load: Queued 2 rows → Genes
+2025-06-30 01:42:14 [DEBUG] etl.load:  enqueue: putting batch of 2 rows → Genes
+	[{'gene_accession': 'ENSG00000027028', 'gene_name': 'Gene7028', 'species_taxon_iri': 'NCBITaxon_9606', 'gene_length_bp': '141829', 'gc_content_pct': '63.59', 'pathway_iri': 'KEGG:hsa1851', 'go_terms': 'GO:2130176|GO:8034718|GO:2871899'}, {'gene_accession': 'ENSG00000002523', 'gene_name': 'Gene2523', 'species_taxon_iri': 'NCBITaxon_9606', 'gene_length_bp': '164479', 'gc_content_pct': '55.34', 'pathway_iri': 'KEGG:hsa6401', 'go_terms': 'GO:8114285|GO:5297501|GO:9789294'}]
+2025-06-30 01:42:14 [DEBUG] __main__: Batch 15 (Genes): extract 2 rows → harmonize 0.35ms → enqueue 0.11ms
+2025-06-30 01:42:14 [INFO] etl.extract: ✅  Finished gene_catalog.tsv
+2025-06-30 01:42:14 [INFO] etl.extract: ⏳  Extracting experiment_E-MTAB-41503.tsv → Samples
+2025-06-30 01:42:14 [DEBUG] etl.extract: _read_file: opening /home/anr/apps/AlethiOmics/raw_data/synthetic_runs/20250630-014211/experiment_E-MTAB-41503.tsv for table Samples
+2025-06-30 01:42:14 [DEBUG] etl.extract:   _read_file: starting new batch for experiment_E-MTAB-41503.tsv
+2025-06-30 01:42:14 [DEBUG] etl.extract:   _read_file: batch full (4 rows), yielding
+2025-06-30 01:42:14 [DEBUG] etl.extract:   yielding batch of 4 rows from experiment_E-MTAB-41503.tsv
+2025-06-30 01:42:14 [DEBUG] etl.harmonize: ROW 0: applying transform "['extract_sample_id']" of harmonization on row: SAMPMNLEZXBN
+2025-06-30 01:42:14 [DEBUG] etl.harmonize: ROW 0: applying transform "['stub_fetch_sample_metadata']" of harmonization on row: SAMPMNLEZXBN
+2025-06-30 01:42:14 [DEBUG] etl.harmonize: ROW 0: finished harmonization → {'iri': 'SAMPMNLEZXBN', 'study_iri': 'E-MTAB-41503', 'cell_type_iri': 'CL_0001050', 'tissue_iri': 'UBERON_0001155', 'organism_iri': 'NCBITaxon_9606', 'growth_condition': 'co-culture', 'raw_counts_uri': '/home/anr/apps/AlethiOmics/raw_data/synthetic_runs/20250630-014211/SAMPMNLEZXBN_raw_counts.tsv', 'collection_date': '2013-11-02', 'donor_age_years': '61', 'replicate_number': '3', 'viability_pct': '94.85', 'rin_score': '7.985'}
+2025-06-30 01:42:14 [DEBUG] etl.harmonize: ROW 1: applying transform "['extract_sample_id']" of harmonization on row: SAMP6IBXCDSD
+2025-06-30 01:42:14 [DEBUG] etl.harmonize: ROW 1: applying transform "['stub_fetch_sample_metadata']" of harmonization on row: SAMP6IBXCDSD
+2025-06-30 01:42:14 [DEBUG] etl.harmonize: ROW 1: finished harmonization → {'iri': 'SAMP6IBXCDSD', 'study_iri': 'E-MTAB-41503', 'cell_type_iri': 'CL_0000679', 'tissue_iri': 'UBERON_0000955', 'organism_iri': 'NCBITaxon_9606', 'growth_condition': 'monoculture', 'raw_counts_uri': '/home/anr/apps/AlethiOmics/raw_data/synthetic_runs/20250630-014211/SAMP6IBXCDSD_raw_counts.tsv', 'collection_date': '2013-11-10', 'donor_age_years': '54', 'replicate_number': '3', 'viability_pct': '87.35', 'rin_score': '7.469'}
+2025-06-30 01:42:14 [DEBUG] etl.harmonize: ROW 2: applying transform "['extract_sample_id']" of harmonization on row: SAMPEJZ401N0
+2025-06-30 01:42:14 [DEBUG] etl.harmonize: ROW 2: applying transform "['stub_fetch_sample_metadata']" of harmonization on row: SAMPEJZ401N0
+2025-06-30 01:42:14 [DEBUG] etl.harmonize: ROW 2: finished harmonization → {'iri': 'SAMPEJZ401N0', 'study_iri': 'E-MTAB-41503', 'cell_type_iri': 'CL_0002608', 'tissue_iri': 'UBERON_0000955', 'organism_iri': 'NCBITaxon_9606', 'growth_condition': 'monoculture', 'raw_counts_uri': '/home/anr/apps/AlethiOmics/raw_data/synthetic_runs/20250630-014211/SAMPEJZ401N0_raw_counts.tsv', 'collection_date': '2013-11-02', 'donor_age_years': '44', 'replicate_number': '2', 'viability_pct': '76.97', 'rin_score': '9.145'}
+2025-06-30 01:42:14 [DEBUG] etl.harmonize: ROW 3: applying transform "['extract_sample_id']" of harmonization on row: SAMPZ8JGTF0G
+2025-06-30 01:42:14 [DEBUG] etl.harmonize: ROW 3: applying transform "['stub_fetch_sample_metadata']" of harmonization on row: SAMPZ8JGTF0G
+2025-06-30 01:42:14 [DEBUG] etl.harmonize: ROW 3: finished harmonization → {'iri': 'SAMPZ8JGTF0G', 'study_iri': 'E-MTAB-41503', 'cell_type_iri': 'CL_0000091', 'tissue_iri': 'UBERON_0000955', 'organism_iri': 'NCBITaxon_9606', 'growth_condition': 'co-culture', 'raw_counts_uri': '/home/anr/apps/AlethiOmics/raw_data/synthetic_runs/20250630-014211/SAMPZ8JGTF0G_raw_counts.tsv', 'collection_date': '2013-11-02', 'donor_age_years': '30', 'replicate_number': '2', 'viability_pct': '83.32', 'rin_score': '9.097'}
+2025-06-30 01:42:14 [DEBUG] etl.load: Queued 4 rows → Samples
+2025-06-30 01:42:14 [DEBUG] etl.load:  enqueue: putting batch of 4 rows → Samples
+	[{'iri': 'SAMPMNLEZXBN', 'study_iri': 'E-MTAB-41503', 'cell_type_iri': 'CL_0001050', 'tissue_iri': 'UBERON_0001155', 'organism_iri': 'NCBITaxon_9606', 'growth_condition': 'co-culture', 'raw_counts_uri': '/home/anr/apps/AlethiOmics/raw_data/synthetic_runs/20250630-014211/SAMPMNLEZXBN_raw_counts.tsv', 'collection_date': '2013-11-02', 'donor_age_years': '61', 'replicate_number': '3', 'viability_pct': '94.85', 'rin_score': '7.985'}, {'iri': 'SAMP6IBXCDSD', 'study_iri': 'E-MTAB-41503', 'cell_type_iri': 'CL_0000679', 'tissue_iri': 'UBERON_0000955', 'organism_iri': 'NCBITaxon_9606', 'growth_condition': 'monoculture', 'raw_counts_uri': '/home/anr/apps/AlethiOmics/raw_data/synthetic_runs/20250630-014211/SAMP6IBXCDSD_raw_counts.tsv', 'collection_date': '2013-11-10', 'donor_age_years': '54', 'replicate_number': '3', 'viability_pct': '87.35', 'rin_score': '7.469'}, {'iri': 'SAMPEJZ401N0', 'study_iri': 'E-MTAB-41503', 'cell_type_iri': 'CL_0002608', 'tissue_iri': 'UBERON_0000955', 'organism_iri': 'NCBITaxon_9606', 'growth_condition': 'monoculture', 'raw_counts_uri': '/home/anr/apps/AlethiOmics/raw_data/synthetic_runs/20250630-014211/SAMPEJZ401N0_raw_counts.tsv', 'collection_date': '2013-11-02', 'donor_age_years': '44', 'replicate_number': '2', 'viability_pct': '76.97', 'rin_score': '9.145'}, {'iri': 'SAMPZ8JGTF0G', 'study_iri': 'E-MTAB-41503', 'cell_type_iri': 'CL_0000091', 'tissue_iri': 'UBERON_0000955', 'organism_iri': 'NCBITaxon_9606', 'growth_condition': 'co-culture', 'raw_counts_uri': '/home/anr/apps/AlethiOmics/raw_data/synthetic_runs/20250630-014211/SAMPZ8JGTF0G_raw_counts.tsv', 'collection_date': '2013-11-02', 'donor_age_years': '30', 'replicate_number': '2', 'viability_pct': '83.32', 'rin_score': '9.097'}]
+2025-06-30 01:42:14 [DEBUG] __main__: Batch 16 (Samples): extract 4 rows → harmonize 0.74ms → enqueue 0.11ms
+2025-06-30 01:42:14 [INFO] etl.extract: ✅  Finished experiment_E-MTAB-41503.tsv
+2025-06-30 01:42:14 [INFO] etl.extract: ⏳  Extracting experiment_E-MTAB-63027.tsv → Samples
+2025-06-30 01:42:14 [DEBUG] etl.extract: _read_file: opening /home/anr/apps/AlethiOmics/raw_data/synthetic_runs/20250630-014211/experiment_E-MTAB-63027.tsv for table Samples
+2025-06-30 01:42:14 [DEBUG] etl.extract:   _read_file: starting new batch for experiment_E-MTAB-63027.tsv
+2025-06-30 01:42:14 [DEBUG] etl.extract:   _read_file: batch full (4 rows), yielding
+2025-06-30 01:42:14 [DEBUG] etl.extract:   yielding batch of 4 rows from experiment_E-MTAB-63027.tsv
+2025-06-30 01:42:14 [DEBUG] etl.harmonize: ROW 0: applying transform "['extract_sample_id']" of harmonization on row: SAMP8GA56S7T
+2025-06-30 01:42:14 [DEBUG] etl.harmonize: ROW 0: applying transform "['stub_fetch_sample_metadata']" of harmonization on row: SAMP8GA56S7T
+2025-06-30 01:42:14 [DEBUG] etl.harmonize: ROW 0: finished harmonization → {'iri': 'SAMP8GA56S7T', 'study_iri': 'E-MTAB-63027', 'cell_type_iri': 'CL_0000679', 'tissue_iri': 'UBERON_0002108', 'organism_iri': 'NCBITaxon_9606', 'growth_condition': 'monoculture', 'raw_counts_uri': '/home/anr/apps/AlethiOmics/raw_data/synthetic_runs/20250630-014211/SAMP8GA56S7T_raw_counts.tsv', 'collection_date': '2022-09-30', 'donor_age_years': '35', 'replicate_number': '2', 'viability_pct': '82.74', 'rin_score': '7.719'}
+2025-06-30 01:42:14 [DEBUG] etl.harmonize: ROW 1: applying transform "['extract_sample_id']" of harmonization on row: SAMPMUB2EGYI
+2025-06-30 01:42:14 [DEBUG] etl.harmonize: ROW 1: applying transform "['stub_fetch_sample_metadata']" of harmonization on row: SAMPMUB2EGYI
+2025-06-30 01:42:14 [DEBUG] etl.harmonize: ROW 1: finished harmonization → {'iri': 'SAMPMUB2EGYI', 'study_iri': 'E-MTAB-63027', 'cell_type_iri': 'CL_0000679', 'tissue_iri': 'UBERON_0000955', 'organism_iri': 'NCBITaxon_9606', 'growth_condition': 'co-culture', 'raw_counts_uri': '/home/anr/apps/AlethiOmics/raw_data/synthetic_runs/20250630-014211/SAMPMUB2EGYI_raw_counts.tsv', 'collection_date': '2022-09-28', 'donor_age_years': '63', 'replicate_number': '3', 'viability_pct': '80.21', 'rin_score': '9.083'}
+2025-06-30 01:42:14 [DEBUG] etl.harmonize: ROW 2: applying transform "['extract_sample_id']" of harmonization on row: SAMPYK7ZPR72
+2025-06-30 01:42:14 [DEBUG] etl.harmonize: ROW 2: applying transform "['stub_fetch_sample_metadata']" of harmonization on row: SAMPYK7ZPR72
+2025-06-30 01:42:14 [DEBUG] etl.harmonize: ROW 2: finished harmonization → {'iri': 'SAMPYK7ZPR72', 'study_iri': 'E-MTAB-63027', 'cell_type_iri': 'CL_0000679', 'tissue_iri': 'UBERON_0000955', 'organism_iri': 'NCBITaxon_9606', 'growth_condition': 'monoculture', 'raw_counts_uri': '/home/anr/apps/AlethiOmics/raw_data/synthetic_runs/20250630-014211/SAMPYK7ZPR72_raw_counts.tsv', 'collection_date': '2022-09-30', 'donor_age_years': '28', 'replicate_number': '1', 'viability_pct': '81.35', 'rin_score': '9.268'}
+2025-06-30 01:42:14 [DEBUG] etl.harmonize: ROW 3: applying transform "['extract_sample_id']" of harmonization on row: SAMPJKSX4P8H
+2025-06-30 01:42:14 [DEBUG] etl.harmonize: ROW 3: applying transform "['stub_fetch_sample_metadata']" of harmonization on row: SAMPJKSX4P8H
+2025-06-30 01:42:14 [DEBUG] etl.harmonize: ROW 3: finished harmonization → {'iri': 'SAMPJKSX4P8H', 'study_iri': 'E-MTAB-63027', 'cell_type_iri': 'CL_0000540', 'tissue_iri': 'UBERON_0000955', 'organism_iri': 'NCBITaxon_9606', 'growth_condition': 'co-culture', 'raw_counts_uri': '/home/anr/apps/AlethiOmics/raw_data/synthetic_runs/20250630-014211/SAMPJKSX4P8H_raw_counts.tsv', 'collection_date': '2022-09-27', 'donor_age_years': '54', 'replicate_number': '2', 'viability_pct': '77.73', 'rin_score': '9.284'}
+2025-06-30 01:42:14 [DEBUG] etl.load: Queued 4 rows → Samples
+2025-06-30 01:42:14 [DEBUG] etl.load:  enqueue: putting batch of 4 rows → Samples
+	[{'iri': 'SAMP8GA56S7T', 'study_iri': 'E-MTAB-63027', 'cell_type_iri': 'CL_0000679', 'tissue_iri': 'UBERON_0002108', 'organism_iri': 'NCBITaxon_9606', 'growth_condition': 'monoculture', 'raw_counts_uri': '/home/anr/apps/AlethiOmics/raw_data/synthetic_runs/20250630-014211/SAMP8GA56S7T_raw_counts.tsv', 'collection_date': '2022-09-30', 'donor_age_years': '35', 'replicate_number': '2', 'viability_pct': '82.74', 'rin_score': '7.719'}, {'iri': 'SAMPMUB2EGYI', 'study_iri': 'E-MTAB-63027', 'cell_type_iri': 'CL_0000679', 'tissue_iri': 'UBERON_0000955', 'organism_iri': 'NCBITaxon_9606', 'growth_condition': 'co-culture', 'raw_counts_uri': '/home/anr/apps/AlethiOmics/raw_data/synthetic_runs/20250630-014211/SAMPMUB2EGYI_raw_counts.tsv', 'collection_date': '2022-09-28', 'donor_age_years': '63', 'replicate_number': '3', 'viability_pct': '80.21', 'rin_score': '9.083'}, {'iri': 'SAMPYK7ZPR72', 'study_iri': 'E-MTAB-63027', 'cell_type_iri': 'CL_0000679', 'tissue_iri': 'UBERON_0000955', 'organism_iri': 'NCBITaxon_9606', 'growth_condition': 'monoculture', 'raw_counts_uri': '/home/anr/apps/AlethiOmics/raw_data/synthetic_runs/20250630-014211/SAMPYK7ZPR72_raw_counts.tsv', 'collection_date': '2022-09-30', 'donor_age_years': '28', 'replicate_number': '1', 'viability_pct': '81.35', 'rin_score': '9.268'}, {'iri': 'SAMPJKSX4P8H', 'study_iri': 'E-MTAB-63027', 'cell_type_iri': 'CL_0000540', 'tissue_iri': 'UBERON_0000955', 'organism_iri': 'NCBITaxon_9606', 'growth_condition': 'co-culture', 'raw_counts_uri': '/home/anr/apps/AlethiOmics/raw_data/synthetic_runs/20250630-014211/SAMPJKSX4P8H_raw_counts.tsv', 'collection_date': '2022-09-27', 'donor_age_years': '54', 'replicate_number': '2', 'viability_pct': '77.73', 'rin_score': '9.284'}]
+2025-06-30 01:42:14 [DEBUG] __main__: Batch 17 (Samples): extract 4 rows → harmonize 0.47ms → enqueue 0.11ms
+2025-06-30 01:42:14 [INFO] etl.extract: ✅  Finished experiment_E-MTAB-63027.tsv
+2025-06-30 01:42:14 [INFO] etl.extract: ⏳  Extracting experiment_E-MTAB-84764.tsv → Samples
+2025-06-30 01:42:14 [DEBUG] etl.extract: _read_file: opening /home/anr/apps/AlethiOmics/raw_data/synthetic_runs/20250630-014211/experiment_E-MTAB-84764.tsv for table Samples
+2025-06-30 01:42:14 [DEBUG] etl.extract:   _read_file: starting new batch for experiment_E-MTAB-84764.tsv
+2025-06-30 01:42:14 [DEBUG] etl.extract:   _read_file: batch full (4 rows), yielding
+2025-06-30 01:42:14 [DEBUG] etl.extract:   yielding batch of 4 rows from experiment_E-MTAB-84764.tsv
+2025-06-30 01:42:14 [DEBUG] etl.harmonize: ROW 0: applying transform "['extract_sample_id']" of harmonization on row: SAMPC4LVSZFP
+2025-06-30 01:42:14 [DEBUG] etl.harmonize: ROW 0: applying transform "['stub_fetch_sample_metadata']" of harmonization on row: SAMPC4LVSZFP
+2025-06-30 01:42:14 [DEBUG] etl.harmonize: ROW 0: finished harmonization → {'iri': 'SAMPC4LVSZFP', 'study_iri': 'E-MTAB-84764', 'cell_type_iri': 'CL_0002608', 'tissue_iri': 'UBERON_0001155', 'organism_iri': 'NCBITaxon_9606', 'growth_condition': 'monoculture', 'raw_counts_uri': '/home/anr/apps/AlethiOmics/raw_data/synthetic_runs/20250630-014211/SAMPC4LVSZFP_raw_counts.tsv', 'collection_date': '2020-12-02', 'donor_age_years': '28', 'replicate_number': '1', 'viability_pct': '85.63', 'rin_score': '9.992'}
+2025-06-30 01:42:14 [DEBUG] etl.harmonize: ROW 1: applying transform "['extract_sample_id']" of harmonization on row: SAMPKMK28BS8
+2025-06-30 01:42:14 [DEBUG] etl.harmonize: ROW 1: applying transform "['stub_fetch_sample_metadata']" of harmonization on row: SAMPKMK28BS8
+2025-06-30 01:42:14 [DEBUG] etl.harmonize: ROW 1: finished harmonization → {'iri': 'SAMPKMK28BS8', 'study_iri': 'E-MTAB-84764', 'cell_type_iri': 'CL_0002608', 'tissue_iri': 'UBERON_0002108', 'organism_iri': 'NCBITaxon_9606', 'growth_condition': 'co-culture', 'raw_counts_uri': '/home/anr/apps/AlethiOmics/raw_data/synthetic_runs/20250630-014211/SAMPKMK28BS8_raw_counts.tsv', 'collection_date': '2020-12-07', 'donor_age_years': '39', 'replicate_number': '2', 'viability_pct': '88.87', 'rin_score': '8.944'}
+2025-06-30 01:42:14 [DEBUG] etl.harmonize: ROW 2: applying transform "['extract_sample_id']" of harmonization on row: SAMPODTA2VLD
+2025-06-30 01:42:14 [DEBUG] etl.harmonize: ROW 2: applying transform "['stub_fetch_sample_metadata']" of harmonization on row: SAMPODTA2VLD
+2025-06-30 01:42:14 [DEBUG] etl.harmonize: ROW 2: finished harmonization → {'iri': 'SAMPODTA2VLD', 'study_iri': 'E-MTAB-84764', 'cell_type_iri': 'CL_0000679', 'tissue_iri': 'UBERON_0000955', 'organism_iri': 'NCBITaxon_9606', 'growth_condition': 'monoculture', 'raw_counts_uri': '/home/anr/apps/AlethiOmics/raw_data/synthetic_runs/20250630-014211/SAMPODTA2VLD_raw_counts.tsv', 'collection_date': '2020-12-07', 'donor_age_years': '64', 'replicate_number': '2', 'viability_pct': '81.15', 'rin_score': '9.893'}
+2025-06-30 01:42:14 [DEBUG] etl.harmonize: ROW 3: applying transform "['extract_sample_id']" of harmonization on row: SAMP6OZBCHP6
+2025-06-30 01:42:14 [DEBUG] etl.harmonize: ROW 3: applying transform "['stub_fetch_sample_metadata']" of harmonization on row: SAMP6OZBCHP6
+2025-06-30 01:42:14 [DEBUG] etl.harmonize: ROW 3: finished harmonization → {'iri': 'SAMP6OZBCHP6', 'study_iri': 'E-MTAB-84764', 'cell_type_iri': 'CL_0000540', 'tissue_iri': 'UBERON_0001155', 'organism_iri': 'NCBITaxon_9606', 'growth_condition': 'co-culture', 'raw_counts_uri': '/home/anr/apps/AlethiOmics/raw_data/synthetic_runs/20250630-014211/SAMP6OZBCHP6_raw_counts.tsv', 'collection_date': '2020-12-07', 'donor_age_years': '23', 'replicate_number': '3', 'viability_pct': '72.74', 'rin_score': '8.718'}
+2025-06-30 01:42:14 [DEBUG] etl.load: Queued 4 rows → Samples
+2025-06-30 01:42:14 [DEBUG] etl.load:  enqueue: putting batch of 4 rows → Samples
+	[{'iri': 'SAMPC4LVSZFP', 'study_iri': 'E-MTAB-84764', 'cell_type_iri': 'CL_0002608', 'tissue_iri': 'UBERON_0001155', 'organism_iri': 'NCBITaxon_9606', 'growth_condition': 'monoculture', 'raw_counts_uri': '/home/anr/apps/AlethiOmics/raw_data/synthetic_runs/20250630-014211/SAMPC4LVSZFP_raw_counts.tsv', 'collection_date': '2020-12-02', 'donor_age_years': '28', 'replicate_number': '1', 'viability_pct': '85.63', 'rin_score': '9.992'}, {'iri': 'SAMPKMK28BS8', 'study_iri': 'E-MTAB-84764', 'cell_type_iri': 'CL_0002608', 'tissue_iri': 'UBERON_0002108', 'organism_iri': 'NCBITaxon_9606', 'growth_condition': 'co-culture', 'raw_counts_uri': '/home/anr/apps/AlethiOmics/raw_data/synthetic_runs/20250630-014211/SAMPKMK28BS8_raw_counts.tsv', 'collection_date': '2020-12-07', 'donor_age_years': '39', 'replicate_number': '2', 'viability_pct': '88.87', 'rin_score': '8.944'}, {'iri': 'SAMPODTA2VLD', 'study_iri': 'E-MTAB-84764', 'cell_type_iri': 'CL_0000679', 'tissue_iri': 'UBERON_0000955', 'organism_iri': 'NCBITaxon_9606', 'growth_condition': 'monoculture', 'raw_counts_uri': '/home/anr/apps/AlethiOmics/raw_data/synthetic_runs/20250630-014211/SAMPODTA2VLD_raw_counts.tsv', 'collection_date': '2020-12-07', 'donor_age_years': '64', 'replicate_number': '2', 'viability_pct': '81.15', 'rin_score': '9.893'}, {'iri': 'SAMP6OZBCHP6', 'study_iri': 'E-MTAB-84764', 'cell_type_iri': 'CL_0000540', 'tissue_iri': 'UBERON_0001155', 'organism_iri': 'NCBITaxon_9606', 'growth_condition': 'co-culture', 'raw_counts_uri': '/home/anr/apps/AlethiOmics/raw_data/synthetic_runs/20250630-014211/SAMP6OZBCHP6_raw_counts.tsv', 'collection_date': '2020-12-07', 'donor_age_years': '23', 'replicate_number': '3', 'viability_pct': '72.74', 'rin_score': '8.718'}]
+2025-06-30 01:42:14 [DEBUG] __main__: Batch 18 (Samples): extract 4 rows → harmonize 0.79ms → enqueue 0.14ms
+2025-06-30 01:42:14 [INFO] etl.extract: ✅  Finished experiment_E-MTAB-84764.tsv
+2025-06-30 01:42:14 [INFO] etl.extract: ⏳  Extracting experiment_E-MTAB-93598.tsv → Samples
+2025-06-30 01:42:14 [DEBUG] etl.extract: _read_file: opening /home/anr/apps/AlethiOmics/raw_data/synthetic_runs/20250630-014211/experiment_E-MTAB-93598.tsv for table Samples
+2025-06-30 01:42:14 [DEBUG] etl.extract:   _read_file: starting new batch for experiment_E-MTAB-93598.tsv
+2025-06-30 01:42:14 [DEBUG] etl.extract:   _read_file: batch full (4 rows), yielding
+2025-06-30 01:42:14 [DEBUG] etl.extract:   yielding batch of 4 rows from experiment_E-MTAB-93598.tsv
+2025-06-30 01:42:14 [DEBUG] etl.harmonize: ROW 0: applying transform "['extract_sample_id']" of harmonization on row: SAMP2HHKTPHF
+2025-06-30 01:42:14 [DEBUG] etl.harmonize: ROW 0: applying transform "['stub_fetch_sample_metadata']" of harmonization on row: SAMP2HHKTPHF
+2025-06-30 01:42:14 [DEBUG] etl.harmonize: ROW 0: finished harmonization → {'iri': 'SAMP2HHKTPHF', 'study_iri': 'E-MTAB-93598', 'cell_type_iri': 'CL_0002608', 'tissue_iri': 'UBERON_0002108', 'organism_iri': 'NCBITaxon_9606', 'growth_condition': 'co-culture', 'raw_counts_uri': '/home/anr/apps/AlethiOmics/raw_data/synthetic_runs/20250630-014211/SAMP2HHKTPHF_raw_counts.tsv', 'collection_date': '2020-02-14', 'donor_age_years': '39', 'replicate_number': '2', 'viability_pct': '71.07', 'rin_score': '7.908'}
+2025-06-30 01:42:14 [DEBUG] etl.harmonize: ROW 1: applying transform "['extract_sample_id']" of harmonization on row: SAMP9IA2G04X
+2025-06-30 01:42:14 [DEBUG] etl.harmonize: ROW 1: applying transform "['stub_fetch_sample_metadata']" of harmonization on row: SAMP9IA2G04X
+2025-06-30 01:42:14 [DEBUG] etl.harmonize: ROW 1: finished harmonization → {'iri': 'SAMP9IA2G04X', 'study_iri': 'E-MTAB-93598', 'cell_type_iri': 'CL_0000540', 'tissue_iri': 'UBERON_0001155', 'organism_iri': 'NCBITaxon_9606', 'growth_condition': 'monoculture', 'raw_counts_uri': '/home/anr/apps/AlethiOmics/raw_data/synthetic_runs/20250630-014211/SAMP9IA2G04X_raw_counts.tsv', 'collection_date': '2020-02-11', 'donor_age_years': '24', 'replicate_number': '2', 'viability_pct': '90.68', 'rin_score': '8.895'}
+2025-06-30 01:42:14 [DEBUG] etl.harmonize: ROW 2: applying transform "['extract_sample_id']" of harmonization on row: SAMPC65IKUY3
+2025-06-30 01:42:14 [DEBUG] etl.harmonize: ROW 2: applying transform "['stub_fetch_sample_metadata']" of harmonization on row: SAMPC65IKUY3
+2025-06-30 01:42:14 [DEBUG] etl.harmonize: ROW 2: finished harmonization → {'iri': 'SAMPC65IKUY3', 'study_iri': 'E-MTAB-93598', 'cell_type_iri': 'CL_0000091', 'tissue_iri': 'UBERON_0000955', 'organism_iri': 'NCBITaxon_9606', 'growth_condition': 'monoculture', 'raw_counts_uri': '/home/anr/apps/AlethiOmics/raw_data/synthetic_runs/20250630-014211/SAMPC65IKUY3_raw_counts.tsv', 'collection_date': '2020-02-11', 'donor_age_years': '28', 'replicate_number': '2', 'viability_pct': '82.98', 'rin_score': '7.489'}
+2025-06-30 01:42:14 [DEBUG] etl.harmonize: ROW 3: applying transform "['extract_sample_id']" of harmonization on row: SAMPS1T67VT0
+2025-06-30 01:42:14 [DEBUG] etl.harmonize: ROW 3: applying transform "['stub_fetch_sample_metadata']" of harmonization on row: SAMPS1T67VT0
+2025-06-30 01:42:14 [DEBUG] etl.harmonize: ROW 3: finished harmonization → {'iri': 'SAMPS1T67VT0', 'study_iri': 'E-MTAB-93598', 'cell_type_iri': 'CL_0001050', 'tissue_iri': 'UBERON_0001155', 'organism_iri': 'NCBITaxon_9606', 'growth_condition': 'monoculture', 'raw_counts_uri': '/home/anr/apps/AlethiOmics/raw_data/synthetic_runs/20250630-014211/SAMPS1T67VT0_raw_counts.tsv', 'collection_date': '2020-02-17', 'donor_age_years': '39', 'replicate_number': '2', 'viability_pct': '80.5', 'rin_score': '9.094'}
+2025-06-30 01:42:14 [DEBUG] etl.load: Queued 4 rows → Samples
+2025-06-30 01:42:14 [DEBUG] etl.load:  enqueue: putting batch of 4 rows → Samples
+	[{'iri': 'SAMP2HHKTPHF', 'study_iri': 'E-MTAB-93598', 'cell_type_iri': 'CL_0002608', 'tissue_iri': 'UBERON_0002108', 'organism_iri': 'NCBITaxon_9606', 'growth_condition': 'co-culture', 'raw_counts_uri': '/home/anr/apps/AlethiOmics/raw_data/synthetic_runs/20250630-014211/SAMP2HHKTPHF_raw_counts.tsv', 'collection_date': '2020-02-14', 'donor_age_years': '39', 'replicate_number': '2', 'viability_pct': '71.07', 'rin_score': '7.908'}, {'iri': 'SAMP9IA2G04X', 'study_iri': 'E-MTAB-93598', 'cell_type_iri': 'CL_0000540', 'tissue_iri': 'UBERON_0001155', 'organism_iri': 'NCBITaxon_9606', 'growth_condition': 'monoculture', 'raw_counts_uri': '/home/anr/apps/AlethiOmics/raw_data/synthetic_runs/20250630-014211/SAMP9IA2G04X_raw_counts.tsv', 'collection_date': '2020-02-11', 'donor_age_years': '24', 'replicate_number': '2', 'viability_pct': '90.68', 'rin_score': '8.895'}, {'iri': 'SAMPC65IKUY3', 'study_iri': 'E-MTAB-93598', 'cell_type_iri': 'CL_0000091', 'tissue_iri': 'UBERON_0000955', 'organism_iri': 'NCBITaxon_9606', 'growth_condition': 'monoculture', 'raw_counts_uri': '/home/anr/apps/AlethiOmics/raw_data/synthetic_runs/20250630-014211/SAMPC65IKUY3_raw_counts.tsv', 'collection_date': '2020-02-11', 'donor_age_years': '28', 'replicate_number': '2', 'viability_pct': '82.98', 'rin_score': '7.489'}, {'iri': 'SAMPS1T67VT0', 'study_iri': 'E-MTAB-93598', 'cell_type_iri': 'CL_0001050', 'tissue_iri': 'UBERON_0001155', 'organism_iri': 'NCBITaxon_9606', 'growth_condition': 'monoculture', 'raw_counts_uri': '/home/anr/apps/AlethiOmics/raw_data/synthetic_runs/20250630-014211/SAMPS1T67VT0_raw_counts.tsv', 'collection_date': '2020-02-17', 'donor_age_years': '39', 'replicate_number': '2', 'viability_pct': '80.5', 'rin_score': '9.094'}]
+2025-06-30 01:42:14 [DEBUG] __main__: Batch 19 (Samples): extract 4 rows → harmonize 0.84ms → enqueue 0.15ms
+2025-06-30 01:42:14 [INFO] etl.extract: ✅  Finished experiment_E-MTAB-93598.tsv
+2025-06-30 01:42:14 [INFO] etl.extract: ⏳  Extracting experiment_E-MTAB-25623.tsv → Samples
+2025-06-30 01:42:14 [DEBUG] etl.extract: _read_file: opening /home/anr/apps/AlethiOmics/raw_data/synthetic_runs/20250630-014211/experiment_E-MTAB-25623.tsv for table Samples
+2025-06-30 01:42:14 [DEBUG] etl.extract:   _read_file: starting new batch for experiment_E-MTAB-25623.tsv
+2025-06-30 01:42:14 [DEBUG] etl.extract:   _read_file: batch full (4 rows), yielding
+2025-06-30 01:42:14 [DEBUG] etl.extract:   yielding batch of 4 rows from experiment_E-MTAB-25623.tsv
+2025-06-30 01:42:14 [DEBUG] etl.harmonize: ROW 0: applying transform "['extract_sample_id']" of harmonization on row: SAMP0TN1KDQQ
+2025-06-30 01:42:14 [DEBUG] etl.harmonize: ROW 0: applying transform "['stub_fetch_sample_metadata']" of harmonization on row: SAMP0TN1KDQQ
+2025-06-30 01:42:14 [DEBUG] etl.harmonize: ROW 0: finished harmonization → {'iri': 'SAMP0TN1KDQQ', 'study_iri': 'E-MTAB-25623', 'cell_type_iri': 'CL_0002608', 'tissue_iri': 'UBERON_0001155', 'organism_iri': 'NCBITaxon_9606', 'growth_condition': 'co-culture', 'raw_counts_uri': '/home/anr/apps/AlethiOmics/raw_data/synthetic_runs/20250630-014211/SAMP0TN1KDQQ_raw_counts.tsv', 'collection_date': '2018-02-02', 'donor_age_years': '24', 'replicate_number': '3', 'viability_pct': '76.47', 'rin_score': '8.966'}
+2025-06-30 01:42:14 [DEBUG] etl.harmonize: ROW 1: applying transform "['extract_sample_id']" of harmonization on row: SAMPAUIYIA1L
+2025-06-30 01:42:14 [DEBUG] etl.harmonize: ROW 1: applying transform "['stub_fetch_sample_metadata']" of harmonization on row: SAMPAUIYIA1L
+2025-06-30 01:42:14 [DEBUG] etl.harmonize: ROW 1: finished harmonization → {'iri': 'SAMPAUIYIA1L', 'study_iri': 'E-MTAB-25623', 'cell_type_iri': 'CL_0000540', 'tissue_iri': 'UBERON_0000955', 'organism_iri': 'NCBITaxon_9606', 'growth_condition': 'co-culture', 'raw_counts_uri': '/home/anr/apps/AlethiOmics/raw_data/synthetic_runs/20250630-014211/SAMPAUIYIA1L_raw_counts.tsv', 'collection_date': '2018-02-02', 'donor_age_years': '47', 'replicate_number': '2', 'viability_pct': '70.51', 'rin_score': '8.92'}
+2025-06-30 01:42:14 [DEBUG] etl.harmonize: ROW 2: applying transform "['extract_sample_id']" of harmonization on row: SAMP6A9N2T9V
+2025-06-30 01:42:14 [DEBUG] etl.harmonize: ROW 2: applying transform "['stub_fetch_sample_metadata']" of harmonization on row: SAMP6A9N2T9V
+2025-06-30 01:42:14 [DEBUG] etl.harmonize: ROW 2: finished harmonization → {'iri': 'SAMP6A9N2T9V', 'study_iri': 'E-MTAB-25623', 'cell_type_iri': 'CL_0002608', 'tissue_iri': 'UBERON_0001155', 'organism_iri': 'NCBITaxon_9606', 'growth_condition': 'co-culture', 'raw_counts_uri': '/home/anr/apps/AlethiOmics/raw_data/synthetic_runs/20250630-014211/SAMP6A9N2T9V_raw_counts.tsv', 'collection_date': '2018-02-02', 'donor_age_years': '35', 'replicate_number': '2', 'viability_pct': '84.34', 'rin_score': '8.687'}
+2025-06-30 01:42:14 [DEBUG] etl.harmonize: ROW 3: applying transform "['extract_sample_id']" of harmonization on row: SAMPE2V871SH
+2025-06-30 01:42:14 [DEBUG] etl.harmonize: ROW 3: applying transform "['stub_fetch_sample_metadata']" of harmonization on row: SAMPE2V871SH
+2025-06-30 01:42:14 [DEBUG] etl.harmonize: ROW 3: finished harmonization → {'iri': 'SAMPE2V871SH', 'study_iri': 'E-MTAB-25623', 'cell_type_iri': 'CL_0000540', 'tissue_iri': 'UBERON_0000955', 'organism_iri': 'NCBITaxon_9606', 'growth_condition': 'co-culture', 'raw_counts_uri': '/home/anr/apps/AlethiOmics/raw_data/synthetic_runs/20250630-014211/SAMPE2V871SH_raw_counts.tsv', 'collection_date': '2018-01-25', 'donor_age_years': '23', 'replicate_number': '3', 'viability_pct': '90.26', 'rin_score': '8.42'}
+2025-06-30 01:42:14 [DEBUG] etl.load: Queued 4 rows → Samples
+2025-06-30 01:42:14 [DEBUG] etl.load:  enqueue: putting batch of 4 rows → Samples
+	[{'iri': 'SAMP0TN1KDQQ', 'study_iri': 'E-MTAB-25623', 'cell_type_iri': 'CL_0002608', 'tissue_iri': 'UBERON_0001155', 'organism_iri': 'NCBITaxon_9606', 'growth_condition': 'co-culture', 'raw_counts_uri': '/home/anr/apps/AlethiOmics/raw_data/synthetic_runs/20250630-014211/SAMP0TN1KDQQ_raw_counts.tsv', 'collection_date': '2018-02-02', 'donor_age_years': '24', 'replicate_number': '3', 'viability_pct': '76.47', 'rin_score': '8.966'}, {'iri': 'SAMPAUIYIA1L', 'study_iri': 'E-MTAB-25623', 'cell_type_iri': 'CL_0000540', 'tissue_iri': 'UBERON_0000955', 'organism_iri': 'NCBITaxon_9606', 'growth_condition': 'co-culture', 'raw_counts_uri': '/home/anr/apps/AlethiOmics/raw_data/synthetic_runs/20250630-014211/SAMPAUIYIA1L_raw_counts.tsv', 'collection_date': '2018-02-02', 'donor_age_years': '47', 'replicate_number': '2', 'viability_pct': '70.51', 'rin_score': '8.92'}, {'iri': 'SAMP6A9N2T9V', 'study_iri': 'E-MTAB-25623', 'cell_type_iri': 'CL_0002608', 'tissue_iri': 'UBERON_0001155', 'organism_iri': 'NCBITaxon_9606', 'growth_condition': 'co-culture', 'raw_counts_uri': '/home/anr/apps/AlethiOmics/raw_data/synthetic_runs/20250630-014211/SAMP6A9N2T9V_raw_counts.tsv', 'collection_date': '2018-02-02', 'donor_age_years': '35', 'replicate_number': '2', 'viability_pct': '84.34', 'rin_score': '8.687'}, {'iri': 'SAMPE2V871SH', 'study_iri': 'E-MTAB-25623', 'cell_type_iri': 'CL_0000540', 'tissue_iri': 'UBERON_0000955', 'organism_iri': 'NCBITaxon_9606', 'growth_condition': 'co-culture', 'raw_counts_uri': '/home/anr/apps/AlethiOmics/raw_data/synthetic_runs/20250630-014211/SAMPE2V871SH_raw_counts.tsv', 'collection_date': '2018-01-25', 'donor_age_years': '23', 'replicate_number': '3', 'viability_pct': '90.26', 'rin_score': '8.42'}]
+2025-06-30 01:42:14 [DEBUG] __main__: Batch 20 (Samples): extract 4 rows → harmonize 0.73ms → enqueue 0.14ms
+2025-06-30 01:42:14 [INFO] etl.extract: ✅  Finished experiment_E-MTAB-25623.tsv
+2025-06-30 01:42:14 [INFO] etl.extract: ⏳  Extracting experiment_E-MTAB-92724.tsv → Samples
+2025-06-30 01:42:14 [DEBUG] etl.extract: _read_file: opening /home/anr/apps/AlethiOmics/raw_data/synthetic_runs/20250630-014211/experiment_E-MTAB-92724.tsv for table Samples
+2025-06-30 01:42:14 [DEBUG] etl.extract:   _read_file: starting new batch for experiment_E-MTAB-92724.tsv
+2025-06-30 01:42:14 [DEBUG] etl.extract:   _read_file: batch full (4 rows), yielding
+2025-06-30 01:42:14 [DEBUG] etl.extract:   yielding batch of 4 rows from experiment_E-MTAB-92724.tsv
+2025-06-30 01:42:14 [DEBUG] etl.harmonize: ROW 0: applying transform "['extract_sample_id']" of harmonization on row: SAMPXPYBIGPA
+2025-06-30 01:42:14 [DEBUG] etl.harmonize: ROW 0: applying transform "['stub_fetch_sample_metadata']" of harmonization on row: SAMPXPYBIGPA
+2025-06-30 01:42:14 [DEBUG] etl.harmonize: ROW 0: finished harmonization → {'iri': 'SAMPXPYBIGPA', 'study_iri': 'E-MTAB-92724', 'cell_type_iri': 'CL_0000540', 'tissue_iri': 'UBERON_0002108', 'organism_iri': 'NCBITaxon_9606', 'growth_condition': 'monoculture', 'raw_counts_uri': '/home/anr/apps/AlethiOmics/raw_data/synthetic_runs/20250630-014211/SAMPXPYBIGPA_raw_counts.tsv', 'collection_date': '2011-07-21', 'donor_age_years': '22', 'replicate_number': '3', 'viability_pct': '73.04', 'rin_score': '9.998'}
+2025-06-30 01:42:14 [DEBUG] etl.harmonize: ROW 1: applying transform "['extract_sample_id']" of harmonization on row: SAMPVFL9WVRJ
+2025-06-30 01:42:14 [DEBUG] etl.harmonize: ROW 1: applying transform "['stub_fetch_sample_metadata']" of harmonization on row: SAMPVFL9WVRJ
+2025-06-30 01:42:14 [DEBUG] etl.harmonize: ROW 1: finished harmonization → {'iri': 'SAMPVFL9WVRJ', 'study_iri': 'E-MTAB-92724', 'cell_type_iri': 'CL_0000584', 'tissue_iri': 'UBERON_0001155', 'organism_iri': 'NCBITaxon_9606', 'growth_condition': 'co-culture', 'raw_counts_uri': '/home/anr/apps/AlethiOmics/raw_data/synthetic_runs/20250630-014211/SAMPVFL9WVRJ_raw_counts.tsv', 'collection_date': '2011-07-21', 'donor_age_years': '32', 'replicate_number': '3', 'viability_pct': '84.05', 'rin_score': '9.691'}
+2025-06-30 01:42:14 [DEBUG] etl.harmonize: ROW 2: applying transform "['extract_sample_id']" of harmonization on row: SAMPQKJAUSFE
+2025-06-30 01:42:14 [DEBUG] etl.harmonize: ROW 2: applying transform "['stub_fetch_sample_metadata']" of harmonization on row: SAMPQKJAUSFE
+2025-06-30 01:42:14 [DEBUG] etl.harmonize: ROW 2: finished harmonization → {'iri': 'SAMPQKJAUSFE', 'study_iri': 'E-MTAB-92724', 'cell_type_iri': 'CL_0000127', 'tissue_iri': 'UBERON_0001155', 'organism_iri': 'NCBITaxon_9606', 'growth_condition': 'co-culture', 'raw_counts_uri': '/home/anr/apps/AlethiOmics/raw_data/synthetic_runs/20250630-014211/SAMPQKJAUSFE_raw_counts.tsv', 'collection_date': '2011-07-23', 'donor_age_years': '64', 'replicate_number': '2', 'viability_pct': '89.25', 'rin_score': '9.636'}
+2025-06-30 01:42:14 [DEBUG] etl.harmonize: ROW 3: applying transform "['extract_sample_id']" of harmonization on row: SAMPVRNPBQFP
+2025-06-30 01:42:14 [DEBUG] etl.harmonize: ROW 3: applying transform "['stub_fetch_sample_metadata']" of harmonization on row: SAMPVRNPBQFP
+2025-06-30 01:42:14 [DEBUG] etl.harmonize: ROW 3: finished harmonization → {'iri': 'SAMPVRNPBQFP', 'study_iri': 'E-MTAB-92724', 'cell_type_iri': 'CL_0000127', 'tissue_iri': 'UBERON_0002108', 'organism_iri': 'NCBITaxon_9606', 'growth_condition': 'monoculture', 'raw_counts_uri': '/home/anr/apps/AlethiOmics/raw_data/synthetic_runs/20250630-014211/SAMPVRNPBQFP_raw_counts.tsv', 'collection_date': '2011-07-23', 'donor_age_years': '49', 'replicate_number': '1', 'viability_pct': '91.3', 'rin_score': '7.61'}
+2025-06-30 01:42:14 [DEBUG] etl.load: Queued 4 rows → Samples
+2025-06-30 01:42:14 [DEBUG] etl.load:  enqueue: putting batch of 4 rows → Samples
+	[{'iri': 'SAMPXPYBIGPA', 'study_iri': 'E-MTAB-92724', 'cell_type_iri': 'CL_0000540', 'tissue_iri': 'UBERON_0002108', 'organism_iri': 'NCBITaxon_9606', 'growth_condition': 'monoculture', 'raw_counts_uri': '/home/anr/apps/AlethiOmics/raw_data/synthetic_runs/20250630-014211/SAMPXPYBIGPA_raw_counts.tsv', 'collection_date': '2011-07-21', 'donor_age_years': '22', 'replicate_number': '3', 'viability_pct': '73.04', 'rin_score': '9.998'}, {'iri': 'SAMPVFL9WVRJ', 'study_iri': 'E-MTAB-92724', 'cell_type_iri': 'CL_0000584', 'tissue_iri': 'UBERON_0001155', 'organism_iri': 'NCBITaxon_9606', 'growth_condition': 'co-culture', 'raw_counts_uri': '/home/anr/apps/AlethiOmics/raw_data/synthetic_runs/20250630-014211/SAMPVFL9WVRJ_raw_counts.tsv', 'collection_date': '2011-07-21', 'donor_age_years': '32', 'replicate_number': '3', 'viability_pct': '84.05', 'rin_score': '9.691'}, {'iri': 'SAMPQKJAUSFE', 'study_iri': 'E-MTAB-92724', 'cell_type_iri': 'CL_0000127', 'tissue_iri': 'UBERON_0001155', 'organism_iri': 'NCBITaxon_9606', 'growth_condition': 'co-culture', 'raw_counts_uri': '/home/anr/apps/AlethiOmics/raw_data/synthetic_runs/20250630-014211/SAMPQKJAUSFE_raw_counts.tsv', 'collection_date': '2011-07-23', 'donor_age_years': '64', 'replicate_number': '2', 'viability_pct': '89.25', 'rin_score': '9.636'}, {'iri': 'SAMPVRNPBQFP', 'study_iri': 'E-MTAB-92724', 'cell_type_iri': 'CL_0000127', 'tissue_iri': 'UBERON_0002108', 'organism_iri': 'NCBITaxon_9606', 'growth_condition': 'monoculture', 'raw_counts_uri': '/home/anr/apps/AlethiOmics/raw_data/synthetic_runs/20250630-014211/SAMPVRNPBQFP_raw_counts.tsv', 'collection_date': '2011-07-23', 'donor_age_years': '49', 'replicate_number': '1', 'viability_pct': '91.3', 'rin_score': '7.61'}]
+2025-06-30 01:42:14 [DEBUG] __main__: Batch 21 (Samples): extract 4 rows → harmonize 0.72ms → enqueue 0.14ms
+2025-06-30 01:42:14 [INFO] etl.extract: ✅  Finished experiment_E-MTAB-92724.tsv
+2025-06-30 01:42:14 [INFO] etl.extract: ⏳  Extracting experiment_E-MTAB-77361.tsv → Samples
+2025-06-30 01:42:14 [DEBUG] etl.extract: _read_file: opening /home/anr/apps/AlethiOmics/raw_data/synthetic_runs/20250630-014211/experiment_E-MTAB-77361.tsv for table Samples
+2025-06-30 01:42:14 [DEBUG] etl.extract:   _read_file: starting new batch for experiment_E-MTAB-77361.tsv
+2025-06-30 01:42:14 [DEBUG] etl.extract:   _read_file: batch full (4 rows), yielding
+2025-06-30 01:42:14 [DEBUG] etl.extract:   yielding batch of 4 rows from experiment_E-MTAB-77361.tsv
+2025-06-30 01:42:14 [DEBUG] etl.harmonize: ROW 0: applying transform "['extract_sample_id']" of harmonization on row: SAMP8QT1JZ2T
+2025-06-30 01:42:14 [DEBUG] etl.harmonize: ROW 0: applying transform "['stub_fetch_sample_metadata']" of harmonization on row: SAMP8QT1JZ2T
+2025-06-30 01:42:14 [DEBUG] etl.harmonize: ROW 0: finished harmonization → {'iri': 'SAMP8QT1JZ2T', 'study_iri': 'E-MTAB-77361', 'cell_type_iri': 'CL_0000584', 'tissue_iri': 'UBERON_0001155', 'organism_iri': 'NCBITaxon_9606', 'growth_condition': 'monoculture', 'raw_counts_uri': '/home/anr/apps/AlethiOmics/raw_data/synthetic_runs/20250630-014211/SAMP8QT1JZ2T_raw_counts.tsv', 'collection_date': '2020-05-10', 'donor_age_years': '36', 'replicate_number': '2', 'viability_pct': '71.75', 'rin_score': '7.789'}
+2025-06-30 01:42:14 [DEBUG] etl.harmonize: ROW 1: applying transform "['extract_sample_id']" of harmonization on row: SAMPMXUOQKK6
+2025-06-30 01:42:14 [DEBUG] etl.harmonize: ROW 1: applying transform "['stub_fetch_sample_metadata']" of harmonization on row: SAMPMXUOQKK6
+2025-06-30 01:42:14 [DEBUG] etl.harmonize: ROW 1: finished harmonization → {'iri': 'SAMPMXUOQKK6', 'study_iri': 'E-MTAB-77361', 'cell_type_iri': 'CL_0000091', 'tissue_iri': 'UBERON_0000955', 'organism_iri': 'NCBITaxon_9606', 'growth_condition': 'monoculture', 'raw_counts_uri': '/home/anr/apps/AlethiOmics/raw_data/synthetic_runs/20250630-014211/SAMPMXUOQKK6_raw_counts.tsv', 'collection_date': '2020-05-10', 'donor_age_years': '20', 'replicate_number': '2', 'viability_pct': '80.96', 'rin_score': '9.736'}
+2025-06-30 01:42:14 [DEBUG] etl.harmonize: ROW 2: applying transform "['extract_sample_id']" of harmonization on row: SAMPL890MUH6
+2025-06-30 01:42:14 [DEBUG] etl.harmonize: ROW 2: applying transform "['stub_fetch_sample_metadata']" of harmonization on row: SAMPL890MUH6
+2025-06-30 01:42:14 [DEBUG] etl.harmonize: ROW 2: finished harmonization → {'iri': 'SAMPL890MUH6', 'study_iri': 'E-MTAB-77361', 'cell_type_iri': 'CL_0001050', 'tissue_iri': 'UBERON_0002108', 'organism_iri': 'NCBITaxon_9606', 'growth_condition': 'co-culture', 'raw_counts_uri': '/home/anr/apps/AlethiOmics/raw_data/synthetic_runs/20250630-014211/SAMPL890MUH6_raw_counts.tsv', 'collection_date': '2020-05-10', 'donor_age_years': '63', 'replicate_number': '3', 'viability_pct': '87.54', 'rin_score': '9.826'}
+2025-06-30 01:42:14 [DEBUG] etl.harmonize: ROW 3: applying transform "['extract_sample_id']" of harmonization on row: SAMPH2CLZMXQ
+2025-06-30 01:42:14 [DEBUG] etl.harmonize: ROW 3: applying transform "['stub_fetch_sample_metadata']" of harmonization on row: SAMPH2CLZMXQ
+2025-06-30 01:42:14 [DEBUG] etl.harmonize: ROW 3: finished harmonization → {'iri': 'SAMPH2CLZMXQ', 'study_iri': 'E-MTAB-77361', 'cell_type_iri': 'CL_0000540', 'tissue_iri': 'UBERON_0000955', 'organism_iri': 'NCBITaxon_9606', 'growth_condition': 'co-culture', 'raw_counts_uri': '/home/anr/apps/AlethiOmics/raw_data/synthetic_runs/20250630-014211/SAMPH2CLZMXQ_raw_counts.tsv', 'collection_date': '2020-05-10', 'donor_age_years': '61', 'replicate_number': '2', 'viability_pct': '87.0', 'rin_score': '8.542'}
+2025-06-30 01:42:14 [DEBUG] etl.load: Queued 4 rows → Samples
+2025-06-30 01:42:14 [DEBUG] etl.load:  enqueue: putting batch of 4 rows → Samples
+	[{'iri': 'SAMP8QT1JZ2T', 'study_iri': 'E-MTAB-77361', 'cell_type_iri': 'CL_0000584', 'tissue_iri': 'UBERON_0001155', 'organism_iri': 'NCBITaxon_9606', 'growth_condition': 'monoculture', 'raw_counts_uri': '/home/anr/apps/AlethiOmics/raw_data/synthetic_runs/20250630-014211/SAMP8QT1JZ2T_raw_counts.tsv', 'collection_date': '2020-05-10', 'donor_age_years': '36', 'replicate_number': '2', 'viability_pct': '71.75', 'rin_score': '7.789'}, {'iri': 'SAMPMXUOQKK6', 'study_iri': 'E-MTAB-77361', 'cell_type_iri': 'CL_0000091', 'tissue_iri': 'UBERON_0000955', 'organism_iri': 'NCBITaxon_9606', 'growth_condition': 'monoculture', 'raw_counts_uri': '/home/anr/apps/AlethiOmics/raw_data/synthetic_runs/20250630-014211/SAMPMXUOQKK6_raw_counts.tsv', 'collection_date': '2020-05-10', 'donor_age_years': '20', 'replicate_number': '2', 'viability_pct': '80.96', 'rin_score': '9.736'}, {'iri': 'SAMPL890MUH6', 'study_iri': 'E-MTAB-77361', 'cell_type_iri': 'CL_0001050', 'tissue_iri': 'UBERON_0002108', 'organism_iri': 'NCBITaxon_9606', 'growth_condition': 'co-culture', 'raw_counts_uri': '/home/anr/apps/AlethiOmics/raw_data/synthetic_runs/20250630-014211/SAMPL890MUH6_raw_counts.tsv', 'collection_date': '2020-05-10', 'donor_age_years': '63', 'replicate_number': '3', 'viability_pct': '87.54', 'rin_score': '9.826'}, {'iri': 'SAMPH2CLZMXQ', 'study_iri': 'E-MTAB-77361', 'cell_type_iri': 'CL_0000540', 'tissue_iri': 'UBERON_0000955', 'organism_iri': 'NCBITaxon_9606', 'growth_condition': 'co-culture', 'raw_counts_uri': '/home/anr/apps/AlethiOmics/raw_data/synthetic_runs/20250630-014211/SAMPH2CLZMXQ_raw_counts.tsv', 'collection_date': '2020-05-10', 'donor_age_years': '61', 'replicate_number': '2', 'viability_pct': '87.0', 'rin_score': '8.542'}]
+2025-06-30 01:42:14 [DEBUG] __main__: Batch 22 (Samples): extract 4 rows → harmonize 0.80ms → enqueue 0.17ms
+2025-06-30 01:42:14 [INFO] etl.extract: ✅  Finished experiment_E-MTAB-77361.tsv
+2025-06-30 01:42:14 [INFO] etl.extract: ⏳  Extracting experiment_E-MTAB-48186.tsv → Samples
+2025-06-30 01:42:14 [DEBUG] etl.extract: _read_file: opening /home/anr/apps/AlethiOmics/raw_data/synthetic_runs/20250630-014211/experiment_E-MTAB-48186.tsv for table Samples
+2025-06-30 01:42:14 [DEBUG] etl.extract:   _read_file: starting new batch for experiment_E-MTAB-48186.tsv
+2025-06-30 01:42:14 [DEBUG] etl.extract:   _read_file: batch full (4 rows), yielding
+2025-06-30 01:42:14 [DEBUG] etl.extract:   yielding batch of 4 rows from experiment_E-MTAB-48186.tsv
+2025-06-30 01:42:14 [DEBUG] etl.harmonize: ROW 0: applying transform "['extract_sample_id']" of harmonization on row: SAMP3J8K7LKZ
+2025-06-30 01:42:14 [DEBUG] etl.harmonize: ROW 0: applying transform "['stub_fetch_sample_metadata']" of harmonization on row: SAMP3J8K7LKZ
+2025-06-30 01:42:14 [DEBUG] etl.harmonize: ROW 0: finished harmonization → {'iri': 'SAMP3J8K7LKZ', 'study_iri': 'E-MTAB-48186', 'cell_type_iri': 'CL_0000584', 'tissue_iri': 'UBERON_0001155', 'organism_iri': 'NCBITaxon_9606', 'growth_condition': 'monoculture', 'raw_counts_uri': '/home/anr/apps/AlethiOmics/raw_data/synthetic_runs/20250630-014211/SAMP3J8K7LKZ_raw_counts.tsv', 'collection_date': '2022-09-27', 'donor_age_years': '55', 'replicate_number': '3', 'viability_pct': '96.4', 'rin_score': '7.196'}
+2025-06-30 01:42:14 [DEBUG] etl.harmonize: ROW 1: applying transform "['extract_sample_id']" of harmonization on row: SAMP72071QSM
+2025-06-30 01:42:14 [DEBUG] etl.harmonize: ROW 1: applying transform "['stub_fetch_sample_metadata']" of harmonization on row: SAMP72071QSM
+2025-06-30 01:42:14 [DEBUG] etl.harmonize: ROW 1: finished harmonization → {'iri': 'SAMP72071QSM', 'study_iri': 'E-MTAB-48186', 'cell_type_iri': 'CL_0000127', 'tissue_iri': 'UBERON_0000955', 'organism_iri': 'NCBITaxon_9606', 'growth_condition': 'co-culture', 'raw_counts_uri': '/home/anr/apps/AlethiOmics/raw_data/synthetic_runs/20250630-014211/SAMP72071QSM_raw_counts.tsv', 'collection_date': '2022-09-27', 'donor_age_years': '54', 'replicate_number': '3', 'viability_pct': '79.08', 'rin_score': '7.03'}
+2025-06-30 01:42:14 [DEBUG] etl.harmonize: ROW 2: applying transform "['extract_sample_id']" of harmonization on row: SAMPZQA3EZF4
+2025-06-30 01:42:14 [DEBUG] etl.harmonize: ROW 2: applying transform "['stub_fetch_sample_metadata']" of harmonization on row: SAMPZQA3EZF4
+2025-06-30 01:42:14 [DEBUG] etl.harmonize: ROW 2: finished harmonization → {'iri': 'SAMPZQA3EZF4', 'study_iri': 'E-MTAB-48186', 'cell_type_iri': 'CL_0001050', 'tissue_iri': 'UBERON_0000955', 'organism_iri': 'NCBITaxon_9606', 'growth_condition': 'co-culture', 'raw_counts_uri': '/home/anr/apps/AlethiOmics/raw_data/synthetic_runs/20250630-014211/SAMPZQA3EZF4_raw_counts.tsv', 'collection_date': '2022-09-27', 'donor_age_years': '63', 'replicate_number': '3', 'viability_pct': '78.2', 'rin_score': '8.945'}
+2025-06-30 01:42:14 [DEBUG] etl.harmonize: ROW 3: applying transform "['extract_sample_id']" of harmonization on row: SAMPWEGZG3PW
+2025-06-30 01:42:14 [DEBUG] etl.harmonize: ROW 3: applying transform "['stub_fetch_sample_metadata']" of harmonization on row: SAMPWEGZG3PW
+2025-06-30 01:42:14 [DEBUG] etl.harmonize: ROW 3: finished harmonization → {'iri': 'SAMPWEGZG3PW', 'study_iri': 'E-MTAB-48186', 'cell_type_iri': 'CL_0000679', 'tissue_iri': 'UBERON_0002108', 'organism_iri': 'NCBITaxon_9606', 'growth_condition': 'monoculture', 'raw_counts_uri': '/home/anr/apps/AlethiOmics/raw_data/synthetic_runs/20250630-014211/SAMPWEGZG3PW_raw_counts.tsv', 'collection_date': '2022-09-27', 'donor_age_years': '23', 'replicate_number': '2', 'viability_pct': '87.81', 'rin_score': '8.451'}
+2025-06-30 01:42:14 [DEBUG] etl.load: Queued 4 rows → Samples
+2025-06-30 01:42:14 [DEBUG] etl.load:  enqueue: putting batch of 4 rows → Samples
+	[{'iri': 'SAMP3J8K7LKZ', 'study_iri': 'E-MTAB-48186', 'cell_type_iri': 'CL_0000584', 'tissue_iri': 'UBERON_0001155', 'organism_iri': 'NCBITaxon_9606', 'growth_condition': 'monoculture', 'raw_counts_uri': '/home/anr/apps/AlethiOmics/raw_data/synthetic_runs/20250630-014211/SAMP3J8K7LKZ_raw_counts.tsv', 'collection_date': '2022-09-27', 'donor_age_years': '55', 'replicate_number': '3', 'viability_pct': '96.4', 'rin_score': '7.196'}, {'iri': 'SAMP72071QSM', 'study_iri': 'E-MTAB-48186', 'cell_type_iri': 'CL_0000127', 'tissue_iri': 'UBERON_0000955', 'organism_iri': 'NCBITaxon_9606', 'growth_condition': 'co-culture', 'raw_counts_uri': '/home/anr/apps/AlethiOmics/raw_data/synthetic_runs/20250630-014211/SAMP72071QSM_raw_counts.tsv', 'collection_date': '2022-09-27', 'donor_age_years': '54', 'replicate_number': '3', 'viability_pct': '79.08', 'rin_score': '7.03'}, {'iri': 'SAMPZQA3EZF4', 'study_iri': 'E-MTAB-48186', 'cell_type_iri': 'CL_0001050', 'tissue_iri': 'UBERON_0000955', 'organism_iri': 'NCBITaxon_9606', 'growth_condition': 'co-culture', 'raw_counts_uri': '/home/anr/apps/AlethiOmics/raw_data/synthetic_runs/20250630-014211/SAMPZQA3EZF4_raw_counts.tsv', 'collection_date': '2022-09-27', 'donor_age_years': '63', 'replicate_number': '3', 'viability_pct': '78.2', 'rin_score': '8.945'}, {'iri': 'SAMPWEGZG3PW', 'study_iri': 'E-MTAB-48186', 'cell_type_iri': 'CL_0000679', 'tissue_iri': 'UBERON_0002108', 'organism_iri': 'NCBITaxon_9606', 'growth_condition': 'monoculture', 'raw_counts_uri': '/home/anr/apps/AlethiOmics/raw_data/synthetic_runs/20250630-014211/SAMPWEGZG3PW_raw_counts.tsv', 'collection_date': '2022-09-27', 'donor_age_years': '23', 'replicate_number': '2', 'viability_pct': '87.81', 'rin_score': '8.451'}]
+2025-06-30 01:42:14 [DEBUG] __main__: Batch 23 (Samples): extract 4 rows → harmonize 0.75ms → enqueue 0.13ms
+2025-06-30 01:42:14 [INFO] etl.extract: ✅  Finished experiment_E-MTAB-48186.tsv
+2025-06-30 01:42:14 [INFO] etl.extract: ⏳  Extracting microbe_stimulus.tsv → MicrobeStimulus
+2025-06-30 01:42:14 [DEBUG] etl.extract: _read_file: opening /home/anr/apps/AlethiOmics/raw_data/synthetic_runs/20250630-014211/microbe_stimulus.tsv for table MicrobeStimulus
+2025-06-30 01:42:14 [DEBUG] etl.extract:   _read_file: starting new batch for microbe_stimulus.tsv
+2025-06-30 01:42:14 [DEBUG] etl.extract:   _read_file: batch full (4 rows), yielding
+2025-06-30 01:42:14 [DEBUG] etl.extract:   yielding batch of 4 rows from microbe_stimulus.tsv
+2025-06-30 01:42:14 [DEBUG] etl.harmonize: ROW 0: finished harmonization → {'microbe_id': '3', 'stimulus_id': '4', 'evidence': 'mgnify', 'interaction_score': '25.275'}
+2025-06-30 01:42:14 [DEBUG] etl.harmonize: ROW 1: finished harmonization → {'microbe_id': '1', 'stimulus_id': '4', 'evidence': 'mgnify', 'interaction_score': '-10.678'}
+2025-06-30 01:42:14 [DEBUG] etl.harmonize: ROW 2: finished harmonization → {'microbe_id': '5', 'stimulus_id': '1', 'evidence': 'inferred', 'interaction_score': '28.18'}
+2025-06-30 01:42:14 [DEBUG] etl.harmonize: ROW 3: finished harmonization → {'microbe_id': '5', 'stimulus_id': '3', 'evidence': 'literature', 'interaction_score': '-14.831'}
+2025-06-30 01:42:14 [DEBUG] etl.load: Queued 4 rows → MicrobeStimulus
+2025-06-30 01:42:14 [DEBUG] etl.load:  enqueue: putting batch of 4 rows → MicrobeStimulus
+	[{'microbe_id': '3', 'stimulus_id': '4', 'evidence': 'mgnify', 'interaction_score': '25.275'}, {'microbe_id': '1', 'stimulus_id': '4', 'evidence': 'mgnify', 'interaction_score': '-10.678'}, {'microbe_id': '5', 'stimulus_id': '1', 'evidence': 'inferred', 'interaction_score': '28.18'}, {'microbe_id': '5', 'stimulus_id': '3', 'evidence': 'literature', 'interaction_score': '-14.831'}]
+2025-06-30 01:42:14 [DEBUG] __main__: Batch 24 (MicrobeStimulus): extract 4 rows → harmonize 0.31ms → enqueue 0.68ms
+2025-06-30 01:42:14 [DEBUG] etl.extract:   _read_file: starting new batch for microbe_stimulus.tsv
+2025-06-30 01:42:14 [DEBUG] etl.extract:   _read_file: batch full (4 rows), yielding
+2025-06-30 01:42:14 [DEBUG] etl.extract:   yielding batch of 4 rows from microbe_stimulus.tsv
+2025-06-30 01:42:14 [DEBUG] etl.harmonize: ROW 0: finished harmonization → {'microbe_id': '1', 'stimulus_id': '4', 'evidence': 'inferred', 'interaction_score': '21.069'}
+2025-06-30 01:42:14 [DEBUG] etl.harmonize: ROW 1: finished harmonization → {'microbe_id': '1', 'stimulus_id': '3', 'evidence': 'literature', 'interaction_score': '8.587'}
+2025-06-30 01:42:14 [DEBUG] etl.harmonize: ROW 2: finished harmonization → {'microbe_id': '1', 'stimulus_id': '3', 'evidence': 'inferred', 'interaction_score': '38.844'}
+2025-06-30 01:42:14 [DEBUG] etl.harmonize: ROW 3: finished harmonization → {'microbe_id': '1', 'stimulus_id': '1', 'evidence': 'mgnify', 'interaction_score': '-25.956'}
+2025-06-30 01:42:14 [DEBUG] etl.load: Queued 4 rows → MicrobeStimulus
+2025-06-30 01:42:14 [DEBUG] etl.load:  enqueue: putting batch of 4 rows → MicrobeStimulus
+	[{'microbe_id': '1', 'stimulus_id': '4', 'evidence': 'inferred', 'interaction_score': '21.069'}, {'microbe_id': '1', 'stimulus_id': '3', 'evidence': 'literature', 'interaction_score': '8.587'}, {'microbe_id': '1', 'stimulus_id': '3', 'evidence': 'inferred', 'interaction_score': '38.844'}, {'microbe_id': '1', 'stimulus_id': '1', 'evidence': 'mgnify', 'interaction_score': '-25.956'}]
+2025-06-30 01:42:14 [DEBUG] __main__: Batch 25 (MicrobeStimulus): extract 4 rows → harmonize 0.53ms → enqueue 0.12ms
+2025-06-30 01:42:14 [INFO] etl.extract: ✅  Finished microbe_stimulus.tsv
+2025-06-30 01:42:14 [INFO] etl.extract: ⏳  Extracting sample_microbe.tsv → SampleMicrobe
+2025-06-30 01:42:14 [DEBUG] etl.extract: _read_file: opening /home/anr/apps/AlethiOmics/raw_data/synthetic_runs/20250630-014211/sample_microbe.tsv for table SampleMicrobe
+2025-06-30 01:42:14 [DEBUG] etl.extract:   _read_file: starting new batch for sample_microbe.tsv
+2025-06-30 01:42:14 [DEBUG] etl.extract:   _read_file: batch full (4 rows), yielding
+2025-06-30 01:42:14 [DEBUG] etl.extract:   yielding batch of 4 rows from sample_microbe.tsv
+2025-06-30 01:42:14 [DEBUG] etl.harmonize: ROW 0: finished harmonization → {'sample_id': '1', 'microbe_id': '2', 'evidence': 'mgnify', 'relative_abundance': '211.2706'}
+2025-06-30 01:42:14 [DEBUG] etl.harmonize: ROW 1: finished harmonization → {'sample_id': '2', 'microbe_id': '2', 'evidence': 'mgnify', 'relative_abundance': '29.0239'}
+2025-06-30 01:42:14 [DEBUG] etl.harmonize: ROW 2: finished harmonization → {'sample_id': '3', 'microbe_id': '2', 'evidence': 'inferred', 'relative_abundance': '159.6933'}
+2025-06-30 01:42:14 [DEBUG] etl.harmonize: ROW 3: finished harmonization → {'sample_id': '4', 'microbe_id': '2', 'evidence': 'literature', 'relative_abundance': '52.7344'}
+2025-06-30 01:42:14 [DEBUG] etl.load: Queued 4 rows → SampleMicrobe
+2025-06-30 01:42:14 [DEBUG] etl.load:  enqueue: putting batch of 4 rows → SampleMicrobe
+	[{'sample_id': '1', 'microbe_id': '2', 'evidence': 'mgnify', 'relative_abundance': '211.2706'}, {'sample_id': '2', 'microbe_id': '2', 'evidence': 'mgnify', 'relative_abundance': '29.0239'}, {'sample_id': '3', 'microbe_id': '2', 'evidence': 'inferred', 'relative_abundance': '159.6933'}, {'sample_id': '4', 'microbe_id': '2', 'evidence': 'literature', 'relative_abundance': '52.7344'}]
+2025-06-30 01:42:14 [DEBUG] __main__: Batch 26 (SampleMicrobe): extract 4 rows → harmonize 0.24ms → enqueue 0.11ms
+2025-06-30 01:42:14 [DEBUG] etl.extract:   _read_file: starting new batch for sample_microbe.tsv
+2025-06-30 01:42:14 [DEBUG] etl.extract:   _read_file: batch full (4 rows), yielding
+2025-06-30 01:42:14 [DEBUG] etl.extract:   yielding batch of 4 rows from sample_microbe.tsv
+2025-06-30 01:42:14 [DEBUG] etl.harmonize: ROW 0: finished harmonization → {'sample_id': '1', 'microbe_id': '1', 'evidence': 'mgnify', 'relative_abundance': '208.4461'}
+2025-06-30 01:42:14 [DEBUG] etl.harmonize: ROW 1: finished harmonization → {'sample_id': '2', 'microbe_id': '4', 'evidence': 'inferred', 'relative_abundance': '73.357'}
+2025-06-30 01:42:14 [DEBUG] etl.harmonize: ROW 2: finished harmonization → {'sample_id': '3', 'microbe_id': '5', 'evidence': 'mgnify', 'relative_abundance': '145.1977'}
+2025-06-30 01:42:14 [DEBUG] etl.harmonize: ROW 3: finished harmonization → {'sample_id': '4', 'microbe_id': '2', 'evidence': 'inferred', 'relative_abundance': '124.9'}
+2025-06-30 01:42:14 [DEBUG] etl.load: Queued 4 rows → SampleMicrobe
+2025-06-30 01:42:14 [DEBUG] etl.load:  enqueue: putting batch of 4 rows → SampleMicrobe
+	[{'sample_id': '1', 'microbe_id': '1', 'evidence': 'mgnify', 'relative_abundance': '208.4461'}, {'sample_id': '2', 'microbe_id': '4', 'evidence': 'inferred', 'relative_abundance': '73.357'}, {'sample_id': '3', 'microbe_id': '5', 'evidence': 'mgnify', 'relative_abundance': '145.1977'}, {'sample_id': '4', 'microbe_id': '2', 'evidence': 'inferred', 'relative_abundance': '124.9'}]
+2025-06-30 01:42:14 [DEBUG] __main__: Batch 27 (SampleMicrobe): extract 4 rows → harmonize 0.23ms → enqueue 0.22ms
+2025-06-30 01:42:14 [DEBUG] etl.extract:   _read_file: starting new batch for sample_microbe.tsv
+2025-06-30 01:42:14 [DEBUG] etl.extract:   _read_file: batch full (4 rows), yielding
+2025-06-30 01:42:14 [DEBUG] etl.extract:   yielding batch of 4 rows from sample_microbe.tsv
+2025-06-30 01:42:14 [DEBUG] etl.harmonize: ROW 0: finished harmonization → {'sample_id': '1', 'microbe_id': '2', 'evidence': 'inferred', 'relative_abundance': '178.131'}
+2025-06-30 01:42:14 [DEBUG] etl.harmonize: ROW 1: finished harmonization → {'sample_id': '2', 'microbe_id': '5', 'evidence': 'literature', 'relative_abundance': '154.3501'}
+2025-06-30 01:42:14 [DEBUG] etl.harmonize: ROW 2: finished harmonization → {'sample_id': '3', 'microbe_id': '3', 'evidence': 'inferred', 'relative_abundance': '132.7899'}
+2025-06-30 01:42:14 [DEBUG] etl.harmonize: ROW 3: finished harmonization → {'sample_id': '4', 'microbe_id': '1', 'evidence': 'mgnify', 'relative_abundance': '19.969'}
+2025-06-30 01:42:14 [DEBUG] etl.load: Queued 4 rows → SampleMicrobe
+2025-06-30 01:42:14 [DEBUG] etl.load:  enqueue: putting batch of 4 rows → SampleMicrobe
+	[{'sample_id': '1', 'microbe_id': '2', 'evidence': 'inferred', 'relative_abundance': '178.131'}, {'sample_id': '2', 'microbe_id': '5', 'evidence': 'literature', 'relative_abundance': '154.3501'}, {'sample_id': '3', 'microbe_id': '3', 'evidence': 'inferred', 'relative_abundance': '132.7899'}, {'sample_id': '4', 'microbe_id': '1', 'evidence': 'mgnify', 'relative_abundance': '19.969'}]
+2025-06-30 01:42:14 [DEBUG] __main__: Batch 28 (SampleMicrobe): extract 4 rows → harmonize 0.16ms → enqueue 0.15ms
+2025-06-30 01:42:14 [DEBUG] etl.extract:   _read_file: starting new batch for sample_microbe.tsv
+2025-06-30 01:42:14 [DEBUG] etl.extract:   _read_file: batch full (4 rows), yielding
+2025-06-30 01:42:14 [DEBUG] etl.extract:   yielding batch of 4 rows from sample_microbe.tsv
+2025-06-30 01:42:14 [DEBUG] etl.harmonize: ROW 0: finished harmonization → {'sample_id': '1', 'microbe_id': '5', 'evidence': 'mgnify', 'relative_abundance': '51.1251'}
+2025-06-30 01:42:14 [DEBUG] etl.harmonize: ROW 1: finished harmonization → {'sample_id': '2', 'microbe_id': '3', 'evidence': 'literature', 'relative_abundance': '19.4247'}
+2025-06-30 01:42:14 [DEBUG] etl.load: Discovered 9 columns for Stimuli: ['id', 'iri', 'label', 'class_hint', 'chem_formula', 'smiles', 'molecular_weight', 'default_dose', 'dose_unit']
+2025-06-30 01:42:14 [DEBUG] etl.harmonize: ROW 2: finished harmonization → {'sample_id': '3', 'microbe_id': '2', 'evidence': 'inferred', 'relative_abundance': '298.885'}
+2025-06-30 01:42:14 [DEBUG] etl.harmonize: ROW 3: finished harmonization → {'sample_id': '4', 'microbe_id': '3', 'evidence': 'mgnify', 'relative_abundance': '57.5383'}
+2025-06-30 01:42:14 [DEBUG] etl.load: Queued 4 rows → SampleMicrobe
+2025-06-30 01:42:14 [DEBUG] etl.load:  enqueue: putting batch of 4 rows → SampleMicrobe
+	[{'sample_id': '1', 'microbe_id': '5', 'evidence': 'mgnify', 'relative_abundance': '51.1251'}, {'sample_id': '2', 'microbe_id': '3', 'evidence': 'literature', 'relative_abundance': '19.4247'}, {'sample_id': '3', 'microbe_id': '2', 'evidence': 'inferred', 'relative_abundance': '298.885'}, {'sample_id': '4', 'microbe_id': '3', 'evidence': 'mgnify', 'relative_abundance': '57.5383'}]
+2025-06-30 01:42:14 [DEBUG] __main__: Batch 29 (SampleMicrobe): extract 4 rows → harmonize 0.45ms → enqueue 0.11ms
+2025-06-30 01:42:14 [DEBUG] etl.extract:   _read_file: starting new batch for sample_microbe.tsv
+2025-06-30 01:42:14 [DEBUG] etl.extract:   _read_file: batch full (4 rows), yielding
+2025-06-30 01:42:14 [DEBUG] etl.extract:   yielding batch of 4 rows from sample_microbe.tsv
+2025-06-30 01:42:14 [DEBUG] etl.harmonize: ROW 0: finished harmonization → {'sample_id': '1', 'microbe_id': '4', 'evidence': 'inferred', 'relative_abundance': '288.2928'}
+2025-06-30 01:42:14 [DEBUG] etl.harmonize: ROW 1: finished harmonization → {'sample_id': '2', 'microbe_id': '3', 'evidence': 'inferred', 'relative_abundance': '61.1246'}
+2025-06-30 01:42:14 [DEBUG] etl.harmonize: ROW 2: finished harmonization → {'sample_id': '3', 'microbe_id': '5', 'evidence': 'inferred', 'relative_abundance': '157.5374'}
+2025-06-30 01:42:14 [DEBUG] etl.harmonize: ROW 3: finished harmonization → {'sample_id': '4', 'microbe_id': '3', 'evidence': 'literature', 'relative_abundance': '160.8857'}
+2025-06-30 01:42:14 [DEBUG] etl.load: Queued 4 rows → SampleMicrobe
+2025-06-30 01:42:14 [DEBUG] etl.load:  enqueue: putting batch of 4 rows → SampleMicrobe
+	[{'sample_id': '1', 'microbe_id': '4', 'evidence': 'inferred', 'relative_abundance': '288.2928'}, {'sample_id': '2', 'microbe_id': '3', 'evidence': 'inferred', 'relative_abundance': '61.1246'}, {'sample_id': '3', 'microbe_id': '5', 'evidence': 'inferred', 'relative_abundance': '157.5374'}, {'sample_id': '4', 'microbe_id': '3', 'evidence': 'literature', 'relative_abundance': '160.8857'}]
+2025-06-30 01:42:14 [DEBUG] __main__: Batch 30 (SampleMicrobe): extract 4 rows → harmonize 0.38ms → enqueue 0.11ms
+2025-06-30 01:42:14 [DEBUG] etl.extract:   _read_file: starting new batch for sample_microbe.tsv
+2025-06-30 01:42:14 [DEBUG] etl.extract:   _read_file: batch full (4 rows), yielding
+2025-06-30 01:42:14 [DEBUG] etl.extract:   yielding batch of 4 rows from sample_microbe.tsv
+2025-06-30 01:42:14 [DEBUG] etl.load:   samples keys to insert: ['chem_formula', 'class_hint', 'default_dose', 'dose_unit', 'iri', 'label', 'molecular_weight', 'smiles']
+2025-06-30 01:42:14 [DEBUG] etl.harmonize: ROW 0: finished harmonization → {'sample_id': '1', 'microbe_id': '5', 'evidence': 'mgnify', 'relative_abundance': '198.6083'}
+2025-06-30 01:42:14 [DEBUG] etl.load:   samples values: [('C4H7O2-', 'SCFA', '10', 'mM', 'CHEBI_17968', 'butyrate', '110.09', 'CCCC(=O)[O-]'), ('C3H5O2-', 'SCFA', '10', 'mM', 'CHEBI_17272', 'propionate', '73.07', 'CCC(=O)[O-]'), ('C2H3O2–', 'SCFA', '10', 'mM', 'CHEBI_30089', 'acetate', '59.04', 'CC(=O)[O-]'), ('C4H9NO2', 'neurotransmitter', '1', 'mM', 'CHEBI_16865', 'gamma-aminobutyric acid', '103.12', 'NCCCC(=O)O')]
+2025-06-30 01:42:14 [DEBUG] etl.harmonize: ROW 1: finished harmonization → {'sample_id': '2', 'microbe_id': '5', 'evidence': 'inferred', 'relative_abundance': '57.3258'}
+2025-06-30 01:42:14 [DEBUG] etl.harmonize: ROW 2: finished harmonization → {'sample_id': '3', 'microbe_id': '1', 'evidence': 'mgnify', 'relative_abundance': '65.6001'}
+2025-06-30 01:42:14 [DEBUG] etl.harmonize: ROW 3: finished harmonization → {'sample_id': '4', 'microbe_id': '4', 'evidence': 'inferred', 'relative_abundance': '251.04'}
+2025-06-30 01:42:14 [DEBUG] etl.load: Queued 4 rows → SampleMicrobe
+2025-06-30 01:42:14 [DEBUG] etl.load:  enqueue: putting batch of 4 rows → SampleMicrobe
+	[{'sample_id': '1', 'microbe_id': '5', 'evidence': 'mgnify', 'relative_abundance': '198.6083'}, {'sample_id': '2', 'microbe_id': '5', 'evidence': 'inferred', 'relative_abundance': '57.3258'}, {'sample_id': '3', 'microbe_id': '1', 'evidence': 'mgnify', 'relative_abundance': '65.6001'}, {'sample_id': '4', 'microbe_id': '4', 'evidence': 'inferred', 'relative_abundance': '251.04'}]
+2025-06-30 01:42:14 [DEBUG] __main__: Batch 31 (SampleMicrobe): extract 4 rows → harmonize 0.92ms → enqueue 0.11ms
+2025-06-30 01:42:14 [DEBUG] etl.extract:   _read_file: starting new batch for sample_microbe.tsv
+2025-06-30 01:42:14 [DEBUG] etl.extract:   _read_file: batch full (4 rows), yielding
+2025-06-30 01:42:14 [DEBUG] etl.extract:   yielding batch of 4 rows from sample_microbe.tsv
+2025-06-30 01:42:14 [DEBUG] etl.harmonize: ROW 0: finished harmonization → {'sample_id': '1', 'microbe_id': '4', 'evidence': 'mgnify', 'relative_abundance': '122.7389'}
+2025-06-30 01:42:14 [DEBUG] etl.harmonize: ROW 1: finished harmonization → {'sample_id': '2', 'microbe_id': '3', 'evidence': 'inferred', 'relative_abundance': '48.2454'}
+2025-06-30 01:42:14 [DEBUG] etl.harmonize: ROW 2: finished harmonization → {'sample_id': '3', 'microbe_id': '1', 'evidence': 'inferred', 'relative_abundance': '117.6544'}
+2025-06-30 01:42:14 [DEBUG] etl.harmonize: ROW 3: finished harmonization → {'sample_id': '4', 'microbe_id': '3', 'evidence': 'mgnify', 'relative_abundance': '33.6489'}
+2025-06-30 01:42:14 [DEBUG] etl.load: Queued 4 rows → SampleMicrobe
+2025-06-30 01:42:14 [DEBUG] etl.load:  enqueue: putting batch of 4 rows → SampleMicrobe
+	[{'sample_id': '1', 'microbe_id': '4', 'evidence': 'mgnify', 'relative_abundance': '122.7389'}, {'sample_id': '2', 'microbe_id': '3', 'evidence': 'inferred', 'relative_abundance': '48.2454'}, {'sample_id': '3', 'microbe_id': '1', 'evidence': 'inferred', 'relative_abundance': '117.6544'}, {'sample_id': '4', 'microbe_id': '3', 'evidence': 'mgnify', 'relative_abundance': '33.6489'}]
+2025-06-30 01:42:14 [DEBUG] __main__: Batch 32 (SampleMicrobe): extract 4 rows → harmonize 0.19ms → enqueue 0.10ms
+2025-06-30 01:42:14 [DEBUG] etl.extract:   _read_file: starting new batch for sample_microbe.tsv
+2025-06-30 01:42:14 [DEBUG] etl.extract:   _read_file: batch full (4 rows), yielding
+2025-06-30 01:42:14 [DEBUG] etl.extract:   yielding batch of 4 rows from sample_microbe.tsv
+2025-06-30 01:42:14 [DEBUG] etl.harmonize: ROW 0: finished harmonization → {'sample_id': '1', 'microbe_id': '5', 'evidence': 'mgnify', 'relative_abundance': '157.0334'}
+2025-06-30 01:42:14 [DEBUG] etl.harmonize: ROW 1: finished harmonization → {'sample_id': '2', 'microbe_id': '4', 'evidence': 'literature', 'relative_abundance': '60.3717'}
+2025-06-30 01:42:14 [DEBUG] etl.harmonize: ROW 2: finished harmonization → {'sample_id': '3', 'microbe_id': '1', 'evidence': 'mgnify', 'relative_abundance': '239.7533'}
+2025-06-30 01:42:14 [DEBUG] etl.harmonize: ROW 3: finished harmonization → {'sample_id': '4', 'microbe_id': '1', 'evidence': 'mgnify', 'relative_abundance': '194.8737'}
+2025-06-30 01:42:14 [DEBUG] etl.load: Queued 4 rows → SampleMicrobe
+2025-06-30 01:42:14 [DEBUG] etl.load:  enqueue: putting batch of 4 rows → SampleMicrobe
+	[{'sample_id': '1', 'microbe_id': '5', 'evidence': 'mgnify', 'relative_abundance': '157.0334'}, {'sample_id': '2', 'microbe_id': '4', 'evidence': 'literature', 'relative_abundance': '60.3717'}, {'sample_id': '3', 'microbe_id': '1', 'evidence': 'mgnify', 'relative_abundance': '239.7533'}, {'sample_id': '4', 'microbe_id': '1', 'evidence': 'mgnify', 'relative_abundance': '194.8737'}]
+2025-06-30 01:42:14 [DEBUG] __main__: Batch 33 (SampleMicrobe): extract 4 rows → harmonize 0.27ms → enqueue 0.10ms
+2025-06-30 01:42:14 [INFO] etl.extract: ✅  Finished sample_microbe.tsv
+2025-06-30 01:42:14 [INFO] etl.extract: ⏳  Extracting sample_stimulus.tsv → SampleStimulus
+2025-06-30 01:42:14 [DEBUG] etl.extract: _read_file: opening /home/anr/apps/AlethiOmics/raw_data/synthetic_runs/20250630-014211/sample_stimulus.tsv for table SampleStimulus
+2025-06-30 01:42:14 [DEBUG] etl.extract:   _read_file: starting new batch for sample_stimulus.tsv
+2025-06-30 01:42:14 [DEBUG] etl.extract:   _read_file: batch full (4 rows), yielding
+2025-06-30 01:42:14 [DEBUG] etl.extract:   yielding batch of 4 rows from sample_stimulus.tsv
+2025-06-30 01:42:14 [DEBUG] etl.harmonize: ROW 0: finished harmonization → {'sample_id': '1', 'stimulus_id': '2', 'exposure_time_hr': '202.4', 'response_marker': 'none'}
+2025-06-30 01:42:14 [DEBUG] etl.harmonize: ROW 1: finished harmonization → {'sample_id': '2', 'stimulus_id': '2', 'exposure_time_hr': '184.4', 'response_marker': 'cFos'}
+2025-06-30 01:42:14 [DEBUG] etl.harmonize: ROW 2: finished harmonization → {'sample_id': '3', 'stimulus_id': '1', 'exposure_time_hr': '112.0', 'response_marker': 'none'}
+2025-06-30 01:42:14 [DEBUG] etl.harmonize: ROW 3: finished harmonization → {'sample_id': '4', 'stimulus_id': '4', 'exposure_time_hr': '206.4', 'response_marker': 'NFkB'}
+2025-06-30 01:42:14 [DEBUG] etl.load: Queued 4 rows → SampleStimulus
+2025-06-30 01:42:14 [DEBUG] etl.load:  enqueue: putting batch of 4 rows → SampleStimulus
+	[{'sample_id': '1', 'stimulus_id': '2', 'exposure_time_hr': '202.4', 'response_marker': 'none'}, {'sample_id': '2', 'stimulus_id': '2', 'exposure_time_hr': '184.4', 'response_marker': 'cFos'}, {'sample_id': '3', 'stimulus_id': '1', 'exposure_time_hr': '112.0', 'response_marker': 'none'}, {'sample_id': '4', 'stimulus_id': '4', 'exposure_time_hr': '206.4', 'response_marker': 'NFkB'}]
+2025-06-30 01:42:14 [DEBUG] __main__: Batch 34 (SampleStimulus): extract 4 rows → harmonize 0.12ms → enqueue 0.07ms
+2025-06-30 01:42:14 [DEBUG] etl.extract:   _read_file: starting new batch for sample_stimulus.tsv
+2025-06-30 01:42:14 [DEBUG] etl.extract:   _read_file: batch full (4 rows), yielding
+2025-06-30 01:42:14 [DEBUG] etl.extract:   yielding batch of 4 rows from sample_stimulus.tsv
+2025-06-30 01:42:14 [DEBUG] etl.harmonize: ROW 0: finished harmonization → {'sample_id': '1', 'stimulus_id': '3', 'exposure_time_hr': '227.1', 'response_marker': 'MAPK'}
+2025-06-30 01:42:14 [DEBUG] etl.harmonize: ROW 1: finished harmonization → {'sample_id': '2', 'stimulus_id': '3', 'exposure_time_hr': '166.7', 'response_marker': 'none'}
+2025-06-30 01:42:14 [DEBUG] etl.harmonize: ROW 2: finished harmonization → {'sample_id': '3', 'stimulus_id': '1', 'exposure_time_hr': '205.3', 'response_marker': 'MAPK'}
+2025-06-30 01:42:14 [DEBUG] etl.harmonize: ROW 3: finished harmonization → {'sample_id': '4', 'stimulus_id': '4', 'exposure_time_hr': '152.9', 'response_marker': 'cFos'}
+2025-06-30 01:42:14 [DEBUG] etl.load: Queued 4 rows → SampleStimulus
+2025-06-30 01:42:14 [DEBUG] etl.load:  enqueue: putting batch of 4 rows → SampleStimulus
+	[{'sample_id': '1', 'stimulus_id': '3', 'exposure_time_hr': '227.1', 'response_marker': 'MAPK'}, {'sample_id': '2', 'stimulus_id': '3', 'exposure_time_hr': '166.7', 'response_marker': 'none'}, {'sample_id': '3', 'stimulus_id': '1', 'exposure_time_hr': '205.3', 'response_marker': 'MAPK'}, {'sample_id': '4', 'stimulus_id': '4', 'exposure_time_hr': '152.9', 'response_marker': 'cFos'}]
+2025-06-30 01:42:14 [DEBUG] __main__: Batch 35 (SampleStimulus): extract 4 rows → harmonize 0.13ms → enqueue 0.08ms
+2025-06-30 01:42:14 [DEBUG] etl.extract:   _read_file: starting new batch for sample_stimulus.tsv
+2025-06-30 01:42:14 [DEBUG] etl.extract:   _read_file: batch full (4 rows), yielding
+2025-06-30 01:42:14 [DEBUG] etl.extract:   yielding batch of 4 rows from sample_stimulus.tsv
+2025-06-30 01:42:14 [DEBUG] etl.harmonize: ROW 0: finished harmonization → {'sample_id': '1', 'stimulus_id': '5', 'exposure_time_hr': '33.4', 'response_marker': 'none'}
+2025-06-30 01:42:14 [DEBUG] etl.harmonize: ROW 1: finished harmonization → {'sample_id': '2', 'stimulus_id': '5', 'exposure_time_hr': '204.5', 'response_marker': 'NFkB'}
+2025-06-30 01:42:14 [DEBUG] etl.harmonize: ROW 2: finished harmonization → {'sample_id': '3', 'stimulus_id': '4', 'exposure_time_hr': '96.2', 'response_marker': 'none'}
+2025-06-30 01:42:14 [DEBUG] etl.harmonize: ROW 3: finished harmonization → {'sample_id': '4', 'stimulus_id': '2', 'exposure_time_hr': '89.2', 'response_marker': 'NFkB'}
+2025-06-30 01:42:14 [DEBUG] etl.load: Queued 4 rows → SampleStimulus
+2025-06-30 01:42:14 [DEBUG] etl.load:  enqueue: putting batch of 4 rows → SampleStimulus
+	[{'sample_id': '1', 'stimulus_id': '5', 'exposure_time_hr': '33.4', 'response_marker': 'none'}, {'sample_id': '2', 'stimulus_id': '5', 'exposure_time_hr': '204.5', 'response_marker': 'NFkB'}, {'sample_id': '3', 'stimulus_id': '4', 'exposure_time_hr': '96.2', 'response_marker': 'none'}, {'sample_id': '4', 'stimulus_id': '2', 'exposure_time_hr': '89.2', 'response_marker': 'NFkB'}]
+2025-06-30 01:42:14 [DEBUG] __main__: Batch 36 (SampleStimulus): extract 4 rows → harmonize 0.12ms → enqueue 0.06ms
+2025-06-30 01:42:14 [DEBUG] etl.extract:   _read_file: starting new batch for sample_stimulus.tsv
+2025-06-30 01:42:14 [DEBUG] etl.extract:   _read_file: batch full (4 rows), yielding
+2025-06-30 01:42:14 [DEBUG] etl.extract:   yielding batch of 4 rows from sample_stimulus.tsv
+2025-06-30 01:42:14 [DEBUG] etl.harmonize: ROW 0: finished harmonization → {'sample_id': '1', 'stimulus_id': '3', 'exposure_time_hr': '170.4', 'response_marker': 'none'}
+2025-06-30 01:42:14 [DEBUG] etl.harmonize: ROW 1: finished harmonization → {'sample_id': '2', 'stimulus_id': '5', 'exposure_time_hr': '188.5', 'response_marker': 'cFos'}
+2025-06-30 01:42:14 [DEBUG] etl.harmonize: ROW 2: finished harmonization → {'sample_id': '3', 'stimulus_id': '2', 'exposure_time_hr': '115.2', 'response_marker': 'NFkB'}
+2025-06-30 01:42:14 [DEBUG] etl.harmonize: ROW 3: finished harmonization → {'sample_id': '4', 'stimulus_id': '4', 'exposure_time_hr': '195.6', 'response_marker': 'IL6'}
+2025-06-30 01:42:14 [DEBUG] etl.load: Queued 4 rows → SampleStimulus
+2025-06-30 01:42:14 [DEBUG] etl.load:  enqueue: putting batch of 4 rows → SampleStimulus
+	[{'sample_id': '1', 'stimulus_id': '3', 'exposure_time_hr': '170.4', 'response_marker': 'none'}, {'sample_id': '2', 'stimulus_id': '5', 'exposure_time_hr': '188.5', 'response_marker': 'cFos'}, {'sample_id': '3', 'stimulus_id': '2', 'exposure_time_hr': '115.2', 'response_marker': 'NFkB'}, {'sample_id': '4', 'stimulus_id': '4', 'exposure_time_hr': '195.6', 'response_marker': 'IL6'}]
+2025-06-30 01:42:14 [DEBUG] __main__: Batch 37 (SampleStimulus): extract 4 rows → harmonize 0.11ms → enqueue 0.06ms
+2025-06-30 01:42:14 [DEBUG] etl.extract:   _read_file: starting new batch for sample_stimulus.tsv
+2025-06-30 01:42:14 [DEBUG] etl.extract:   _read_file: batch full (4 rows), yielding
+2025-06-30 01:42:14 [DEBUG] etl.extract:   yielding batch of 4 rows from sample_stimulus.tsv
+2025-06-30 01:42:14 [DEBUG] etl.harmonize: ROW 0: finished harmonization → {'sample_id': '1', 'stimulus_id': '5', 'exposure_time_hr': '17.7', 'response_marker': 'IL6'}
+2025-06-30 01:42:14 [DEBUG] etl.harmonize: ROW 1: finished harmonization → {'sample_id': '2', 'stimulus_id': '1', 'exposure_time_hr': '87.2', 'response_marker': 'NFkB'}
+2025-06-30 01:42:14 [DEBUG] etl.harmonize: ROW 2: finished harmonization → {'sample_id': '3', 'stimulus_id': '3', 'exposure_time_hr': '186.5', 'response_marker': 'MAPK'}
+2025-06-30 01:42:14 [DEBUG] etl.harmonize: ROW 3: finished harmonization → {'sample_id': '4', 'stimulus_id': '1', 'exposure_time_hr': '216.0', 'response_marker': 'none'}
+2025-06-30 01:42:14 [DEBUG] etl.load: Queued 4 rows → SampleStimulus
+2025-06-30 01:42:14 [DEBUG] etl.load:  enqueue: putting batch of 4 rows → SampleStimulus
+	[{'sample_id': '1', 'stimulus_id': '5', 'exposure_time_hr': '17.7', 'response_marker': 'IL6'}, {'sample_id': '2', 'stimulus_id': '1', 'exposure_time_hr': '87.2', 'response_marker': 'NFkB'}, {'sample_id': '3', 'stimulus_id': '3', 'exposure_time_hr': '186.5', 'response_marker': 'MAPK'}, {'sample_id': '4', 'stimulus_id': '1', 'exposure_time_hr': '216.0', 'response_marker': 'none'}]
+2025-06-30 01:42:14 [DEBUG] __main__: Batch 38 (SampleStimulus): extract 4 rows → harmonize 0.14ms → enqueue 0.07ms
+2025-06-30 01:42:14 [DEBUG] etl.extract:   _read_file: starting new batch for sample_stimulus.tsv
+2025-06-30 01:42:14 [DEBUG] etl.extract:   _read_file: batch full (4 rows), yielding
+2025-06-30 01:42:14 [DEBUG] etl.extract:   yielding batch of 4 rows from sample_stimulus.tsv
+2025-06-30 01:42:14 [DEBUG] etl.harmonize: ROW 0: finished harmonization → {'sample_id': '1', 'stimulus_id': '1', 'exposure_time_hr': '224.2', 'response_marker': 'MAPK'}
+2025-06-30 01:42:14 [DEBUG] etl.harmonize: ROW 1: finished harmonization → {'sample_id': '2', 'stimulus_id': '5', 'exposure_time_hr': '3.8', 'response_marker': 'NFkB'}
+2025-06-30 01:42:14 [DEBUG] etl.harmonize: ROW 2: finished harmonization → {'sample_id': '3', 'stimulus_id': '2', 'exposure_time_hr': '222.2', 'response_marker': 'none'}
+2025-06-30 01:42:14 [DEBUG] etl.harmonize: ROW 3: finished harmonization → {'sample_id': '4', 'stimulus_id': '3', 'exposure_time_hr': '57.8', 'response_marker': 'MAPK'}
+2025-06-30 01:42:14 [DEBUG] etl.load: Queued 4 rows → SampleStimulus
+2025-06-30 01:42:14 [DEBUG] etl.load:  enqueue: putting batch of 4 rows → SampleStimulus
+	[{'sample_id': '1', 'stimulus_id': '1', 'exposure_time_hr': '224.2', 'response_marker': 'MAPK'}, {'sample_id': '2', 'stimulus_id': '5', 'exposure_time_hr': '3.8', 'response_marker': 'NFkB'}, {'sample_id': '3', 'stimulus_id': '2', 'exposure_time_hr': '222.2', 'response_marker': 'none'}, {'sample_id': '4', 'stimulus_id': '3', 'exposure_time_hr': '57.8', 'response_marker': 'MAPK'}]
+2025-06-30 01:42:14 [DEBUG] __main__: Batch 39 (SampleStimulus): extract 4 rows → harmonize 0.11ms → enqueue 0.06ms
+2025-06-30 01:42:14 [DEBUG] etl.extract:   _read_file: starting new batch for sample_stimulus.tsv
+2025-06-30 01:42:14 [DEBUG] etl.extract:   _read_file: batch full (4 rows), yielding
+2025-06-30 01:42:14 [DEBUG] etl.extract:   yielding batch of 4 rows from sample_stimulus.tsv
+2025-06-30 01:42:14 [DEBUG] etl.harmonize: ROW 0: finished harmonization → {'sample_id': '1', 'stimulus_id': '5', 'exposure_time_hr': '218.9', 'response_marker': 'none'}
+2025-06-30 01:42:14 [DEBUG] etl.harmonize: ROW 1: finished harmonization → {'sample_id': '2', 'stimulus_id': '5', 'exposure_time_hr': '120.5', 'response_marker': 'NFkB'}
+2025-06-30 01:42:14 [DEBUG] etl.harmonize: ROW 2: finished harmonization → {'sample_id': '3', 'stimulus_id': '4', 'exposure_time_hr': '20.5', 'response_marker': 'cFos'}
+2025-06-30 01:42:14 [DEBUG] etl.harmonize: ROW 3: finished harmonization → {'sample_id': '4', 'stimulus_id': '2', 'exposure_time_hr': '120.4', 'response_marker': 'cFos'}
+2025-06-30 01:42:14 [DEBUG] etl.load: Queued 4 rows → SampleStimulus
+2025-06-30 01:42:14 [DEBUG] etl.load:  enqueue: putting batch of 4 rows → SampleStimulus
+	[{'sample_id': '1', 'stimulus_id': '5', 'exposure_time_hr': '218.9', 'response_marker': 'none'}, {'sample_id': '2', 'stimulus_id': '5', 'exposure_time_hr': '120.5', 'response_marker': 'NFkB'}, {'sample_id': '3', 'stimulus_id': '4', 'exposure_time_hr': '20.5', 'response_marker': 'cFos'}, {'sample_id': '4', 'stimulus_id': '2', 'exposure_time_hr': '120.4', 'response_marker': 'cFos'}]
+2025-06-30 01:42:14 [DEBUG] __main__: Batch 40 (SampleStimulus): extract 4 rows → harmonize 0.11ms → enqueue 0.06ms
+2025-06-30 01:42:14 [DEBUG] etl.extract:   _read_file: starting new batch for sample_stimulus.tsv
+2025-06-30 01:42:14 [DEBUG] etl.extract:   _read_file: batch full (4 rows), yielding
+2025-06-30 01:42:14 [DEBUG] etl.extract:   yielding batch of 4 rows from sample_stimulus.tsv
+2025-06-30 01:42:14 [DEBUG] etl.harmonize: ROW 0: finished harmonization → {'sample_id': '1', 'stimulus_id': '4', 'exposure_time_hr': '171.6', 'response_marker': 'cFos'}
+2025-06-30 01:42:14 [DEBUG] etl.harmonize: ROW 1: finished harmonization → {'sample_id': '2', 'stimulus_id': '1', 'exposure_time_hr': '77.9', 'response_marker': 'MAPK'}
+2025-06-30 01:42:14 [DEBUG] etl.harmonize: ROW 2: finished harmonization → {'sample_id': '3', 'stimulus_id': '5', 'exposure_time_hr': '48.1', 'response_marker': 'IL6'}
+2025-06-30 01:42:14 [DEBUG] etl.harmonize: ROW 3: finished harmonization → {'sample_id': '4', 'stimulus_id': '3', 'exposure_time_hr': '158.0', 'response_marker': 'cFos'}
+2025-06-30 01:42:14 [DEBUG] etl.load: Queued 4 rows → SampleStimulus
+2025-06-30 01:42:14 [DEBUG] etl.load:  enqueue: putting batch of 4 rows → SampleStimulus
+	[{'sample_id': '1', 'stimulus_id': '4', 'exposure_time_hr': '171.6', 'response_marker': 'cFos'}, {'sample_id': '2', 'stimulus_id': '1', 'exposure_time_hr': '77.9', 'response_marker': 'MAPK'}, {'sample_id': '3', 'stimulus_id': '5', 'exposure_time_hr': '48.1', 'response_marker': 'IL6'}, {'sample_id': '4', 'stimulus_id': '3', 'exposure_time_hr': '158.0', 'response_marker': 'cFos'}]
+2025-06-30 01:42:14 [DEBUG] __main__: Batch 41 (SampleStimulus): extract 4 rows → harmonize 0.16ms → enqueue 0.06ms
+2025-06-30 01:42:14 [INFO] etl.extract: ✅  Finished sample_stimulus.tsv
+2025-06-30 01:42:14 [DEBUG] etl.extract: Skipping unrecognised file /home/anr/apps/AlethiOmics/raw_data/E-MTAB-11468/E-MTAB-11468.condensed-sdrf.tsv
+2025-06-30 01:42:14 [DEBUG] etl.extract: Skipping unrecognised file /home/anr/apps/AlethiOmics/raw_data/E-MTAB-11468/E-MTAB-11468-raw-counts.tsv
+2025-06-30 01:42:14 [DEBUG] etl.extract: Skipping unrecognised file /home/anr/apps/AlethiOmics/raw_data/NCBI_GEO/GSE208438/GSE208438_SUPP/SA05/2.2.filtered_feature_bc_matrix/barcodes.tsv
+2025-06-30 01:42:14 [DEBUG] etl.extract: Skipping unrecognised file /home/anr/apps/AlethiOmics/raw_data/NCBI_GEO/GSE208438/GSE208438_SUPP/SA05/2.2.filtered_feature_bc_matrix/features.tsv
+2025-06-30 01:42:14 [INFO] __main__: 📥 Flushing data into live DB...
+2025-06-30 01:42:14 [DEBUG] etl.load:  flush: waiting for all enqueued batches to finish…
+2025-06-30 01:42:14 [DEBUG] etl.load: >>> flush: unfinished tasks -> 41
+2025-06-30 01:42:14 [DEBUG] etl.load:  Stimuli ← 4 rows (cols=8)
+2025-06-30 01:42:14 [DEBUG] etl.load:  _insert_batch: [ThreadPoolExecutor-0_0] _insert_batch COMMIT for Stimuli (4 rows) in 0.06s
+2025-06-30 01:42:14 [DEBUG] etl.load:  worker: [loader‑1] inserted 4 rows into Stimuli
+2025-06-30 01:42:14 [DEBUG] etl.load: Queue size after task_done(): 40
+2025-06-30 01:42:14 [DEBUG] etl.load: Queue size before get(): 40
+2025-06-30 01:42:14 [DEBUG] etl.load:  worker: [loader‑1] picked up 1 rows → Stimuli
+2025-06-30 01:42:14 [DEBUG] etl.load:  _insert_batch: [ThreadPoolExecutor-1_0] _insert_batch START → 1 rows into Stimuli
+2025-06-30 01:42:14 [DEBUG] etl.load:   samples keys to insert: ['chem_formula', 'class_hint', 'default_dose', 'dose_unit', 'iri', 'label', 'molecular_weight', 'smiles']
+2025-06-30 01:42:14 [DEBUG] etl.load:   samples values: [('', 'cytokine', '0.1', 'mM', 'PR_000026791', 'tumour necrosis factor-alpha', '17.3', '')]
+2025-06-30 01:42:14 [DEBUG] etl.load:  Stimuli ← 1 rows (cols=8)
+2025-06-30 01:42:14 [DEBUG] etl.load:  _insert_batch: [ThreadPoolExecutor-1_0] _insert_batch COMMIT for Stimuli (1 rows) in 0.02s
+2025-06-30 01:42:14 [DEBUG] etl.load:  worker: [loader‑1] inserted 1 rows into Stimuli
+2025-06-30 01:42:14 [DEBUG] etl.load: Queue size after task_done(): 39
+2025-06-30 01:42:14 [DEBUG] etl.load: Queue size before get(): 39
+2025-06-30 01:42:14 [DEBUG] etl.load:  worker: [loader‑1] picked up 4 rows → Taxa
+2025-06-30 01:42:14 [DEBUG] etl.load:  _insert_batch: [ThreadPoolExecutor-2_0] _insert_batch START → 4 rows into Taxa
+2025-06-30 01:42:14 [DEBUG] etl.load: Discovered 9 columns for Taxa: ['id', 'iri', 'species_name', 'kingdom', 'ranking', 'gc_content', 'genome_length', 'habitat', 'pathogenicity']
+2025-06-30 01:42:14 [DEBUG] etl.load:   samples keys to insert: ['gc_content', 'genome_length', 'habitat', 'iri', 'kingdom', 'pathogenicity', 'ranking', 'species_name']
+2025-06-30 01:42:14 [DEBUG] etl.load:   samples values: [('44.98', '3260772', 'human body', 'NCBITaxon_9606', 'Eukaryota', 'commensal', 'Species', 'Homo sapiens'), ('36.76', '5087486', 'intestine', 'NCBITaxon_226186', 'Bacteria', 'pathogen', 'Species', 'B. thetaiotaomicron'), ('48.17', '5123702', 'intestine', 'NCBITaxon_1351', 'Bacteria', 'commensal', 'Species', 'E. faecalis'), ('38.6', '4148227', 'intestine', 'NCBITaxon_562', 'Bacteria', 'opportunist', 'Species', 'E. coli')]
+2025-06-30 01:42:14 [DEBUG] etl.load:  Taxa ← 4 rows (cols=8)
+2025-06-30 01:42:14 [DEBUG] etl.load:  _insert_batch: [ThreadPoolExecutor-2_0] _insert_batch COMMIT for Taxa (4 rows) in 0.03s
+2025-06-30 01:42:14 [DEBUG] etl.load:  worker: [loader‑1] inserted 4 rows into Taxa
+2025-06-30 01:42:14 [DEBUG] etl.load: Queue size after task_done(): 38
+2025-06-30 01:42:14 [DEBUG] etl.load: Queue size before get(): 38
+2025-06-30 01:42:14 [DEBUG] etl.load:  worker: [loader‑1] picked up 4 rows → Taxa
+2025-06-30 01:42:14 [DEBUG] etl.load:  _insert_batch: [ThreadPoolExecutor-3_0] _insert_batch START → 4 rows into Taxa
+2025-06-30 01:42:14 [DEBUG] etl.load:   samples keys to insert: ['gc_content', 'genome_length', 'habitat', 'iri', 'kingdom', 'pathogenicity', 'ranking', 'species_name']
+2025-06-30 01:42:14 [DEBUG] etl.load:   samples values: [('57.91', '3019144', 'intestine', 'NCBITaxon_47715', 'Bacteria', 'opportunist', 'Species', 'L. rhamnosus'), ('39.13', '4498961', 'intestine', 'NCBITaxon_853', 'Bacteria', 'pathogen', 'Species', 'F. prausnitzii'), ('59.32', '2007434', 'intestine', 'NCBITaxon_226186', 'Bacteria', 'pathogen', 'Strain', 'Bt-VPI5482'), ('40.61', '3105455', 'intestine', 'NCBITaxon_474186', 'Bacteria', 'pathogen', 'Strain', 'Ef-OG1RF')]
+2025-06-30 01:42:14 [DEBUG] etl.load:  Taxa ← 4 rows (cols=8)
+2025-06-30 01:42:14 [DEBUG] etl.load:  _insert_batch: [ThreadPoolExecutor-3_0] _insert_batch COMMIT for Taxa (4 rows) in 0.02s
+2025-06-30 01:42:14 [DEBUG] etl.load:  worker: [loader‑1] inserted 4 rows into Taxa
+2025-06-30 01:42:14 [DEBUG] etl.load: Queue size after task_done(): 37
+2025-06-30 01:42:14 [DEBUG] etl.load: Queue size before get(): 37
+2025-06-30 01:42:14 [DEBUG] etl.load:  worker: [loader‑1] picked up 3 rows → Taxa
+2025-06-30 01:42:14 [DEBUG] etl.load:  _insert_batch: [ThreadPoolExecutor-4_0] _insert_batch START → 3 rows into Taxa
+2025-06-30 01:42:14 [DEBUG] etl.load:   samples keys to insert: ['gc_content', 'genome_length', 'habitat', 'iri', 'kingdom', 'pathogenicity', 'ranking', 'species_name']
+2025-06-30 01:42:14 [DEBUG] etl.load:   samples values: [('47.08', '3084074', 'intestine', 'NCBITaxon_83333', 'Bacteria', 'pathogen', 'Strain', 'Ecoli-K12'), ('55.09', '4908882', 'intestine', 'NCBITaxon_568703', 'Bacteria', 'opportunist', 'Strain', 'LGG'), ('55.97', '4400720', 'intestine', 'NCBITaxon_853', 'Bacteria', 'commensal', 'Strain', 'Fp-A2-165')]
+2025-06-30 01:42:14 [DEBUG] etl.load:  Taxa ← 3 rows (cols=8)
+2025-06-30 01:42:14 [DEBUG] etl.load:  _insert_batch: [ThreadPoolExecutor-4_0] _insert_batch COMMIT for Taxa (3 rows) in 0.02s
+2025-06-30 01:42:14 [DEBUG] etl.load:  worker: [loader‑1] inserted 3 rows into Taxa
+2025-06-30 01:42:14 [DEBUG] etl.load: Queue size after task_done(): 36
+2025-06-30 01:42:14 [DEBUG] etl.load: Queue size before get(): 36
+2025-06-30 01:42:14 [DEBUG] etl.load:  worker: [loader‑1] picked up 4 rows → OntologyTerms
+2025-06-30 01:42:14 [DEBUG] etl.load:  _insert_batch: [ThreadPoolExecutor-5_0] _insert_batch START → 4 rows into OntologyTerms
+2025-06-30 01:42:14 [DEBUG] etl.load: Discovered 7 columns for OntologyTerms: ['id', 'iri', 'label', 'ontology', 'term_definition', 'synonyms', 'onto_version']
+2025-06-30 01:42:14 [DEBUG] etl.load:   samples keys to insert: ['iri', 'label', 'onto_version', 'ontology', 'synonyms', 'term_definition']
+2025-06-30 01:42:14 [DEBUG] etl.load:   samples values: [('CL_0000127', 'astrocyte', '2025-06', 'CL', '["astrocyte_syn0", "astrocyte_syn1"]', 'Definition of astrocyte'), ('CL_0000540', 'microglial cell', '2025-06', 'CL', '["microglial cell_syn0", "microglial cell_syn1"]', 'Definition of microglial cell'), ('CL_0001050', 'enterocyte', '2025-06', 'CL', '["enterocyte_syn0", "enterocyte_syn1"]', 'Definition of enterocyte'), ('CL_0002608', 'intestinal tuft cell', '2025-06', 'CL', '["intestinal tuft cell_syn0", "intestinal tuft cell_syn1"]', 'Definition of intestinal tuft cell')]
+2025-06-30 01:42:14 [DEBUG] etl.load:  OntologyTerms ← 4 rows (cols=6)
+2025-06-30 01:42:14 [DEBUG] etl.load:  _insert_batch: [ThreadPoolExecutor-5_0] _insert_batch COMMIT for OntologyTerms (4 rows) in 0.04s
+2025-06-30 01:42:14 [DEBUG] etl.load:  worker: [loader‑1] inserted 4 rows into OntologyTerms
+2025-06-30 01:42:14 [DEBUG] etl.load: Queue size after task_done(): 35
+2025-06-30 01:42:14 [DEBUG] etl.load: Queue size before get(): 35
+2025-06-30 01:42:14 [DEBUG] etl.load:  worker: [loader‑1] picked up 4 rows → OntologyTerms
+2025-06-30 01:42:14 [DEBUG] etl.load:  _insert_batch: [ThreadPoolExecutor-6_0] _insert_batch START → 4 rows into OntologyTerms
+2025-06-30 01:42:14 [DEBUG] etl.load:   samples keys to insert: ['iri', 'label', 'onto_version', 'ontology', 'synonyms', 'term_definition']
+2025-06-30 01:42:14 [DEBUG] etl.load:   samples values: [('CL_0000091', 'brain endothelial cell', '2025-06', 'CL', '["brain endothelial cell_syn0", "brain endothelial cell_syn1"]', 'Definition of brain endothelial cell'), ('CL_0000679', 'dopaminergic neuron', '2025-06', 'CL', '["dopaminergic neuron_syn0", "dopaminergic neuron_syn1"]', 'Definition of dopaminergic neuron'), ('CL_0000584', 'GABAergic interneuron', '2025-06', 'CL', '["GABAergic interneuron_syn0", "GABAergic interneuron_syn1"]', 'Definition of GABAergic interneuron'), ('UBERON_0001155', 'colon', '2025-06', 'UBERON', '["colon_syn0", "colon_syn1"]', 'Definition of colon')]
+2025-06-30 01:42:14 [DEBUG] etl.load:  OntologyTerms ← 4 rows (cols=6)
+2025-06-30 01:42:14 [DEBUG] etl.load:  _insert_batch: [ThreadPoolExecutor-6_0] _insert_batch COMMIT for OntologyTerms (4 rows) in 0.02s
+2025-06-30 01:42:14 [DEBUG] etl.load:  worker: [loader‑1] inserted 4 rows into OntologyTerms
+2025-06-30 01:42:14 [DEBUG] etl.load: Queue size after task_done(): 34
+2025-06-30 01:42:14 [DEBUG] etl.load: Queue size before get(): 34
+2025-06-30 01:42:14 [DEBUG] etl.load:  worker: [loader‑1] picked up 2 rows → OntologyTerms
+2025-06-30 01:42:14 [DEBUG] etl.load:  _insert_batch: [ThreadPoolExecutor-7_0] _insert_batch START → 2 rows into OntologyTerms
+2025-06-30 01:42:14 [DEBUG] etl.load:   samples keys to insert: ['iri', 'label', 'onto_version', 'ontology', 'synonyms', 'term_definition']
+2025-06-30 01:42:14 [DEBUG] etl.load:   samples values: [('UBERON_0002108', 'small intestine', '2025-06', 'UBERON', '["small intestine_syn0", "small intestine_syn1"]', 'Definition of small intestine'), ('UBERON_0000955', 'brain', '2025-06', 'UBERON', '["brain_syn0", "brain_syn1"]', 'Definition of brain')]
+2025-06-30 01:42:14 [DEBUG] etl.load:  OntologyTerms ← 2 rows (cols=6)
+2025-06-30 01:42:14 [DEBUG] etl.load:  _insert_batch: [ThreadPoolExecutor-7_0] _insert_batch COMMIT for OntologyTerms (2 rows) in 0.01s
+2025-06-30 01:42:14 [DEBUG] etl.load:  worker: [loader‑1] inserted 2 rows into OntologyTerms
+2025-06-30 01:42:14 [DEBUG] etl.load: Queue size after task_done(): 33
+2025-06-30 01:42:14 [DEBUG] etl.load: Queue size before get(): 33
+2025-06-30 01:42:14 [DEBUG] etl.load:  worker: [loader‑1] picked up 4 rows → Studies
+2025-06-30 01:42:14 [DEBUG] etl.load:  _insert_batch: [ThreadPoolExecutor-8_0] _insert_batch START → 4 rows into Studies
+2025-06-30 01:42:14 [DEBUG] etl.load: Discovered 8 columns for Studies: ['id', 'iri', 'title', 'source_repo', 'publication_date', 'study_type', 'num_samples', 'contact_email']
+2025-06-30 01:42:14 [DEBUG] etl.load:   samples keys to insert: ['contact_email', 'iri', 'num_samples', 'publication_date', 'source_repo', 'study_type', 'title']
+2025-06-30 01:42:14 [DEBUG] etl.load:   samples values: [('e-mtab-84764@example.org', 'E-MTAB-84764', '5', '2020-11-29', 'ArrayExpress', 'transcriptomic', 'Synthetic gut-brain experiment E-MTAB-84764'), ('e-mtab-92724@example.org', 'E-MTAB-92724', '5', '2011-07-13', 'NCBI GEO', 'proteomic', 'Synthetic gut-brain experiment E-MTAB-92724'), ('e-mtab-25623@example.org', 'E-MTAB-25623', '5', '2018-01-22', 'LOCAL', 'transcriptomic', 'Synthetic gut-brain experiment E-MTAB-25623'), ('e-mtab-48186@example.org', 'E-MTAB-48186', '5', '2022-09-23', 'NCBI GEO', 'transcriptomic', 'Synthetic gut-brain experiment E-MTAB-48186')]
+2025-06-30 01:42:14 [DEBUG] etl.load:  Studies ← 4 rows (cols=7)
+2025-06-30 01:42:14 [DEBUG] etl.load:  _insert_batch: [ThreadPoolExecutor-8_0] _insert_batch COMMIT for Studies (4 rows) in 0.03s
+2025-06-30 01:42:14 [DEBUG] etl.load:  worker: [loader‑1] inserted 4 rows into Studies
+2025-06-30 01:42:14 [DEBUG] etl.load: Queue size after task_done(): 32
+2025-06-30 01:42:14 [DEBUG] etl.load: Queue size before get(): 32
+2025-06-30 01:42:14 [DEBUG] etl.load:  worker: [loader‑1] picked up 4 rows → Studies
+2025-06-30 01:42:14 [DEBUG] etl.load:  _insert_batch: [ThreadPoolExecutor-9_0] _insert_batch START → 4 rows into Studies
+2025-06-30 01:42:14 [DEBUG] etl.load:   samples keys to insert: ['contact_email', 'iri', 'num_samples', 'publication_date', 'source_repo', 'study_type', 'title']
+2025-06-30 01:42:14 [DEBUG] etl.load:   samples values: [('e-mtab-77361@example.org', 'E-MTAB-77361', '5', '2020-05-07', 'ArrayExpress', 'multiomic', 'Synthetic gut-brain experiment E-MTAB-77361'), ('e-mtab-41503@example.org', 'E-MTAB-41503', '5', '2013-10-27', 'ArrayExpress', 'multiomic', 'Synthetic gut-brain experiment E-MTAB-41503'), ('e-mtab-93598@example.org', 'E-MTAB-93598', '5', '2020-02-04', 'NCBI GEO', 'transcriptomic', 'Synthetic gut-brain experiment E-MTAB-93598'), ('e-mtab-63027@example.org', 'E-MTAB-63027', '5', '2022-09-23', 'NCBI GEO', 'multiomic', 'Synthetic gut-brain experiment E-MTAB-63027')]
+2025-06-30 01:42:14 [DEBUG] etl.load:  Studies ← 4 rows (cols=7)
+2025-06-30 01:42:14 [DEBUG] etl.load:  _insert_batch: [ThreadPoolExecutor-9_0] _insert_batch COMMIT for Studies (4 rows) in 0.02s
+2025-06-30 01:42:14 [DEBUG] etl.load:  worker: [loader‑1] inserted 4 rows into Studies
+2025-06-30 01:42:14 [DEBUG] etl.load: Queue size after task_done(): 31
+2025-06-30 01:42:14 [DEBUG] etl.load: Queue size before get(): 31
+2025-06-30 01:42:14 [DEBUG] etl.load:  worker: [loader‑1] picked up 4 rows → Microbes
+2025-06-30 01:42:14 [DEBUG] etl.load:  _insert_batch: [ThreadPoolExecutor-10_0] _insert_batch START → 4 rows into Microbes
+2025-06-30 01:42:14 [DEBUG] etl.load: Discovered 13 columns for Microbes: ['id', 'taxon_iri', 'strain_name', 'culture_collection', 'genome_assembly_accession', 'genome_size_bp', 'oxygen_requirement', 'habitat', 'optimal_growth_temp', 'doubling_time', 'metabolic_profile_iri', 'abundance_index', 'prevalence']
+2025-06-30 01:42:14 [DEBUG] etl.load:   samples keys to insert: ['abundance_index', 'culture_collection', 'doubling_time', 'genome_assembly_accession', 'genome_size_bp', 'habitat', 'metabolic_profile_iri', 'optimal_growth_temp', 'oxygen_requirement', 'prevalence', 'strain_name', 'taxon_iri']
+2025-06-30 01:42:14 [DEBUG] etl.load:   samples values: [('9.5529', 'DSMZ:8307', '0.38', 'GCF_1051635.5', '4142527', 'oral cavity', 'KEGG:map9805', '44.9', 'anaerobe', '19', 'Bt-VPI5482', 'NCBITaxon_226186'), ('76.9886', 'DSMZ:8978', '3.11', 'GCF_4692385.6', '4022332', 'skin', 'KEGG:map9764', '44.8', 'facultative', '8', 'Ef-OG1RF', 'NCBITaxon_474186'), ('87.7857', 'DSMZ:3692', '1.74', 'GCF_7607074.1', '3431489', 'soil', 'KEGG:map9528', '41.0', 'facultative', '29', 'Ecoli-K12', 'NCBITaxon_83333'), ('78.6356', 'DSMZ:8211', '0.91', 'GCF_6206679.6', '3055929', 'soil', 'KEGG:map9047', '42.8', 'anaerobe', '57', 'LGG', 'NCBITaxon_568703')]
+2025-06-30 01:42:14 [DEBUG] etl.load:  Microbes ← 4 rows (cols=12)
+2025-06-30 01:42:14 [DEBUG] etl.load:  _insert_batch: [ThreadPoolExecutor-10_0] _insert_batch COMMIT for Microbes (4 rows) in 0.03s
+2025-06-30 01:42:14 [DEBUG] etl.load:  worker: [loader‑1] inserted 4 rows into Microbes
+2025-06-30 01:42:14 [DEBUG] etl.load: Queue size after task_done(): 30
+2025-06-30 01:42:14 [DEBUG] etl.load: Queue size before get(): 30
+2025-06-30 01:42:14 [DEBUG] etl.load:  worker: [loader‑1] picked up 1 rows → Microbes
+2025-06-30 01:42:14 [DEBUG] etl.load:  _insert_batch: [ThreadPoolExecutor-11_0] _insert_batch START → 1 rows into Microbes
+2025-06-30 01:42:14 [DEBUG] etl.load:   samples keys to insert: ['abundance_index', 'culture_collection', 'doubling_time', 'genome_assembly_accession', 'genome_size_bp', 'habitat', 'metabolic_profile_iri', 'optimal_growth_temp', 'oxygen_requirement', 'prevalence', 'strain_name', 'taxon_iri']
+2025-06-30 01:42:14 [DEBUG] etl.load:   samples values: [('70.2055', 'DSMZ:8022', '2.07', 'GCF_6012661.5', '3322315', 'oral cavity', 'KEGG:map9045', '34.7', 'anaerobe', '42', 'Fp-A2-165', 'NCBITaxon_853')]
+2025-06-30 01:42:14 [DEBUG] etl.load:  Microbes ← 1 rows (cols=12)
+2025-06-30 01:42:14 [DEBUG] etl.load:  _insert_batch: [ThreadPoolExecutor-11_0] _insert_batch COMMIT for Microbes (1 rows) in 0.01s
+2025-06-30 01:42:14 [DEBUG] etl.load:  worker: [loader‑1] inserted 1 rows into Microbes
+2025-06-30 01:42:14 [DEBUG] etl.load: Queue size after task_done(): 29
+2025-06-30 01:42:14 [DEBUG] etl.load: Queue size before get(): 29
+2025-06-30 01:42:14 [DEBUG] etl.load:  worker: [loader‑1] picked up 4 rows → Genes
+2025-06-30 01:42:14 [DEBUG] etl.load:  _insert_batch: [ThreadPoolExecutor-12_0] _insert_batch START → 4 rows into Genes
+2025-06-30 01:42:14 [DEBUG] etl.load: Discovered 8 columns for Genes: ['id', 'gene_accession', 'gene_name', 'species_taxon_iri', 'gene_length_bp', 'gc_content', 'pathway_iri', 'go_terms']
+2025-06-30 01:42:14 [DEBUG] etl.load:   samples keys to insert: ['gene_accession', 'gene_length_bp', 'gene_name', 'go_terms', 'pathway_iri', 'species_taxon_iri']
+2025-06-30 01:42:14 [DEBUG] etl.load:   samples values: [('ENSG00000010761', '3460', 'Gene0761', 'GO:9630881|GO:2850799|GO:6135344', 'KEGG:hsa9572', 'NCBITaxon_9606'), ('ENSG00000013250', '80455', 'Gene3250', 'GO:9728567|GO:3020005|GO:6785372', 'KEGG:hsa5616', 'NCBITaxon_9606'), ('ENSG00000008766', '177839', 'Gene8766', 'GO:4242883|GO:7348495|GO:6532783', 'KEGG:hsa4178', 'NCBITaxon_9606'), ('ENSG00000024815', '159233', 'Gene4815', 'GO:2755968|GO:7112149|GO:6251898', 'KEGG:hsa7871', 'NCBITaxon_9606')]
+2025-06-30 01:42:14 [DEBUG] etl.load:  Genes ← 4 rows (cols=6)
+2025-06-30 01:42:14 [DEBUG] etl.load:  _insert_batch: [ThreadPoolExecutor-12_0] _insert_batch COMMIT for Genes (4 rows) in 0.04s
+2025-06-30 01:42:14 [DEBUG] etl.load:  worker: [loader‑1] inserted 4 rows into Genes
+2025-06-30 01:42:14 [DEBUG] etl.load: Queue size after task_done(): 28
+2025-06-30 01:42:14 [DEBUG] etl.load: Queue size before get(): 28
+2025-06-30 01:42:14 [DEBUG] etl.load:  worker: [loader‑1] picked up 4 rows → Genes
+2025-06-30 01:42:14 [DEBUG] etl.load:  _insert_batch: [ThreadPoolExecutor-13_0] _insert_batch START → 4 rows into Genes
+2025-06-30 01:42:14 [DEBUG] etl.load:   samples keys to insert: ['gene_accession', 'gene_length_bp', 'gene_name', 'go_terms', 'pathway_iri', 'species_taxon_iri']
+2025-06-30 01:42:14 [DEBUG] etl.load:   samples values: [('ENSG00000019237', '20521', 'Gene9237', 'GO:4252188|GO:1925759|GO:6945673', 'KEGG:hsa4798', 'NCBITaxon_9606'), ('ENSG00000019486', '30414', 'Gene9486', 'GO:2248204|GO:3599420|GO:2803173', 'KEGG:hsa7108', 'NCBITaxon_9606'), ('ENSG00000010602', '187833', 'Gene0602', 'GO:6980431|GO:6171429|GO:6555935', 'KEGG:hsa8675', 'NCBITaxon_9606'), ('ENSG00000005698', '106495', 'Gene5698', 'GO:2015440|GO:8167063|GO:9122343', 'KEGG:hsa2552', 'NCBITaxon_9606')]
+2025-06-30 01:42:14 [DEBUG] etl.load:  Genes ← 4 rows (cols=6)
+2025-06-30 01:42:14 [DEBUG] etl.load:  _insert_batch: [ThreadPoolExecutor-13_0] _insert_batch COMMIT for Genes (4 rows) in 0.02s
+2025-06-30 01:42:14 [DEBUG] etl.load:  worker: [loader‑1] inserted 4 rows into Genes
+2025-06-30 01:42:14 [DEBUG] etl.load: Queue size after task_done(): 27
+2025-06-30 01:42:14 [DEBUG] etl.load: Queue size before get(): 27
+2025-06-30 01:42:14 [DEBUG] etl.load:  worker: [loader‑1] picked up 2 rows → Genes
+2025-06-30 01:42:14 [DEBUG] etl.load:  _insert_batch: [ThreadPoolExecutor-14_0] _insert_batch START → 2 rows into Genes
+2025-06-30 01:42:14 [DEBUG] etl.load:   samples keys to insert: ['gene_accession', 'gene_length_bp', 'gene_name', 'go_terms', 'pathway_iri', 'species_taxon_iri']
+2025-06-30 01:42:14 [DEBUG] etl.load:   samples values: [('ENSG00000027028', '141829', 'Gene7028', 'GO:2130176|GO:8034718|GO:2871899', 'KEGG:hsa1851', 'NCBITaxon_9606'), ('ENSG00000002523', '164479', 'Gene2523', 'GO:8114285|GO:5297501|GO:9789294', 'KEGG:hsa6401', 'NCBITaxon_9606')]
+2025-06-30 01:42:15 [DEBUG] etl.load:  Genes ← 2 rows (cols=6)
+2025-06-30 01:42:15 [DEBUG] etl.load:  _insert_batch: [ThreadPoolExecutor-14_0] _insert_batch COMMIT for Genes (2 rows) in 0.03s
+2025-06-30 01:42:15 [DEBUG] etl.load:  worker: [loader‑1] inserted 2 rows into Genes
+2025-06-30 01:42:15 [DEBUG] etl.load: Queue size after task_done(): 26
+2025-06-30 01:42:15 [DEBUG] etl.load: Queue size before get(): 26
+2025-06-30 01:42:15 [DEBUG] etl.load:  worker: [loader‑1] picked up 4 rows → Samples
+2025-06-30 01:42:15 [DEBUG] etl.load:  _insert_batch: [ThreadPoolExecutor-15_0] _insert_batch START → 4 rows into Samples
+2025-06-30 01:42:15 [DEBUG] etl.load: Discovered 13 columns for Samples: ['id', 'iri', 'study_iri', 'cell_type_iri', 'tissue_iri', 'organism_iri', 'growth_condition', 'raw_counts_uri', 'collection_date', 'donor_age_years', 'replicate_number', 'viability_pct', 'rin_score']
+2025-06-30 01:42:15 [DEBUG] etl.load:   samples keys to insert: ['cell_type_iri', 'collection_date', 'donor_age_years', 'growth_condition', 'iri', 'organism_iri', 'raw_counts_uri', 'replicate_number', 'rin_score', 'study_iri', 'tissue_iri', 'viability_pct']
+2025-06-30 01:42:15 [DEBUG] etl.load:   samples values: [('CL_0001050', '2013-11-02', '61', 'co-culture', 'SAMPMNLEZXBN', 'NCBITaxon_9606', '/home/anr/apps/AlethiOmics/raw_data/synthetic_runs/20250630-014211/SAMPMNLEZXBN_raw_counts.tsv', '3', '7.985', 'E-MTAB-41503', 'UBERON_0001155', '94.85'), ('CL_0000679', '2013-11-10', '54', 'monoculture', 'SAMP6IBXCDSD', 'NCBITaxon_9606', '/home/anr/apps/AlethiOmics/raw_data/synthetic_runs/20250630-014211/SAMP6IBXCDSD_raw_counts.tsv', '3', '7.469', 'E-MTAB-41503', 'UBERON_0000955', '87.35'), ('CL_0002608', '2013-11-02', '44', 'monoculture', 'SAMPEJZ401N0', 'NCBITaxon_9606', '/home/anr/apps/AlethiOmics/raw_data/synthetic_runs/20250630-014211/SAMPEJZ401N0_raw_counts.tsv', '2', '9.145', 'E-MTAB-41503', 'UBERON_0000955', '76.97'), ('CL_0000091', '2013-11-02', '30', 'co-culture', 'SAMPZ8JGTF0G', 'NCBITaxon_9606', '/home/anr/apps/AlethiOmics/raw_data/synthetic_runs/20250630-014211/SAMPZ8JGTF0G_raw_counts.tsv', '2', '9.097', 'E-MTAB-41503', 'UBERON_0000955', '83.32')]
+2025-06-30 01:42:15 [DEBUG] etl.load:  Samples ← 4 rows (cols=12)
+2025-06-30 01:42:15 [DEBUG] etl.load:  _insert_batch: [ThreadPoolExecutor-15_0] _insert_batch COMMIT for Samples (4 rows) in 0.05s
+2025-06-30 01:42:15 [DEBUG] etl.load:  worker: [loader‑1] inserted 4 rows into Samples
+2025-06-30 01:42:15 [DEBUG] etl.load: Queue size after task_done(): 25
+2025-06-30 01:42:15 [DEBUG] etl.load: Queue size before get(): 25
+2025-06-30 01:42:15 [DEBUG] etl.load:  worker: [loader‑1] picked up 4 rows → Samples
+2025-06-30 01:42:15 [DEBUG] etl.load:  _insert_batch: [ThreadPoolExecutor-16_0] _insert_batch START → 4 rows into Samples
+2025-06-30 01:42:15 [DEBUG] etl.load:   samples keys to insert: ['cell_type_iri', 'collection_date', 'donor_age_years', 'growth_condition', 'iri', 'organism_iri', 'raw_counts_uri', 'replicate_number', 'rin_score', 'study_iri', 'tissue_iri', 'viability_pct']
+2025-06-30 01:42:15 [DEBUG] etl.load:   samples values: [('CL_0000679', '2022-09-30', '35', 'monoculture', 'SAMP8GA56S7T', 'NCBITaxon_9606', '/home/anr/apps/AlethiOmics/raw_data/synthetic_runs/20250630-014211/SAMP8GA56S7T_raw_counts.tsv', '2', '7.719', 'E-MTAB-63027', 'UBERON_0002108', '82.74'), ('CL_0000679', '2022-09-28', '63', 'co-culture', 'SAMPMUB2EGYI', 'NCBITaxon_9606', '/home/anr/apps/AlethiOmics/raw_data/synthetic_runs/20250630-014211/SAMPMUB2EGYI_raw_counts.tsv', '3', '9.083', 'E-MTAB-63027', 'UBERON_0000955', '80.21'), ('CL_0000679', '2022-09-30', '28', 'monoculture', 'SAMPYK7ZPR72', 'NCBITaxon_9606', '/home/anr/apps/AlethiOmics/raw_data/synthetic_runs/20250630-014211/SAMPYK7ZPR72_raw_counts.tsv', '1', '9.268', 'E-MTAB-63027', 'UBERON_0000955', '81.35'), ('CL_0000540', '2022-09-27', '54', 'co-culture', 'SAMPJKSX4P8H', 'NCBITaxon_9606', '/home/anr/apps/AlethiOmics/raw_data/synthetic_runs/20250630-014211/SAMPJKSX4P8H_raw_counts.tsv', '2', '9.284', 'E-MTAB-63027', 'UBERON_0000955', '77.73')]
+2025-06-30 01:42:15 [DEBUG] etl.load:  Samples ← 4 rows (cols=12)
+2025-06-30 01:42:15 [DEBUG] etl.load:  _insert_batch: [ThreadPoolExecutor-16_0] _insert_batch COMMIT for Samples (4 rows) in 0.02s
+2025-06-30 01:42:15 [DEBUG] etl.load:  worker: [loader‑1] inserted 4 rows into Samples
+2025-06-30 01:42:15 [DEBUG] etl.load: Queue size after task_done(): 24
+2025-06-30 01:42:15 [DEBUG] etl.load: Queue size before get(): 24
+2025-06-30 01:42:15 [DEBUG] etl.load:  worker: [loader‑1] picked up 4 rows → Samples
+2025-06-30 01:42:15 [DEBUG] etl.load:  _insert_batch: [ThreadPoolExecutor-17_0] _insert_batch START → 4 rows into Samples
+2025-06-30 01:42:15 [DEBUG] etl.load:   samples keys to insert: ['cell_type_iri', 'collection_date', 'donor_age_years', 'growth_condition', 'iri', 'organism_iri', 'raw_counts_uri', 'replicate_number', 'rin_score', 'study_iri', 'tissue_iri', 'viability_pct']
+2025-06-30 01:42:15 [DEBUG] etl.load:   samples values: [('CL_0002608', '2020-12-02', '28', 'monoculture', 'SAMPC4LVSZFP', 'NCBITaxon_9606', '/home/anr/apps/AlethiOmics/raw_data/synthetic_runs/20250630-014211/SAMPC4LVSZFP_raw_counts.tsv', '1', '9.992', 'E-MTAB-84764', 'UBERON_0001155', '85.63'), ('CL_0002608', '2020-12-07', '39', 'co-culture', 'SAMPKMK28BS8', 'NCBITaxon_9606', '/home/anr/apps/AlethiOmics/raw_data/synthetic_runs/20250630-014211/SAMPKMK28BS8_raw_counts.tsv', '2', '8.944', 'E-MTAB-84764', 'UBERON_0002108', '88.87'), ('CL_0000679', '2020-12-07', '64', 'monoculture', 'SAMPODTA2VLD', 'NCBITaxon_9606', '/home/anr/apps/AlethiOmics/raw_data/synthetic_runs/20250630-014211/SAMPODTA2VLD_raw_counts.tsv', '2', '9.893', 'E-MTAB-84764', 'UBERON_0000955', '81.15'), ('CL_0000540', '2020-12-07', '23', 'co-culture', 'SAMP6OZBCHP6', 'NCBITaxon_9606', '/home/anr/apps/AlethiOmics/raw_data/synthetic_runs/20250630-014211/SAMP6OZBCHP6_raw_counts.tsv', '3', '8.718', 'E-MTAB-84764', 'UBERON_0001155', '72.74')]
+2025-06-30 01:42:15 [DEBUG] etl.load:  Samples ← 4 rows (cols=12)
+2025-06-30 01:42:15 [DEBUG] etl.load:  _insert_batch: [ThreadPoolExecutor-17_0] _insert_batch COMMIT for Samples (4 rows) in 0.03s
+2025-06-30 01:42:15 [DEBUG] etl.load:  worker: [loader‑1] inserted 4 rows into Samples
+2025-06-30 01:42:15 [DEBUG] etl.load: Queue size after task_done(): 23
+2025-06-30 01:42:15 [DEBUG] etl.load: Queue size before get(): 23
+2025-06-30 01:42:15 [DEBUG] etl.load:  worker: [loader‑1] picked up 4 rows → Samples
+2025-06-30 01:42:15 [DEBUG] etl.load:  _insert_batch: [ThreadPoolExecutor-18_0] _insert_batch START → 4 rows into Samples
+2025-06-30 01:42:15 [DEBUG] etl.load:   samples keys to insert: ['cell_type_iri', 'collection_date', 'donor_age_years', 'growth_condition', 'iri', 'organism_iri', 'raw_counts_uri', 'replicate_number', 'rin_score', 'study_iri', 'tissue_iri', 'viability_pct']
+2025-06-30 01:42:15 [DEBUG] etl.load:   samples values: [('CL_0002608', '2020-02-14', '39', 'co-culture', 'SAMP2HHKTPHF', 'NCBITaxon_9606', '/home/anr/apps/AlethiOmics/raw_data/synthetic_runs/20250630-014211/SAMP2HHKTPHF_raw_counts.tsv', '2', '7.908', 'E-MTAB-93598', 'UBERON_0002108', '71.07'), ('CL_0000540', '2020-02-11', '24', 'monoculture', 'SAMP9IA2G04X', 'NCBITaxon_9606', '/home/anr/apps/AlethiOmics/raw_data/synthetic_runs/20250630-014211/SAMP9IA2G04X_raw_counts.tsv', '2', '8.895', 'E-MTAB-93598', 'UBERON_0001155', '90.68'), ('CL_0000091', '2020-02-11', '28', 'monoculture', 'SAMPC65IKUY3', 'NCBITaxon_9606', '/home/anr/apps/AlethiOmics/raw_data/synthetic_runs/20250630-014211/SAMPC65IKUY3_raw_counts.tsv', '2', '7.489', 'E-MTAB-93598', 'UBERON_0000955', '82.98'), ('CL_0001050', '2020-02-17', '39', 'monoculture', 'SAMPS1T67VT0', 'NCBITaxon_9606', '/home/anr/apps/AlethiOmics/raw_data/synthetic_runs/20250630-014211/SAMPS1T67VT0_raw_counts.tsv', '2', '9.094', 'E-MTAB-93598', 'UBERON_0001155', '80.5')]
+2025-06-30 01:42:15 [DEBUG] etl.load:  Samples ← 4 rows (cols=12)
+2025-06-30 01:42:15 [DEBUG] etl.load:  _insert_batch: [ThreadPoolExecutor-18_0] _insert_batch COMMIT for Samples (4 rows) in 0.03s
+2025-06-30 01:42:15 [DEBUG] etl.load:  worker: [loader‑1] inserted 4 rows into Samples
+2025-06-30 01:42:15 [DEBUG] etl.load: Queue size after task_done(): 22
+2025-06-30 01:42:15 [DEBUG] etl.load: Queue size before get(): 22
+2025-06-30 01:42:15 [DEBUG] etl.load:  worker: [loader‑1] picked up 4 rows → Samples
+2025-06-30 01:42:15 [DEBUG] etl.load:  _insert_batch: [ThreadPoolExecutor-19_0] _insert_batch START → 4 rows into Samples
+2025-06-30 01:42:15 [DEBUG] etl.load:   samples keys to insert: ['cell_type_iri', 'collection_date', 'donor_age_years', 'growth_condition', 'iri', 'organism_iri', 'raw_counts_uri', 'replicate_number', 'rin_score', 'study_iri', 'tissue_iri', 'viability_pct']
+2025-06-30 01:42:15 [DEBUG] etl.load:   samples values: [('CL_0002608', '2018-02-02', '24', 'co-culture', 'SAMP0TN1KDQQ', 'NCBITaxon_9606', '/home/anr/apps/AlethiOmics/raw_data/synthetic_runs/20250630-014211/SAMP0TN1KDQQ_raw_counts.tsv', '3', '8.966', 'E-MTAB-25623', 'UBERON_0001155', '76.47'), ('CL_0000540', '2018-02-02', '47', 'co-culture', 'SAMPAUIYIA1L', 'NCBITaxon_9606', '/home/anr/apps/AlethiOmics/raw_data/synthetic_runs/20250630-014211/SAMPAUIYIA1L_raw_counts.tsv', '2', '8.92', 'E-MTAB-25623', 'UBERON_0000955', '70.51'), ('CL_0002608', '2018-02-02', '35', 'co-culture', 'SAMP6A9N2T9V', 'NCBITaxon_9606', '/home/anr/apps/AlethiOmics/raw_data/synthetic_runs/20250630-014211/SAMP6A9N2T9V_raw_counts.tsv', '2', '8.687', 'E-MTAB-25623', 'UBERON_0001155', '84.34'), ('CL_0000540', '2018-01-25', '23', 'co-culture', 'SAMPE2V871SH', 'NCBITaxon_9606', '/home/anr/apps/AlethiOmics/raw_data/synthetic_runs/20250630-014211/SAMPE2V871SH_raw_counts.tsv', '3', '8.42', 'E-MTAB-25623', 'UBERON_0000955', '90.26')]
+2025-06-30 01:42:15 [DEBUG] etl.load:  Samples ← 4 rows (cols=12)
+2025-06-30 01:42:15 [DEBUG] etl.load:  _insert_batch: [ThreadPoolExecutor-19_0] _insert_batch COMMIT for Samples (4 rows) in 0.02s
+2025-06-30 01:42:15 [DEBUG] etl.load:  worker: [loader‑1] inserted 4 rows into Samples
+2025-06-30 01:42:15 [DEBUG] etl.load: Queue size after task_done(): 21
+2025-06-30 01:42:15 [DEBUG] etl.load: Queue size before get(): 21
+2025-06-30 01:42:15 [DEBUG] etl.load:  worker: [loader‑1] picked up 4 rows → Samples
+2025-06-30 01:42:15 [DEBUG] etl.load:  _insert_batch: [ThreadPoolExecutor-20_0] _insert_batch START → 4 rows into Samples
+2025-06-30 01:42:15 [DEBUG] etl.load:   samples keys to insert: ['cell_type_iri', 'collection_date', 'donor_age_years', 'growth_condition', 'iri', 'organism_iri', 'raw_counts_uri', 'replicate_number', 'rin_score', 'study_iri', 'tissue_iri', 'viability_pct']
+2025-06-30 01:42:15 [DEBUG] etl.load:   samples values: [('CL_0000540', '2011-07-21', '22', 'monoculture', 'SAMPXPYBIGPA', 'NCBITaxon_9606', '/home/anr/apps/AlethiOmics/raw_data/synthetic_runs/20250630-014211/SAMPXPYBIGPA_raw_counts.tsv', '3', '9.998', 'E-MTAB-92724', 'UBERON_0002108', '73.04'), ('CL_0000584', '2011-07-21', '32', 'co-culture', 'SAMPVFL9WVRJ', 'NCBITaxon_9606', '/home/anr/apps/AlethiOmics/raw_data/synthetic_runs/20250630-014211/SAMPVFL9WVRJ_raw_counts.tsv', '3', '9.691', 'E-MTAB-92724', 'UBERON_0001155', '84.05'), ('CL_0000127', '2011-07-23', '64', 'co-culture', 'SAMPQKJAUSFE', 'NCBITaxon_9606', '/home/anr/apps/AlethiOmics/raw_data/synthetic_runs/20250630-014211/SAMPQKJAUSFE_raw_counts.tsv', '2', '9.636', 'E-MTAB-92724', 'UBERON_0001155', '89.25'), ('CL_0000127', '2011-07-23', '49', 'monoculture', 'SAMPVRNPBQFP', 'NCBITaxon_9606', '/home/anr/apps/AlethiOmics/raw_data/synthetic_runs/20250630-014211/SAMPVRNPBQFP_raw_counts.tsv', '1', '7.61', 'E-MTAB-92724', 'UBERON_0002108', '91.3')]
+2025-06-30 01:42:15 [DEBUG] etl.load:  Samples ← 4 rows (cols=12)
+2025-06-30 01:42:15 [DEBUG] etl.load:  _insert_batch: [ThreadPoolExecutor-20_0] _insert_batch COMMIT for Samples (4 rows) in 0.02s
+2025-06-30 01:42:15 [DEBUG] etl.load:  worker: [loader‑1] inserted 4 rows into Samples
+2025-06-30 01:42:15 [DEBUG] etl.load: Queue size after task_done(): 20
+2025-06-30 01:42:15 [DEBUG] etl.load: Queue size before get(): 20
+2025-06-30 01:42:15 [DEBUG] etl.load:  worker: [loader‑1] picked up 4 rows → Samples
+2025-06-30 01:42:15 [DEBUG] etl.load:  _insert_batch: [ThreadPoolExecutor-21_0] _insert_batch START → 4 rows into Samples
+2025-06-30 01:42:15 [DEBUG] etl.load:   samples keys to insert: ['cell_type_iri', 'collection_date', 'donor_age_years', 'growth_condition', 'iri', 'organism_iri', 'raw_counts_uri', 'replicate_number', 'rin_score', 'study_iri', 'tissue_iri', 'viability_pct']
+2025-06-30 01:42:15 [DEBUG] etl.load:   samples values: [('CL_0000584', '2020-05-10', '36', 'monoculture', 'SAMP8QT1JZ2T', 'NCBITaxon_9606', '/home/anr/apps/AlethiOmics/raw_data/synthetic_runs/20250630-014211/SAMP8QT1JZ2T_raw_counts.tsv', '2', '7.789', 'E-MTAB-77361', 'UBERON_0001155', '71.75'), ('CL_0000091', '2020-05-10', '20', 'monoculture', 'SAMPMXUOQKK6', 'NCBITaxon_9606', '/home/anr/apps/AlethiOmics/raw_data/synthetic_runs/20250630-014211/SAMPMXUOQKK6_raw_counts.tsv', '2', '9.736', 'E-MTAB-77361', 'UBERON_0000955', '80.96'), ('CL_0001050', '2020-05-10', '63', 'co-culture', 'SAMPL890MUH6', 'NCBITaxon_9606', '/home/anr/apps/AlethiOmics/raw_data/synthetic_runs/20250630-014211/SAMPL890MUH6_raw_counts.tsv', '3', '9.826', 'E-MTAB-77361', 'UBERON_0002108', '87.54'), ('CL_0000540', '2020-05-10', '61', 'co-culture', 'SAMPH2CLZMXQ', 'NCBITaxon_9606', '/home/anr/apps/AlethiOmics/raw_data/synthetic_runs/20250630-014211/SAMPH2CLZMXQ_raw_counts.tsv', '2', '8.542', 'E-MTAB-77361', 'UBERON_0000955', '87.0')]
+2025-06-30 01:42:15 [DEBUG] etl.load:  Samples ← 4 rows (cols=12)
+2025-06-30 01:42:15 [DEBUG] etl.load:  _insert_batch: [ThreadPoolExecutor-21_0] _insert_batch COMMIT for Samples (4 rows) in 0.02s
+2025-06-30 01:42:15 [DEBUG] etl.load:  worker: [loader‑1] inserted 4 rows into Samples
+2025-06-30 01:42:15 [DEBUG] etl.load: Queue size after task_done(): 19
+2025-06-30 01:42:15 [DEBUG] etl.load: Queue size before get(): 19
+2025-06-30 01:42:15 [DEBUG] etl.load:  worker: [loader‑1] picked up 4 rows → Samples
+2025-06-30 01:42:15 [DEBUG] etl.load:  _insert_batch: [ThreadPoolExecutor-22_0] _insert_batch START → 4 rows into Samples
+2025-06-30 01:42:15 [DEBUG] etl.load:   samples keys to insert: ['cell_type_iri', 'collection_date', 'donor_age_years', 'growth_condition', 'iri', 'organism_iri', 'raw_counts_uri', 'replicate_number', 'rin_score', 'study_iri', 'tissue_iri', 'viability_pct']
+2025-06-30 01:42:15 [DEBUG] etl.load:   samples values: [('CL_0000584', '2022-09-27', '55', 'monoculture', 'SAMP3J8K7LKZ', 'NCBITaxon_9606', '/home/anr/apps/AlethiOmics/raw_data/synthetic_runs/20250630-014211/SAMP3J8K7LKZ_raw_counts.tsv', '3', '7.196', 'E-MTAB-48186', 'UBERON_0001155', '96.4'), ('CL_0000127', '2022-09-27', '54', 'co-culture', 'SAMP72071QSM', 'NCBITaxon_9606', '/home/anr/apps/AlethiOmics/raw_data/synthetic_runs/20250630-014211/SAMP72071QSM_raw_counts.tsv', '3', '7.03', 'E-MTAB-48186', 'UBERON_0000955', '79.08'), ('CL_0001050', '2022-09-27', '63', 'co-culture', 'SAMPZQA3EZF4', 'NCBITaxon_9606', '/home/anr/apps/AlethiOmics/raw_data/synthetic_runs/20250630-014211/SAMPZQA3EZF4_raw_counts.tsv', '3', '8.945', 'E-MTAB-48186', 'UBERON_0000955', '78.2'), ('CL_0000679', '2022-09-27', '23', 'monoculture', 'SAMPWEGZG3PW', 'NCBITaxon_9606', '/home/anr/apps/AlethiOmics/raw_data/synthetic_runs/20250630-014211/SAMPWEGZG3PW_raw_counts.tsv', '2', '8.451', 'E-MTAB-48186', 'UBERON_0002108', '87.81')]
+2025-06-30 01:42:15 [DEBUG] etl.load:  Samples ← 4 rows (cols=12)
+2025-06-30 01:42:15 [DEBUG] etl.load:  _insert_batch: [ThreadPoolExecutor-22_0] _insert_batch COMMIT for Samples (4 rows) in 0.02s
+2025-06-30 01:42:15 [DEBUG] etl.load:  worker: [loader‑1] inserted 4 rows into Samples
+2025-06-30 01:42:15 [DEBUG] etl.load: Queue size after task_done(): 18
+2025-06-30 01:42:15 [DEBUG] etl.load: Queue size before get(): 18
+2025-06-30 01:42:15 [DEBUG] etl.load:  worker: [loader‑1] picked up 4 rows → MicrobeStimulus
+2025-06-30 01:42:15 [DEBUG] etl.load:  _insert_batch: [ThreadPoolExecutor-23_0] _insert_batch START → 4 rows into MicrobeStimulus
+2025-06-30 01:42:15 [DEBUG] etl.load: Discovered 5 columns for MicrobeStimulus: ['id', 'microbe_id', 'stimulus_id', 'evidence', 'interaction_score']
+2025-06-30 01:42:15 [DEBUG] etl.load:   samples keys to insert: ['evidence', 'interaction_score', 'microbe_id', 'stimulus_id']
+2025-06-30 01:42:15 [DEBUG] etl.load:   samples values: [('mgnify', '25.275', '3', '4'), ('mgnify', '-10.678', '1', '4'), ('inferred', '28.18', '5', '1'), ('literature', '-14.831', '5', '3')]
+2025-06-30 01:42:15 [DEBUG] etl.load:  MicrobeStimulus ← 4 rows (cols=4)
+2025-06-30 01:42:15 [DEBUG] etl.load:  _insert_batch: [ThreadPoolExecutor-23_0] _insert_batch COMMIT for MicrobeStimulus (4 rows) in 0.03s
+2025-06-30 01:42:15 [DEBUG] etl.load:  worker: [loader‑1] inserted 4 rows into MicrobeStimulus
+2025-06-30 01:42:15 [DEBUG] etl.load: Queue size after task_done(): 17
+2025-06-30 01:42:15 [DEBUG] etl.load: Queue size before get(): 17
+2025-06-30 01:42:15 [DEBUG] etl.load:  worker: [loader‑1] picked up 4 rows → MicrobeStimulus
+2025-06-30 01:42:15 [DEBUG] etl.load:  _insert_batch: [ThreadPoolExecutor-24_0] _insert_batch START → 4 rows into MicrobeStimulus
+2025-06-30 01:42:15 [DEBUG] etl.load:   samples keys to insert: ['evidence', 'interaction_score', 'microbe_id', 'stimulus_id']
+2025-06-30 01:42:15 [DEBUG] etl.load:   samples values: [('inferred', '21.069', '1', '4'), ('literature', '8.587', '1', '3'), ('inferred', '38.844', '1', '3'), ('mgnify', '-25.956', '1', '1')]
+2025-06-30 01:42:15 [DEBUG] etl.load:  MicrobeStimulus ← 4 rows (cols=4)
+2025-06-30 01:42:15 [DEBUG] etl.load:  _insert_batch: [ThreadPoolExecutor-24_0] _insert_batch COMMIT for MicrobeStimulus (4 rows) in 0.02s
+2025-06-30 01:42:15 [DEBUG] etl.load:  worker: [loader‑1] inserted 4 rows into MicrobeStimulus
+2025-06-30 01:42:15 [DEBUG] etl.load: Queue size after task_done(): 16
+2025-06-30 01:42:15 [DEBUG] etl.load: Queue size before get(): 16
+2025-06-30 01:42:15 [DEBUG] etl.load:  worker: [loader‑1] picked up 4 rows → SampleMicrobe
+2025-06-30 01:42:15 [DEBUG] etl.load:  _insert_batch: [ThreadPoolExecutor-25_0] _insert_batch START → 4 rows into SampleMicrobe
+2025-06-30 01:42:15 [DEBUG] etl.load: Discovered 5 columns for SampleMicrobe: ['id', 'sample_id', 'microbe_id', 'evidence', 'relative_abundance']
+2025-06-30 01:42:15 [DEBUG] etl.load:   samples keys to insert: ['evidence', 'microbe_id', 'relative_abundance', 'sample_id']
+2025-06-30 01:42:15 [DEBUG] etl.load:   samples values: [('mgnify', '2', '211.2706', '1'), ('mgnify', '2', '29.0239', '2'), ('inferred', '2', '159.6933', '3'), ('literature', '2', '52.7344', '4')]
+2025-06-30 01:42:15 [DEBUG] etl.load:  SampleMicrobe ← 4 rows (cols=4)
+2025-06-30 01:42:15 [DEBUG] etl.load:  _insert_batch: [ThreadPoolExecutor-25_0] _insert_batch COMMIT for SampleMicrobe (4 rows) in 0.04s
+2025-06-30 01:42:15 [DEBUG] etl.load:  worker: [loader‑1] inserted 4 rows into SampleMicrobe
+2025-06-30 01:42:15 [DEBUG] etl.load: Queue size after task_done(): 15
+2025-06-30 01:42:15 [DEBUG] etl.load: Queue size before get(): 15
+2025-06-30 01:42:15 [DEBUG] etl.load:  worker: [loader‑1] picked up 4 rows → SampleMicrobe
+2025-06-30 01:42:15 [DEBUG] etl.load:  _insert_batch: [ThreadPoolExecutor-26_0] _insert_batch START → 4 rows into SampleMicrobe
+2025-06-30 01:42:15 [DEBUG] etl.load:   samples keys to insert: ['evidence', 'microbe_id', 'relative_abundance', 'sample_id']
+2025-06-30 01:42:15 [DEBUG] etl.load:   samples values: [('mgnify', '1', '208.4461', '1'), ('inferred', '4', '73.357', '2'), ('mgnify', '5', '145.1977', '3'), ('inferred', '2', '124.9', '4')]
+2025-06-30 01:42:15 [DEBUG] etl.load:  SampleMicrobe ← 4 rows (cols=4)
+2025-06-30 01:42:15 [DEBUG] etl.load:  _insert_batch: [ThreadPoolExecutor-26_0] _insert_batch COMMIT for SampleMicrobe (4 rows) in 0.02s
+2025-06-30 01:42:15 [DEBUG] etl.load:  worker: [loader‑1] inserted 4 rows into SampleMicrobe
+2025-06-30 01:42:15 [DEBUG] etl.load: Queue size after task_done(): 14
+2025-06-30 01:42:15 [DEBUG] etl.load: Queue size before get(): 14
+2025-06-30 01:42:15 [DEBUG] etl.load:  worker: [loader‑1] picked up 4 rows → SampleMicrobe
+2025-06-30 01:42:15 [DEBUG] etl.load:  _insert_batch: [ThreadPoolExecutor-27_0] _insert_batch START → 4 rows into SampleMicrobe
+2025-06-30 01:42:15 [DEBUG] etl.load:   samples keys to insert: ['evidence', 'microbe_id', 'relative_abundance', 'sample_id']
+2025-06-30 01:42:15 [DEBUG] etl.load:   samples values: [('inferred', '2', '178.131', '1'), ('literature', '5', '154.3501', '2'), ('inferred', '3', '132.7899', '3'), ('mgnify', '1', '19.969', '4')]
+2025-06-30 01:42:15 [DEBUG] etl.load:  SampleMicrobe ← 4 rows (cols=4)
+2025-06-30 01:42:15 [DEBUG] etl.load:  _insert_batch: [ThreadPoolExecutor-27_0] _insert_batch COMMIT for SampleMicrobe (4 rows) in 0.02s
+2025-06-30 01:42:15 [DEBUG] etl.load:  worker: [loader‑1] inserted 4 rows into SampleMicrobe
+2025-06-30 01:42:15 [DEBUG] etl.load: Queue size after task_done(): 13
+2025-06-30 01:42:15 [DEBUG] etl.load: Queue size before get(): 13
+2025-06-30 01:42:15 [DEBUG] etl.load:  worker: [loader‑1] picked up 4 rows → SampleMicrobe
+2025-06-30 01:42:15 [DEBUG] etl.load:  _insert_batch: [ThreadPoolExecutor-28_0] _insert_batch START → 4 rows into SampleMicrobe
+2025-06-30 01:42:15 [DEBUG] etl.load:   samples keys to insert: ['evidence', 'microbe_id', 'relative_abundance', 'sample_id']
+2025-06-30 01:42:15 [DEBUG] etl.load:   samples values: [('mgnify', '5', '51.1251', '1'), ('literature', '3', '19.4247', '2'), ('inferred', '2', '298.885', '3'), ('mgnify', '3', '57.5383', '4')]
+2025-06-30 01:42:15 [DEBUG] etl.load:  SampleMicrobe ← 4 rows (cols=4)
+2025-06-30 01:42:15 [DEBUG] etl.load:  _insert_batch: [ThreadPoolExecutor-28_0] _insert_batch COMMIT for SampleMicrobe (4 rows) in 0.02s
+2025-06-30 01:42:15 [DEBUG] etl.load:  worker: [loader‑1] inserted 4 rows into SampleMicrobe
+2025-06-30 01:42:15 [DEBUG] etl.load: Queue size after task_done(): 12
+2025-06-30 01:42:15 [DEBUG] etl.load: Queue size before get(): 12
+2025-06-30 01:42:15 [DEBUG] etl.load:  worker: [loader‑1] picked up 4 rows → SampleMicrobe
+2025-06-30 01:42:15 [DEBUG] etl.load:  _insert_batch: [ThreadPoolExecutor-29_0] _insert_batch START → 4 rows into SampleMicrobe
+2025-06-30 01:42:15 [DEBUG] etl.load:   samples keys to insert: ['evidence', 'microbe_id', 'relative_abundance', 'sample_id']
+2025-06-30 01:42:15 [DEBUG] etl.load:   samples values: [('inferred', '4', '288.2928', '1'), ('inferred', '3', '61.1246', '2'), ('inferred', '5', '157.5374', '3'), ('literature', '3', '160.8857', '4')]
+2025-06-30 01:42:15 [DEBUG] etl.load:  SampleMicrobe ← 4 rows (cols=4)
+2025-06-30 01:42:15 [DEBUG] etl.load:  _insert_batch: [ThreadPoolExecutor-29_0] _insert_batch COMMIT for SampleMicrobe (4 rows) in 0.02s
+2025-06-30 01:42:15 [DEBUG] etl.load:  worker: [loader‑1] inserted 4 rows into SampleMicrobe
+2025-06-30 01:42:15 [DEBUG] etl.load: Queue size after task_done(): 11
+2025-06-30 01:42:15 [DEBUG] etl.load: Queue size before get(): 11
+2025-06-30 01:42:15 [DEBUG] etl.load:  worker: [loader‑1] picked up 4 rows → SampleMicrobe
+2025-06-30 01:42:15 [DEBUG] etl.load:  _insert_batch: [ThreadPoolExecutor-30_0] _insert_batch START → 4 rows into SampleMicrobe
+2025-06-30 01:42:15 [DEBUG] etl.load:   samples keys to insert: ['evidence', 'microbe_id', 'relative_abundance', 'sample_id']
+2025-06-30 01:42:15 [DEBUG] etl.load:   samples values: [('mgnify', '5', '198.6083', '1'), ('inferred', '5', '57.3258', '2'), ('mgnify', '1', '65.6001', '3'), ('inferred', '4', '251.04', '4')]
+2025-06-30 01:42:15 [DEBUG] etl.load:  SampleMicrobe ← 4 rows (cols=4)
+2025-06-30 01:42:15 [DEBUG] etl.load:  _insert_batch: [ThreadPoolExecutor-30_0] _insert_batch COMMIT for SampleMicrobe (4 rows) in 0.02s
+2025-06-30 01:42:15 [DEBUG] etl.load:  worker: [loader‑1] inserted 4 rows into SampleMicrobe
+2025-06-30 01:42:15 [DEBUG] etl.load: Queue size after task_done(): 10
+2025-06-30 01:42:15 [DEBUG] etl.load: Queue size before get(): 10
+2025-06-30 01:42:15 [DEBUG] etl.load:  worker: [loader‑1] picked up 4 rows → SampleMicrobe
+2025-06-30 01:42:15 [DEBUG] etl.load:  _insert_batch: [ThreadPoolExecutor-31_0] _insert_batch START → 4 rows into SampleMicrobe
+2025-06-30 01:42:15 [DEBUG] etl.load:   samples keys to insert: ['evidence', 'microbe_id', 'relative_abundance', 'sample_id']
+2025-06-30 01:42:15 [DEBUG] etl.load:   samples values: [('mgnify', '4', '122.7389', '1'), ('inferred', '3', '48.2454', '2'), ('inferred', '1', '117.6544', '3'), ('mgnify', '3', '33.6489', '4')]
+2025-06-30 01:42:15 [DEBUG] etl.load:  SampleMicrobe ← 4 rows (cols=4)
+2025-06-30 01:42:15 [DEBUG] etl.load:  _insert_batch: [ThreadPoolExecutor-31_0] _insert_batch COMMIT for SampleMicrobe (4 rows) in 0.02s
+2025-06-30 01:42:15 [DEBUG] etl.load:  worker: [loader‑1] inserted 4 rows into SampleMicrobe
+2025-06-30 01:42:15 [DEBUG] etl.load: Queue size after task_done(): 9
+2025-06-30 01:42:15 [DEBUG] etl.load: Queue size before get(): 9
+2025-06-30 01:42:15 [DEBUG] etl.load:  worker: [loader‑1] picked up 4 rows → SampleMicrobe
+2025-06-30 01:42:15 [DEBUG] etl.load:  _insert_batch: [ThreadPoolExecutor-32_0] _insert_batch START → 4 rows into SampleMicrobe
+2025-06-30 01:42:15 [DEBUG] etl.load:   samples keys to insert: ['evidence', 'microbe_id', 'relative_abundance', 'sample_id']
+2025-06-30 01:42:15 [DEBUG] etl.load:   samples values: [('mgnify', '5', '157.0334', '1'), ('literature', '4', '60.3717', '2'), ('mgnify', '1', '239.7533', '3'), ('mgnify', '1', '194.8737', '4')]
+2025-06-30 01:42:15 [DEBUG] etl.load:  SampleMicrobe ← 4 rows (cols=4)
+2025-06-30 01:42:15 [DEBUG] etl.load:  _insert_batch: [ThreadPoolExecutor-32_0] _insert_batch COMMIT for SampleMicrobe (4 rows) in 0.02s
+2025-06-30 01:42:15 [DEBUG] etl.load:  worker: [loader‑1] inserted 4 rows into SampleMicrobe
+2025-06-30 01:42:15 [DEBUG] etl.load: Queue size after task_done(): 8
+2025-06-30 01:42:15 [DEBUG] etl.load: Queue size before get(): 8
+2025-06-30 01:42:15 [DEBUG] etl.load:  worker: [loader‑1] picked up 4 rows → SampleStimulus
+2025-06-30 01:42:15 [DEBUG] etl.load:  _insert_batch: [ThreadPoolExecutor-33_0] _insert_batch START → 4 rows into SampleStimulus
+2025-06-30 01:42:15 [DEBUG] etl.load: Discovered 5 columns for SampleStimulus: ['id', 'sample_id', 'stimulus_id', 'exposure_time_hr', 'response_marker']
+2025-06-30 01:42:15 [DEBUG] etl.load:   samples keys to insert: ['exposure_time_hr', 'response_marker', 'sample_id', 'stimulus_id']
+2025-06-30 01:42:15 [DEBUG] etl.load:   samples values: [('202.4', 'none', '1', '2'), ('184.4', 'cFos', '2', '2'), ('112.0', 'none', '3', '1'), ('206.4', 'NFkB', '4', '4')]
+2025-06-30 01:42:15 [DEBUG] etl.load:  SampleStimulus ← 4 rows (cols=4)
+2025-06-30 01:42:15 [DEBUG] etl.load:  _insert_batch: [ThreadPoolExecutor-33_0] _insert_batch COMMIT for SampleStimulus (4 rows) in 0.03s
+2025-06-30 01:42:15 [DEBUG] etl.load:  worker: [loader‑1] inserted 4 rows into SampleStimulus
+2025-06-30 01:42:15 [DEBUG] etl.load: Queue size after task_done(): 7
+2025-06-30 01:42:15 [DEBUG] etl.load: Queue size before get(): 7
+2025-06-30 01:42:15 [DEBUG] etl.load:  worker: [loader‑1] picked up 4 rows → SampleStimulus
+2025-06-30 01:42:15 [DEBUG] etl.load:  _insert_batch: [ThreadPoolExecutor-34_0] _insert_batch START → 4 rows into SampleStimulus
+2025-06-30 01:42:15 [DEBUG] etl.load:   samples keys to insert: ['exposure_time_hr', 'response_marker', 'sample_id', 'stimulus_id']
+2025-06-30 01:42:15 [DEBUG] etl.load:   samples values: [('227.1', 'MAPK', '1', '3'), ('166.7', 'none', '2', '3'), ('205.3', 'MAPK', '3', '1'), ('152.9', 'cFos', '4', '4')]
+2025-06-30 01:42:15 [DEBUG] etl.load:  SampleStimulus ← 4 rows (cols=4)
+2025-06-30 01:42:15 [DEBUG] etl.load:  _insert_batch: [ThreadPoolExecutor-34_0] _insert_batch COMMIT for SampleStimulus (4 rows) in 0.02s
+2025-06-30 01:42:15 [DEBUG] etl.load:  worker: [loader‑1] inserted 4 rows into SampleStimulus
+2025-06-30 01:42:15 [DEBUG] etl.load: Queue size after task_done(): 6
+2025-06-30 01:42:15 [DEBUG] etl.load: Queue size before get(): 6
+2025-06-30 01:42:15 [DEBUG] etl.load:  worker: [loader‑1] picked up 4 rows → SampleStimulus
+2025-06-30 01:42:15 [DEBUG] etl.load:  _insert_batch: [ThreadPoolExecutor-35_0] _insert_batch START → 4 rows into SampleStimulus
+2025-06-30 01:42:15 [DEBUG] etl.load:   samples keys to insert: ['exposure_time_hr', 'response_marker', 'sample_id', 'stimulus_id']
+2025-06-30 01:42:15 [DEBUG] etl.load:   samples values: [('33.4', 'none', '1', '5'), ('204.5', 'NFkB', '2', '5'), ('96.2', 'none', '3', '4'), ('89.2', 'NFkB', '4', '2')]
+2025-06-30 01:42:15 [DEBUG] etl.load:  SampleStimulus ← 4 rows (cols=4)
+2025-06-30 01:42:15 [DEBUG] etl.load:  _insert_batch: [ThreadPoolExecutor-35_0] _insert_batch COMMIT for SampleStimulus (4 rows) in 0.02s
+2025-06-30 01:42:15 [DEBUG] etl.load:  worker: [loader‑1] inserted 4 rows into SampleStimulus
+2025-06-30 01:42:15 [DEBUG] etl.load: Queue size after task_done(): 5
+2025-06-30 01:42:15 [DEBUG] etl.load: Queue size before get(): 5
+2025-06-30 01:42:15 [DEBUG] etl.load:  worker: [loader‑1] picked up 4 rows → SampleStimulus
+2025-06-30 01:42:15 [DEBUG] etl.load:  _insert_batch: [ThreadPoolExecutor-36_0] _insert_batch START → 4 rows into SampleStimulus
+2025-06-30 01:42:15 [DEBUG] etl.load:   samples keys to insert: ['exposure_time_hr', 'response_marker', 'sample_id', 'stimulus_id']
+2025-06-30 01:42:15 [DEBUG] etl.load:   samples values: [('170.4', 'none', '1', '3'), ('188.5', 'cFos', '2', '5'), ('115.2', 'NFkB', '3', '2'), ('195.6', 'IL6', '4', '4')]
+2025-06-30 01:42:15 [DEBUG] etl.load:  SampleStimulus ← 4 rows (cols=4)
+2025-06-30 01:42:15 [DEBUG] etl.load:  _insert_batch: [ThreadPoolExecutor-36_0] _insert_batch COMMIT for SampleStimulus (4 rows) in 0.02s
+2025-06-30 01:42:15 [DEBUG] etl.load:  worker: [loader‑1] inserted 4 rows into SampleStimulus
+2025-06-30 01:42:15 [DEBUG] etl.load: Queue size after task_done(): 4
+2025-06-30 01:42:15 [DEBUG] etl.load: Queue size before get(): 4
+2025-06-30 01:42:15 [DEBUG] etl.load:  worker: [loader‑1] picked up 4 rows → SampleStimulus
+2025-06-30 01:42:15 [DEBUG] etl.load:  _insert_batch: [ThreadPoolExecutor-37_0] _insert_batch START → 4 rows into SampleStimulus
+2025-06-30 01:42:15 [DEBUG] etl.load:   samples keys to insert: ['exposure_time_hr', 'response_marker', 'sample_id', 'stimulus_id']
+2025-06-30 01:42:15 [DEBUG] etl.load:   samples values: [('17.7', 'IL6', '1', '5'), ('87.2', 'NFkB', '2', '1'), ('186.5', 'MAPK', '3', '3'), ('216.0', 'none', '4', '1')]
+2025-06-30 01:42:15 [DEBUG] etl.load:  SampleStimulus ← 4 rows (cols=4)
+2025-06-30 01:42:15 [DEBUG] etl.load:  _insert_batch: [ThreadPoolExecutor-37_0] _insert_batch COMMIT for SampleStimulus (4 rows) in 0.02s
+2025-06-30 01:42:15 [DEBUG] etl.load:  worker: [loader‑1] inserted 4 rows into SampleStimulus
+2025-06-30 01:42:15 [DEBUG] etl.load: Queue size after task_done(): 3
+2025-06-30 01:42:15 [DEBUG] etl.load: Queue size before get(): 3
+2025-06-30 01:42:15 [DEBUG] etl.load:  worker: [loader‑1] picked up 4 rows → SampleStimulus
+2025-06-30 01:42:15 [DEBUG] etl.load:  _insert_batch: [ThreadPoolExecutor-38_0] _insert_batch START → 4 rows into SampleStimulus
+2025-06-30 01:42:15 [DEBUG] etl.load:   samples keys to insert: ['exposure_time_hr', 'response_marker', 'sample_id', 'stimulus_id']
+2025-06-30 01:42:15 [DEBUG] etl.load:   samples values: [('224.2', 'MAPK', '1', '1'), ('3.8', 'NFkB', '2', '5'), ('222.2', 'none', '3', '2'), ('57.8', 'MAPK', '4', '3')]
+2025-06-30 01:42:15 [DEBUG] etl.load:  SampleStimulus ← 4 rows (cols=4)
+2025-06-30 01:42:15 [DEBUG] etl.load:  _insert_batch: [ThreadPoolExecutor-38_0] _insert_batch COMMIT for SampleStimulus (4 rows) in 0.02s
+2025-06-30 01:42:15 [DEBUG] etl.load:  worker: [loader‑1] inserted 4 rows into SampleStimulus
+2025-06-30 01:42:15 [DEBUG] etl.load: Queue size after task_done(): 2
+2025-06-30 01:42:15 [DEBUG] etl.load: Queue size before get(): 2
+2025-06-30 01:42:15 [DEBUG] etl.load:  worker: [loader‑1] picked up 4 rows → SampleStimulus
+2025-06-30 01:42:15 [DEBUG] etl.load:  _insert_batch: [ThreadPoolExecutor-39_0] _insert_batch START → 4 rows into SampleStimulus
+2025-06-30 01:42:15 [DEBUG] etl.load:   samples keys to insert: ['exposure_time_hr', 'response_marker', 'sample_id', 'stimulus_id']
+2025-06-30 01:42:15 [DEBUG] etl.load:   samples values: [('218.9', 'none', '1', '5'), ('120.5', 'NFkB', '2', '5'), ('20.5', 'cFos', '3', '4'), ('120.4', 'cFos', '4', '2')]
+2025-06-30 01:42:15 [DEBUG] etl.load:  SampleStimulus ← 4 rows (cols=4)
+2025-06-30 01:42:15 [DEBUG] etl.load:  _insert_batch: [ThreadPoolExecutor-39_0] _insert_batch COMMIT for SampleStimulus (4 rows) in 0.02s
+2025-06-30 01:42:15 [DEBUG] etl.load:  worker: [loader‑1] inserted 4 rows into SampleStimulus
+2025-06-30 01:42:15 [DEBUG] etl.load: Queue size after task_done(): 1
+2025-06-30 01:42:15 [DEBUG] etl.load: Queue size before get(): 1
+2025-06-30 01:42:15 [DEBUG] etl.load:  worker: [loader‑1] picked up 4 rows → SampleStimulus
+2025-06-30 01:42:15 [DEBUG] etl.load:  _insert_batch: [ThreadPoolExecutor-40_0] _insert_batch START → 4 rows into SampleStimulus
+2025-06-30 01:42:15 [DEBUG] etl.load:   samples keys to insert: ['exposure_time_hr', 'response_marker', 'sample_id', 'stimulus_id']
+2025-06-30 01:42:15 [DEBUG] etl.load:   samples values: [('171.6', 'cFos', '1', '4'), ('77.9', 'MAPK', '2', '1'), ('48.1', 'IL6', '3', '5'), ('158.0', 'cFos', '4', '3')]
+2025-06-30 01:42:15 [DEBUG] etl.load:  SampleStimulus ← 4 rows (cols=4)
+2025-06-30 01:42:15 [DEBUG] etl.load:  _insert_batch: [ThreadPoolExecutor-40_0] _insert_batch COMMIT for SampleStimulus (4 rows) in 0.02s
+2025-06-30 01:42:15 [DEBUG] etl.load:  worker: [loader‑1] inserted 4 rows into SampleStimulus
+2025-06-30 01:42:15 [DEBUG] etl.load: Queue size after task_done(): 0
+2025-06-30 01:42:15 [DEBUG] etl.load: Queue size before get(): 0
+2025-06-30 01:42:15 [DEBUG] etl.load:  flush: done. insert statistics: {'Stimuli': 5, 'Taxa': 11, 'OntologyTerms': 10, 'Studies': 8, 'Microbes': 5, 'Genes': 10, 'Samples': 32, 'MicrobeStimulus': 8, 'SampleMicrobe': 32, 'SampleStimulus': 32}
+2025-06-30 01:42:15 [INFO] __main__: 🔄 Loader.flush() took 1057.37ms, inserted: {'Stimuli': 5, 'Taxa': 11, 'OntologyTerms': 10, 'Studies': 8, 'Microbes': 5, 'Genes': 10, 'Samples': 32, 'MicrobeStimulus': 8, 'SampleMicrobe': 32, 'SampleStimulus': 32}
+2025-06-30 01:42:15 [INFO] __main__: 🎉 ETL complete: 41 batches, 306 rows in 3.68s
+2025-06-30 01:42:15 [INFO] __main__: 📊  Insert summary: {'Stimuli': 5, 'Taxa': 11, 'OntologyTerms': 10, 'Studies': 8, 'Microbes': 5, 'Genes': 10, 'Samples': 32, 'MicrobeStimulus': 8, 'SampleMicrobe': 32, 'SampleStimulus': 32}
+2025-06-30 01:42:15 [INFO] __main__: 🔒  SSH tunnel closed
+2025-06-30 01:42:15 [DEBUG] paramiko.transport: EOF in transport thread

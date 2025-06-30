@@ -59,7 +59,6 @@ STIMULI: List[Tuple[str,str,str]] = [
     ("CHEBI_30089",     "acetate",                      "SCFA",             "C2H3O2–", "CC(=O)[O-]", "59.04"),
     ("CHEBI_16865",     "gamma-aminobutyric acid",      "neurotransmitter", "C4H9NO2", "NCCCC(=O)O", "103.12"),
     ("PR_000026791",    "tumour necrosis factor-alpha", "cytokine",         "", "", "17.3"),
-    ("NONE",            "none",                         "",                 "", "", ""),
 ]
 MICROBES: List[Tuple[int,str,str,str]] = [
     ("NCBITaxon_226186",    "Bacteroides thetaiotaomicron", "Bt-VPI5482",  "anaerobe"),
@@ -134,7 +133,7 @@ def load_config(path: pathlib.Path) -> dict:
         if identity:
             cmd += ["--identity", identity]
         cmd += ["--decrypt", str(path)]
-        print(f"\t\t############ Running: {cmd!r}")
+        # print(f"\t\t############ Running: {cmd!r}")
         # decrypt into memory
         proc = subprocess.run(cmd, check=True, stdout=subprocess.PIPE)
         data = proc.stdout.decode()
@@ -324,9 +323,9 @@ def mk_study_catalog(fs, root:str, n_exp:int)->List[str]:
             sid=f"E-MTAB-{random.randint(10000,99999)}"
             title=f"Synthetic gut-brain experiment {sid}"
             pub_date = random.choice(date_pool)
-            w.writerow([sid,title,"LOCAL",
+            w.writerow([sid,title,random.choice(['ArrayExpress','CELLxGENE','NCBI GEO','LOCAL']),
                         pub_date,
-                        "scRNA-seq",
+                        random.choice(['transcriptomic','proteomic','multiomic']),
                         SAMPLES_PER_EXP,
                         f"{sid.lower()}@example.org"])
             studies[sid] = pub_date                
@@ -384,15 +383,15 @@ def make_experiments(
                 "collection_date","donor_age_years",
                 "replicate_number","viability_pct","rin_score"
             ])
-            for sample_id in range(SAMPLES_PER_EXP):
+            for sample_id in range(1,SAMPLES_PER_EXP):
                 samp=rnd_id("SAMP",8)
                 logger.debug("  writing sample %s for %s", samp, sid)
                 cell_iri,_=random.choice(CELL_TYPES)
                 tissue_iri,_=random.choice(TISSUES)
-                org_iri="NCBITaxon:9606"
+                org_iri=HUMAN_TAXON_IRI
                 growth=random.choice(["monoculture","co-culture"]) 
                 microbe_tid,_, _, _ =random.choice(MICROBES)
-                stimulus_id=random.randint(0,len(STIMULI))            
+                stimulus_id=random.randint(1,len(STIMULI))            
                 
                 # build a generic URI, then ensure the store “exists” via fsspec
                 raw_counts_uri = f"{root}/{samp}_raw_counts.tsv"
@@ -428,12 +427,12 @@ def make_experiments(
                     cw.writerow(["gene_id","count"])
                     cw.writerows(zip(genes,counts))
                 # link-tables
-                append(fs, root, "sample_microbe.tsv", [sample_id,random.randint(0,len(MICROBES)),random.choice(["mgnify","literature","inferred"]),round(random.uniform(0.01,300),4)])
-                append(fs, root, "sample_stimulus.tsv", [sample_id,random.randint(0,len(STIMULI)),round(random.uniform(1,24*10),1),random.choice(RESPONSE_MARKERS),])
+                append(fs, root, "sample_microbe.tsv", [sample_id,random.randint(1,len(MICROBES)),random.choice(["mgnify","literature","inferred"]),round(random.uniform(0.01,300),4)])
+                append(fs, root, "sample_stimulus.tsv", [sample_id,random.randint(1,len(STIMULI)),round(random.uniform(1,24*10),1),random.choice(RESPONSE_MARKERS),])
         # Microbe–Stimulus edges (once per experiment)
         logger.debug("  appending microbe_stimulus for %s", sid)
-        microbe_tid=random.randint(0,len(MICROBES))
-        stimulus_id=random.randint(0,len(STIMULI))
+        microbe_tid=random.randint(1,len(MICROBES))
+        stimulus_id=random.randint(1,len(STIMULI))
 
         append(fs, root, "microbe_stimulus.tsv", [microbe_tid,stimulus_id,random.choice(["mgnify","literature","inferred"]),round(random.uniform(-30,40),3)])
 
