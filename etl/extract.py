@@ -123,17 +123,19 @@ class Extractor:
         files = self._select_files()
         # sort by our explicit table-dependency order
         files.sort(key=lambda p: TABLE_PRIORITY.get(_table_for(p.name) or "", 100))
- 
 
-        LOGGER.debug("iter_batches: %d files selected (mode=%s)", len(files), self.mode)
+        # for i, tmp_file in enumerate(files):
+        #     LOGGER.debug(f"\n\t\t------> {i}.\t{tmp_file}")
+
+        LOGGER.debug(f"iter_batches: {len(files)} files selected (mode={self.mode})")
         for fpath in files:
             table = _table_for(fpath.name)
             if table is None:
                 LOGGER.debug("Skipping unrecognised file %s", fpath)
                 continue
-            # if table in ("RawCounts",):
-            #     LOGGER.debug("Skipping raw counts file %s", fpath)
-            #     continue
+            if table in ("RawCounts",):
+                LOGGER.debug("Skipping raw counts file %s", fpath)
+                continue
 
             LOGGER.info("⏳  Extracting %s → %s", fpath.name, table)
             for batch in self._read_file(fpath, table):
@@ -146,15 +148,18 @@ class Extractor:
     # File scanning
     # ────────────────────────────────────────────────────────────────────
     def _select_files(self) -> List[pathlib.Path]:
-        all_files = sorted(self.data_dir.rglob("*.tsv"))
-        LOGGER.debug("_select_files: found %d TSV files under %s", len(all_files), self.data_dir)
+        # all_files = sorted(self.data_dir.rglob("*.tsv"))
+        # LOGGER.debug("_select_files: found %d TSV files under %s", len(all_files), self.data_dir)
 
+        all_files = list(self.data_dir.rglob("*.tsv"))
         if self.mode == "all":
-            return all_files
-        if self.mode == "metadata":
-            return [p for p in all_files if not p.name.endswith("_raw_counts.tsv")]
-        # raw_counts
-        return [p for p in all_files if p.name.endswith("_raw_counts.tsv")]
+            files = all_files
+        elif self.mode == "metadata":
+            files = [p for p in all_files if not p.name.endswith("_raw_counts.tsv")]
+        else:
+            files = [p for p in all_files if p.name.endswith("_raw_counts.tsv")]
+
+        return files
 
     # ────────────────────────────────────────────────────────────────────
     # File reader → batches
