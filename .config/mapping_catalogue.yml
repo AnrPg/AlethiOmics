@@ -12,9 +12,10 @@ columns:
     transforms:
       - strip_version              # ENSG00000139618.15 → ENSG00000139618
       - stub_fetch_gene_metadata   # <-- a mock, no‐network stub here
-      # - fetch_gene_metadata        # → {gene_accession, gene_name,
-                                   #    species_taxon_id, gene_length_bp,
-                                   #    gc_content_pct, pathway_iris, go_terms}
+      # - fetch_gene_metadata        # → {gene_accession, gene_name, 
+                                          # species_taxon_iri, gene_length_bp, 
+                                          # gc_content, pathway_iri, go_terms }
+  
     target_table: Genes
     target_columns:
       - id                  # INT UNSIGNED
@@ -33,10 +34,10 @@ columns:
     regex: "(CHEBI:\\d+|EFO:\\d+|PR:\\d+|none)"
     transforms:
       - canonical_iri              # CURIE → full IRI
-      - stub_fetch_stimulus_metadata    # → {iri, label, class_hint,
-                                   #    chemical_formula, smiles,
-                                   #    molecular_weight, default_dose,
-                                   #    dose_unit}
+      - stub_fetch_stimulus_metadata    # → {iri, label, class_hint, 
+                                        # chem_formula, smiles, molecular_weight, 
+                                        # default_dose, dose_unit}
+  
     target_table: Stimuli
     target_columns:
       - iri                       # VARCHAR(255) PK
@@ -54,13 +55,13 @@ columns:
   microbe_entry:
     regex: "NCBITaxon:\\d+"
     transforms:
-      - fetch_from_ncbi_taxon      # CURIE → taxon_id (INT)
-      - stub_fetch_microbe_metadata     # → {taxon_id, species_name,
-                                   #    strain_name, genome_size_bp,
-                                   #    gc_content_pct,
-                                   #    oxygen_requirement,
-                                   #    relative_abundance_pct,
-                                   #    prevalence_pct}
+      - fetch_from_ncbi_taxon           # CURIE → taxon_id (INT)
+      - stub_fetch_microbe_metadata     # → {taxon_iri, strain_name, culture_collection,
+                                        # genome_assembly_accession, genome_size_bp, 
+                                        # oxygen_requirement, habitat, optimal_growth_temp, 
+                                        # doubling_time, metabolic_profile_iri, abundance_index, 
+                                        # prevalence }
+  
     target_table: Microbes
     target_columns:
       - id                        # INT PK
@@ -86,10 +87,10 @@ columns:
     transforms:
       - canonical_iri
       - fetch_taxon_numeric_id     # IRI → id (INT)
-      - stub_fetch_taxon_metadata       # → {id, kingdom, rank,
-                                   #    gc_content_pct,
-                                   #    genome_length_bp,
-                                   #    habitat, pathogenicity}
+      - stub_fetch_taxon_metadata  # → {iri, species_name, kingdom,
+                                   # ranking, gc_content, genome_length, 
+                                   # habitat, pathogenicity}
+  
     target_table: Taxa
     target_columns:
       - id                        # INT PK
@@ -110,7 +111,7 @@ columns:
     transforms:
       - canonical_iri
       - stub_fetch_ontology_term_metadata  # → {iri, label, ontology,
-                                           #    definition, synonyms, version}
+                                           #    term_definition, synonyms, onto_version}
     target_table: OntologyTerms
     target_columns:
       - id                        # INT
@@ -128,9 +129,10 @@ columns:
     regex: "(E-MTAB-\\d+|GSE\\d+|LOCAL-[A-Za-z0-9_-]+)"
     transforms:
       - normalize_study_accession
-      - stub_fetch_study_metadata        # → {study_id, title, source_repo,
-                                    #    publication_date, study_type,
-                                    #    num_samples, contact_email}
+      - stub_fetch_study_metadata       # → {iri,title,source_repo,
+                                        # publication_date,study_type,
+                                        # num_samples,contact_email}
+
     target_table: Studies
     target_columns:
       - id                        # INT PK
@@ -149,7 +151,14 @@ columns:
     regex: "(SAMP[A-Z0-9]{8})"
     transforms:
       - extract_sample_id
-      - stub_fetch_sample_metadata       # → full dict below
+      - stub_fetch_sample_metadata      # → {iri, study_iri, cell_type_iri, 
+                                        # tissue_iri, organism_iri, growth_condition, 
+                                        # raw_counts_uri, collection_date, donor_age_years, 
+                                        # replicate_number, viability_pct, rin_score, }
+
+  
+
+
     target_table: Samples
     target_columns:
       - id                 #INT UNSIGNED 
