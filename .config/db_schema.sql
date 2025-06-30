@@ -6,6 +6,7 @@
 --------------------------------------------------------------------------------------
 --------------------------------------------------------------------------------------
 
+
 -- 1) Core reference tables
 
 CREATE TABLE Stimuli (
@@ -26,17 +27,18 @@ CREATE TABLE Stimuli (
 
 CREATE TABLE Taxa (
   id             INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-  iri            VARCHAR(255)      NOT NULL UNIQUE,
+  iri            VARCHAR(255)      NOT NULL,
   species_name   VARCHAR(120)      NOT NULL,        
-  kingdom        ENUM('Bacteria','Eukaryota','Archaea') NULL,
+  kingdom        ENUM('Bacteria','Eukaryota','Archaea', 'NA') NULL,
   ranking        VARCHAR(30)       NULL,             
 
   -- Research-centric metadata:
   gc_content     DECIMAL(5,2)      NULL COMMENT 'Percent GC in genome',
   genome_length  BIGINT UNSIGNED   NULL COMMENT 'bp total',
   habitat         VARCHAR(80)      NULL COMMENT 'Natural habitat',
-  pathogenicity   ENUM('commensal','opportunist','pathogen') NULL,
+  pathogenicity   ENUM('commensal','opportunist','pathogen', 'NA') NULL,
 
+  UNIQUE KEY unique_iri_rank (iri, ranking),
   KEY idx_taxa_kingdom (kingdom),
   KEY idx_taxa_species (species_name)
 );
@@ -61,11 +63,11 @@ CREATE TABLE Studies (
   id            INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
   iri           VARCHAR(255)      NOT NULL UNIQUE,  
   title         VARCHAR(255)      NOT NULL,
-  source_repo   ENUM('ArrayExpress','CELLxGENE','NCBI GEO') NOT NULL,
+  source_repo   ENUM('ArrayExpress','CELLxGENE','NCBI GEO','LOCAL', 'NA', 'other') NOT NULL,
 
   -- Research-centric metadata:
   publication_date DATE           NULL COMMENT 'Date published',
-  study_type      ENUM('transcriptomic','proteomic','multiomic') NULL,
+  study_type      ENUM('transcriptomic','proteomic','multiomic', 'NA') NULL,
   num_samples     INT UNSIGNED    NULL COMMENT 'Total samples in study',
   contact_email   VARCHAR(120)    NULL COMMENT 'Lead author email',
   
@@ -78,12 +80,12 @@ CREATE TABLE Studies (
 
 CREATE TABLE Microbes (
   id                        INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-  taxon_iri                 VARCHAR(255) 	NOT NULL,
+  taxon_iri                 VARCHAR(255) 	NOT NULL UNIQUE,
   strain_name               VARCHAR(120)    NULL,
   culture_collection        VARCHAR(80)     NULL,
   genome_assembly_accession VARCHAR(30)     NULL,
   genome_size_bp            BIGINT UNSIGNED NULL,
-  oxygen_requirement        ENUM('aerobe','anaerobe','facultative') NULL,
+  oxygen_requirement        ENUM('aerobe','anaerobe','facultative', 'NA') NULL,
   habitat                   VARCHAR(80)     NULL,
   optimal_growth_temp       DECIMAL(4,1)    NULL,
   doubling_time             DECIMAL(5,2)    NULL,
@@ -101,7 +103,7 @@ CREATE TABLE Microbes (
 
 CREATE TABLE Genes (
   id                  INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-  gene_accession      VARCHAR(20)      NOT NULL, 
+  gene_accession      VARCHAR(20)      NOT NULL UNIQUE, 
   gene_name           VARCHAR(120)     NOT NULL,
   species_taxon_iri   VARCHAR(255)     NOT NULL,
   -- Research-centric metadata:
@@ -122,13 +124,13 @@ CREATE TABLE Genes (
 CREATE TABLE Samples (
   id                 INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
   iri                VARCHAR(255)      NOT NULL UNIQUE,   
-  study_iri           VARCHAR(255)      NOT NULL,
-  cell_type_iri       VARCHAR(255)      NOT NULL,
-  tissue_iri          VARCHAR(255)      NOT NULL,
-  organism_iri        VARCHAR(255)      NOT NULL,
+  study_iri          VARCHAR(255)      NOT NULL,
+  cell_type_iri      VARCHAR(255)      NOT NULL,
+  tissue_iri         VARCHAR(255)      NOT NULL,
+  organism_iri       VARCHAR(255)      NOT NULL,
   growth_condition   VARCHAR(120)      NOT NULL,          
   raw_counts_uri     VARCHAR(255)      NOT NULL,
-
+			
   -- Research-centric metadata:
   collection_date    DATE             NULL COMMENT 'Date sample was taken',
   donor_age_years    INT UNSIGNED     NULL COMMENT 'Age of donor',
@@ -139,7 +141,7 @@ CREATE TABLE Samples (
   FOREIGN KEY (study_iri) REFERENCES Studies(iri)       ON DELETE RESTRICT,
   FOREIGN KEY (cell_type_iri) REFERENCES OntologyTerms(iri) ON DELETE RESTRICT,
   FOREIGN KEY (tissue_iri) REFERENCES OntologyTerms(iri) ON DELETE RESTRICT,
-  FOREIGN KEY (organism_iri) REFERENCES OntologyTerms(iri) ON DELETE RESTRICT,
+  FOREIGN KEY (organism_iri) REFERENCES Taxa(iri) ON DELETE RESTRICT,
 
   KEY idx_samples_study    (study_iri),
   KEY idx_samples_cell     (cell_type_iri),
